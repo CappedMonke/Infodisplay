@@ -3,7 +3,7 @@ Description=Launch Vivaldi in Kiosk Mode
 After=graphical.target
 
 [Service]
-ExecStart=/usr/bin/vivaldi --kiosk
+ExecStart=/usr/bin/vivaldi --kiosk https://blank.org
 Restart=always
 
 [Install]
