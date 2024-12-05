@@ -1,0 +1,10 @@
+[Unit]
+Description=Launch Vivaldi in Kiosk Mode
+After=graphical.target
+
+[Service]
+ExecStart=/usr/bin/vivaldi --kiosk
+Restart=always
+
+[Install]
+WantedBy=graphical.target
