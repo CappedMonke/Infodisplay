@@ -91,6 +91,9 @@ install_service() {
 
             echo "Copying $service_name to $dest_file..."
             sudo cp "$source_file" "$dest_file"
+
+            echo "Enabling $service_name..."
+            sudo systemctl enable "$service_name"
         fi
     else
         echo "File $service_name not found in $SOURCE_DIR. Skipping."
@@ -103,7 +106,7 @@ install_service "AutostartBrowser.service" "Do you want to automatically start t
 install_service "AutostartGestureRecognition.service" "Do you want to automatically start the camera to recognize gestures at system boot? This will not work if no camera is connected."
 install_service "AutostartServer.service" "Do you want to automatically start the server at system boot? Usually you would do this for only one device in the network."
 
-echo -e "${GREEN}Installation completed! To undo the installation, run Clean.sh. Do you want to reboot the system now for the changes to take effect? (y/n)${NC}"
+echo -e "${GREEN}Installation completed! To undo the installation, run Uninstall.sh. Do you want to reboot the system now for the changes to take effect? (y/n)${NC}"
 read -r answer
 if [[ "$answer" == "y" ]]; then
     sudo reboot
