@@ -93,7 +93,7 @@ install_service() {
             sudo mkdir -p "$dest_dir"
 
             echo "Copying $service_name to $dest_dir..."
-            cp "$source_file" "$dest_dir"
+            sudo cp "$source_file" "$dest_dir"
 
             echo "Enabling $service_name..."
             systemctl --user enable "$service_name"
