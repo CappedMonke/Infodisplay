@@ -70,7 +70,7 @@ install_service() {
     local service_name=$1
     local custom_message=$2
     local source_file="Services/$service_name"
-    local dest_dir="$HOME/.config/systemd/user" 
+    local dest_dir="$HOME/.config/systemd/user/" 
 
     if [ -e "$source_file" ]; then
         echo -e "${BLUE}$custom_message (y/n)${NC}"
