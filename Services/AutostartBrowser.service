@@ -1,9 +1,9 @@
 [Unit]
-Description=Launch Vivaldi in Kiosk Mode
+Description=Launch Firefox in Kiosk Mode
 After=graphical.target
 
 [Service]
-ExecStart=/usr/bin/vivaldi --kiosk https://blank.org
+ExecStart=/usr/bin/firefox --kiosk https://blank.org
 Restart=always
 
 [Install]

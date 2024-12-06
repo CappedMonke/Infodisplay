@@ -22,26 +22,25 @@ detect_package_manager() {
 
 
 # Function to check and install Vivaldi browser if not installed
-install_vivaldi() {
-    if ! command -v vivaldi >/dev/null ; then
-        echo "Vivaldi browser is not installed. Installing it now..."
+install_firefox() {
+    if ! command -v firefox >/dev/null ; then
+        echo "Firefox browser is not installed. Installing it now..."
         case $(detect_package_manager) in
             apt)
-                wget -qO- https://repo.vivaldi.com/archive/linux_signing_key.pub | sudo gpg --dearmor -o /usr/share/keyrings/vivaldi-browser-keyring.gpg
                 sudo apt update
-                sudo apt install -y vivaldi-stable
+                sudo apt install -y firefox
                 ;;
             pacman)
-                sudo pacman -Sy --noconfirm vivaldi
+                sudo pacman -S firefox
                 ;;
             *)
-                echo "Unsupported package manager. Please install Vivaldi manually."
+                echo "Unsupported package manager. Please install Firefox manually."
                 exit 1
                 ;;
         esac
-        echo "Vivaldi browser installed successfully."
+        echo "Firefox browser installed successfully."
     else
-        echo "Vivaldi browser is already installed."
+        echo "Firefox browser is already installed."
     fi
 }
 
@@ -79,7 +78,7 @@ install_service() {
         if [[ "$answer" == "y" ]]; then
             case "$service_name" in
                 "AutostartBrowser.service")
-                    install_vivaldi
+                    install_firefox
                     ;;
                 "AutostartGestureRecognition.service")
                     install_requirements "GestureRecognition/Requirements.txt"
