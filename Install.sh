@@ -90,7 +90,7 @@ install_service() {
 
             # Ensure the destination directory exists
             echo "Ensuring $dest_dir directory exists..."
-            mkdir -p "$dest_dir"
+            sudo mkdir -p "$dest_dir"
 
             echo "Copying $service_name to $dest_dir..."
             cp "$source_file" "$dest_dir"
