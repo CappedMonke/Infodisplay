@@ -70,11 +70,7 @@ install_service() {
     local service_name=$1
     local custom_message=$2
     local source_file="Services/$service_name"
-    local dest_file="$HOME/.config/systemd/user"  # Correct directory for user services
-
-    # Ensure the destination directory exists
-    echo "Ensuring $dest_file directory exists..."
-    mkdir -p "$dest_file"
+    local dest_file="~/.config/systemd/user"  # Correct directory for user services
 
     if [ -e "$source_file" ]; then
         echo -e "${BLUE}$custom_message (y/n)${NC}"
@@ -91,6 +87,10 @@ install_service() {
                     install_requirements "Server/Requirements.txt"
                     ;;
             esac
+
+            # Ensure the destination directory exists
+            echo "Ensuring $dest_file directory exists..."
+            mkdir -p "$dest_file"
 
             echo "Copying $service_name to $dest_file..."
             cp "$source_file" "$dest_file"
