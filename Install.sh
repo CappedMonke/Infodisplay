@@ -92,10 +92,16 @@ install_service() {
             echo "Ensuring $dest_file directory exists..."
             mkdir -p "$dest_file"
 
+            # Ensure the destination directory exists
+            echo "Ensuring $dest_file directory exists..."
+            mkdir -p "$dest_file"
+
             echo "Copying $service_name to $dest_file..."
+            cp "$source_file" "$dest_file"
             cp "$source_file" "$dest_file"
 
             echo "Enabling $service_name..."
+            systemctl --user enable "$service_name"
             systemctl --user enable "$service_name"
         fi
     else
@@ -105,6 +111,7 @@ install_service() {
 }
 
 
+install_service "AutostartBrowser.service" "Do you want to automatically start the browser and open the website at system boot? Installs Firefox browser if not already installed."
 install_service "AutostartBrowser.service" "Do you want to automatically start the browser and open the website at system boot? Installs Firefox browser if not already installed."
 install_service "AutostartGestureRecognition.service" "Do you want to automatically start the camera to recognize gestures at system boot? This will not work if no camera is connected."
 install_service "AutostartServer.service" "Do you want to automatically start the server at system boot? Usually you would do this for only one device in the network."
