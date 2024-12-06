@@ -70,7 +70,7 @@ install_service() {
     local service_name=$1
     local custom_message=$2
     local source_file="Services/$service_name"
-    local dest_file="~/.config/systemd/user"  # Correct directory for user services
+    local dest_dir="~/.config/systemd/user"  #
 
     if [ -e "$source_file" ]; then
         echo -e "${BLUE}$custom_message (y/n)${NC}"
@@ -89,11 +89,11 @@ install_service() {
             esac
 
             # Ensure the destination directory exists
-            echo "Ensuring $dest_file directory exists..."
-            mkdir -p "$dest_file"
+            echo "Ensuring $dest_dir directory exists..."
+            mkdir -p "$dest_dir"
 
-            echo "Copying $service_name to $dest_file..."
-            cp "$source_file" "$dest_file"
+            echo "Copying $service_name to $dest_dir..."
+            cp "$source_file" "$dest_dir"
 
             echo "Enabling $service_name..."
             systemctl --user enable "$service_name"
