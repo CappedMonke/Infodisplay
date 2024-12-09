@@ -9,6 +9,7 @@ import time
 # To add a new gesture or motion, add a new gesture name and implement the gesture / motion function.
 # Then add the gesture / motion function to the functions list at the bottom of the file 
 # so it will be checked for recognition every frame by the gesture recognizer.
+# TODO: Making thresholds dynamic based on hand size
 
 
 class GestureResult():
@@ -21,7 +22,8 @@ class GestureResult():
 def calculate_distance(point1, point2):
     return math.sqrt((point1.x - point2.x)**2 + (point1.y - point2.y)**2)
 
-def are_fingers_extended(hand_landmarks, extended_threshold=0.2):
+
+def are_fingers_extended(hand_landmarks, extended_threshold=0.1):
     tips = [
         HandLandmark.THUMB_TIP,
         HandLandmark.INDEX_FINGER_TIP,
@@ -38,34 +40,14 @@ def are_fingers_extended(hand_landmarks, extended_threshold=0.2):
         HandLandmark.PINKY_MCP
     ]
     
-    dips = [
-        HandLandmark.THUMB_IP,  # Use IP joint for thumb
-        HandLandmark.INDEX_FINGER_DIP,
-        HandLandmark.MIDDLE_FINGER_DIP,
-        HandLandmark.RING_FINGER_DIP,
-        HandLandmark.PINKY_DIP
-    ]
-
     finger_extended = {}
 
-    for tip, mcp, dip in zip(tips, mcps, dips):
+    for tip, mcp in zip(tips, mcps):
         # Calculate Euclidean distance between the tip and MCP
         distance_tip_mcp = calculate_distance(hand_landmarks.landmark[tip], hand_landmarks.landmark[mcp])
 
         # Check if the tip is farther than the threshold from the MCP
-        if distance_tip_mcp > extended_threshold:
-            # Further validate by ensuring the DIP is between the MCP and TIP
-            dip_position = hand_landmarks.landmark[dip].y
-            mcp_position = hand_landmarks.landmark[mcp].y
-            tip_position = hand_landmarks.landmark[tip].y
-
-            # Ensure DIP is closer to MCP than the tip (to rule out fist cases)
-            if mcp_position < dip_position < tip_position:
-                finger_extended[tip] = True
-            else:
-                finger_extended[tip] = False
-        else:
-            finger_extended[tip] = False
+        finger_extended[tip] = distance_tip_mcp > extended_threshold
 
     return finger_extended
 
@@ -115,6 +97,7 @@ class MultiFrameStateHandler:
         for state in self.states:
             state.dropout_count += 1
             if state.dropout_count > state.max_dropout_frames:
+                print("Reset because no landmarks detected")
                 state.reset()
 
     def increase_dropout_count(self, state):
@@ -153,10 +136,14 @@ def gesture_toggle_freeze(multi_hand_landmarks):
         elapsed_time = time.time() - state.start_time
         if elapsed_time > state.gesture_duration_threshold:
             state.reset()
+            print("Reset because threshold not reached")
             return GestureResult(True, "toggle_freeze")
-    
+        else:
+            return GestureResult()
+
     # If gesture is not recognized, reset timing
     state.reset()
+    print("Reset because not both hands open")
     return GestureResult()
 
 
@@ -174,15 +161,12 @@ def gesture_switch_content(multi_hand_landmarks):
 
     if len(multi_hand_landmarks) >= 1:
         left_hand_open = are_fingers_extended(multi_hand_landmarks[0])
-        print("left hand open")
     if len(multi_hand_landmarks) >= 2:
         right_hand_open = are_fingers_extended(multi_hand_landmarks[1])
-        print("right hand open")
 
     # Reset if both hands are open
     if left_hand_open and right_hand_open:
         state.reset()
-        print("reset")
         return GestureResult()
     
     # Check if gesture is active
@@ -196,12 +180,12 @@ def gesture_switch_content(multi_hand_landmarks):
         if elapsed_time > state.gesture_duration_threshold:
             state.reset()
             if left_hand_open:
-                print("switch_content_previous")
                 return GestureResult(True, "switch_content_previous")
             if right_hand_open:
-                print("switch_content_next")
                 return GestureResult(True, "switch_content_next")
-    
+        else:
+            return GestureResult()
+
     # If gesture is not recognized, reset timing
     state.reset()
     return GestureResult()

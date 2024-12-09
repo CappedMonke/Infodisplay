@@ -42,39 +42,42 @@ class GestureRecognizer:
             print(Fore.RED + "Could not read frame from camera." + Style.RESET_ALL)
             return
 
+        # Increase frame count
+        self.frame_count += 1
+
         # Skip frames
-        if self.frame_count % self.skip_frames == 0:
-            self.frame_count += 1
+        if self.frame_count % self.skip_frames != 0:
+            return
 
-            # Convert frame from BGR to RGB
-            rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        # Convert frame from BGR to RGB
+        rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
-            # Process the frame with the hands module
-            frame_result = self.hands.process(rgb_frame)
-            multi_hand_landmarks = frame_result.multi_hand_landmarks
+        # Process the frame with the hands module
+        frame_result = self.hands.process(rgb_frame)
+        multi_hand_landmarks = frame_result.multi_hand_landmarks
 
-            # If hands are detected, analyze the hand data
-            if multi_hand_landmarks:
-                gesture_result = analyze_multi_hand_landmarks(multi_hand_landmarks)
-                # Send gesture name to server
-                # Gestures are always sent, even if no gesture was recognized because some services might want to know that no gesture was recognized
-                # requests.post(f"http://{self.server_host}:{self.server_port}/receive_gesture/{gesture_result.gesture_name}")
+        # If hands are detected, analyze the hand data
+        if multi_hand_landmarks:
+            gesture_result = analyze_multi_hand_landmarks(multi_hand_landmarks)
+            # Send gesture name to server
+            # Gestures are always sent, even if no gesture was recognized because some services might want to know that no gesture was recognized
+            # requests.post(f"http://{self.server_host}:{self.server_port}/receive_gesture/{gesture_result.gesture_name}")
 
-                if self.debug:
-                    # Draw gesture name on frame
-                    if gesture_result.was_gesture_recognized:
-                        cv2.putText(frame, gesture_result.gesture_name, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
-
-                    # For each detected hand draw hand landmarks and connections
-                    for hand_landmarks in multi_hand_landmarks:
-                        mp.solutions.drawing_utils.draw_landmarks(frame, hand_landmarks, mp.solutions.hands.HAND_CONNECTIONS)
-            else:
-                # Increase dropout count
-                multi_frame_state_handler.increase_dropout_count_all()
-
-            # Render frame to screen
             if self.debug:
-                cv2.imshow("GestureRecognizer", frame)
+                # Draw gesture name on frame
+                if gesture_result.was_gesture_recognized:
+                    cv2.putText(frame, gesture_result.gesture_name, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
+
+                # For each detected hand draw hand landmarks and connections
+                for hand_landmarks in multi_hand_landmarks:
+                    mp.solutions.drawing_utils.draw_landmarks(frame, hand_landmarks, mp.solutions.hands.HAND_CONNECTIONS)
+        else:
+            # Increase dropout count
+            multi_frame_state_handler.increase_dropout_count_all()
+
+        # Render frame to screen
+        if self.debug:
+            cv2.imshow("GestureRecognizer", frame)
 
 
 if __name__ == "__main__":
@@ -82,7 +85,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--server-host", type=str, default="localhost", required=True, help="Host of the server.")
     parser.add_argument("--server-port", type=int, default=5000, required=True, help="Port of the server.")
-    parser.add_argument("--skip-frames", type=int, default=1, help="Number of frames to skip. This will result in better performance but higher latency.")
+    parser.add_argument("--skip-frames", type=int, default=0, help="Number of frames to skip. This will result in better performance but higher latency.")
     parser.add_argument("--debug", type=bool, default=False, help="Enable debug mode.")
     args = parser.parse_args()
 

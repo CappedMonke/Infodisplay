@@ -1,0 +1,17 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python Debugger: Run GestureRecognizer",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/GestureRecognition/GestureRecognizer.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--server-host", "localhost",
+                "--server-port", "5000",
+                "--debug", "True"
+            ]
+        }
+    ]
+}
