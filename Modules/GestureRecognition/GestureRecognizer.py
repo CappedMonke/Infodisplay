@@ -1,9 +1,10 @@
-import requests
 import cv2
 import mediapipe as mp
 import argparse
 from GestureImplementations import analyze_multi_hand_landmarks, multi_frame_state_handler
 from colorama import Fore, Style
+from websocket_server import WebsocketServer
+from threading import Thread
 
 
 # This class handles the gesture recognition.
@@ -15,14 +16,16 @@ from colorama import Fore, Style
 
 
 class GestureRecognizer:
-    def __init__(self, server_host, server_port, skip_frames, debug):
-        self.server_host = server_host
-        self.server_port = server_port
+    def __init__(self, socket_host, socket_port, skip_frames, debug):
+        self.socket_host = socket_host
+        self.socket_port = socket_port
         self.skip_frames = skip_frames + 1
         self.debug = debug
         self.frame_count = 0
         self.cap = cv2.VideoCapture(0) # Open the default camera
         self.hands = mp.solutions.hands.Hands(max_num_hands=2) # Initialize the hands module
+        self.server = WebsocketServer(host=self.socket_host, port=self.socket_port)
+        Thread(target=self.server.run_forever).start() # Start WebSocket server
 
 
     def run(self):
@@ -61,12 +64,9 @@ class GestureRecognizer:
         # If hands are detected, analyze the hand data
         if multi_hand_landmarks:
             gesture_result = analyze_multi_hand_landmarks(multi_hand_landmarks, multi_handedness)
-            # Send gesture name to server
-            # If no gesture was recognized, send empty GestureResult. Some services need to know that no gesture was recognized.
-            try:
-                requests.post(f"http://{self.server_host}:{self.server_port}/receive_gesture/{gesture_result.gesture_name}")
-            except requests.exceptions.ConnectionError:
-                print(Fore.RED + "Could not connect to server." + Style.RESET_ALL)
+            # Send gesture to all listeners
+            # If no gesture was recognized, send an empty message
+            self.server.send_message_to_all(gesture_result.gesture_name)
 
             if self.debug:
                 # Draw gesture name on frame
@@ -88,16 +88,16 @@ class GestureRecognizer:
 if __name__ == "__main__":
     # Parse command line arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument("--server-host", type=str, default="localhost", required=True, help="Host of the server.")
-    parser.add_argument("--server-port", type=int, default=5000, required=True, help="Port of the server.")
+    parser.add_argument("--socket_host", type=str, default="localhost", help="Host of the server.")
+    parser.add_argument("--socket_port", type=int, default=5001, help="Port of the server.")
     parser.add_argument("--skip-frames", type=int, default=0, help="Number of frames to skip. This will result in better performance but higher latency.")
     parser.add_argument("--debug", type=bool, default=False, help="Enable debug mode.")
     args = parser.parse_args()
 
-    server_host = args.server_host
-    server_port = args.server_port
+    socket_host = args.socket_host
+    socket_port = args.socket_port
     skip_frames = args.skip_frames
     debug = args.debug
 
-    recognizer = GestureRecognizer(server_host, server_port, skip_frames, debug)
+    recognizer = GestureRecognizer(socket_host, socket_port, skip_frames, debug)
     recognizer.run()

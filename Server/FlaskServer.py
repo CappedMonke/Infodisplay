@@ -83,8 +83,8 @@ def set_settings():
 if __name__ == '__main__':
     # Parse command line arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument('--server-host', type=str, default='0.0.0.0', required=True, help='Host of the server.')
-    parser.add_argument('--server-port', type=int, default=5000, required=True, help='Port of the server.')
+    parser.add_argument('--server-host', type=str, default='0.0.0.0', help='Host of the server.')
+    parser.add_argument('--server-port', type=int, default=5000, help='Port of the server.')
     parser.add_argument('--debug', type=bool, default=False, help='Enable debug mode.')
     args = parser.parse_args()
 
