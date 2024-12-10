@@ -1,7 +1,8 @@
 from datetime import datetime
+from moviepy import VideoFileClip
+import Settings
 import os
 import uuid
-from moviepy import VideoFileClip
 
 
 UPLOADS_FOLDER = 'Static/Uploads'
@@ -129,7 +130,7 @@ class ExcelContent(BaseContent):
         os.remove(f'{EXCELS_FOLDER}/{self.content['file']}')
 
 
-# content['items'] = [{'url': '<p>hello</p>, 'date': '2000-01-01'}, ...]
+# content['items'] = [{'text': 'Hello World!', 'date': '2000-01-01'}, ...]
 class ProgramContent(BaseContent):
     def __init__(self, type, title, duration, content):
         super().__init__(type, title, duration, content)
@@ -156,7 +157,10 @@ class BirthdayContent(BaseContent):
 
     def delete_associated_files(self):
         for person in self.content['people']:
-            os.remove(f'{IMAGES_FOLDER}/{person['image']}')
+            file_path = f'{IMAGES_FOLDER}/{person["image"]}'
+            # Because the image is optional, check if it exists
+            if os.path.exists(file_path):
+                os.remove(file_path)
 
 
     def setup_birthdays(self):
@@ -187,11 +191,46 @@ class WeatherContent(BaseContent):
         super().__init__(type, title, duration, content)
 
 
+# content = {'articles': [{'title': 'Hello World!', 'description': 'This is a description.', 'url': 'https://example.com', 'urlToImage': 'image.png'}, ...]}
 class NewsContent(BaseContent):
     def __init__(self, type, title, duration, content):
         super().__init__(type, title, duration, content)
+        self.current_index = 0
+    
+
+    def update(self):
+        self.rotate_news_displayed()
+        
+        now = datetime.now()
+        if now > datetime.fromisoformat(self.content['last_update']) + Settings.NEWS_UPDATE_INTERVAL:
+            self.fetch_news()
+            return True
+        # Fetch new news
+
+    
+
+    def fetch_news(self):
+        pass
 
 
+    def rotate_news_displayed(self):
+        self.current_index = (self.current_index + 1) % len(self.content['articles'])
+
+
+# content['folder'] = 'FlappyBird'
+# content['html'] = 'FlappyBird.html'
 class GameContent(BaseContent):
     def __init__(self, type, title, duration, content):
         super().__init__(type, title, duration, content)
+
+        # Find the html in the folder if not provided
+        if content.get('html') is None:
+            for file in os.listdir(f'{GAMES_FOLDER}/{content['folder']}'):
+                if file.endswith('.html'):
+                    content['html'] = file
+                    break
+
+
+    def delete_associated_files(self):
+        folder_path = f'{GAMES_FOLDER}/{self.content['folder']}'
+        os.rmdir(folder_path)
