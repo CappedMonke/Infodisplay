@@ -1,6 +1,7 @@
 from datetime import datetime
 from moviepy import VideoFileClip
-import Settings
+import requests
+from Settings import get_setting
 import os
 import uuid
 
@@ -151,7 +152,10 @@ class BirthdayContent(BaseContent):
             self.setup_birthdays()
             return True
         
-        self.rotate_person_displayed()
+        # If people have their birthday today, rotate person displayed
+        if self.is_visible:
+            self.current_index = (self.current_index + 1) % len(self.birthday_indices)
+
         return False
 
 
@@ -178,43 +182,113 @@ class BirthdayContent(BaseContent):
             self.is_visible = True
         else:
             self.is_visible = False
+        
 
-    
-    # This method is called when multiple people have their birthday today
-    def rotate_person_displayed(self):
-        if self.birthday_indices:
-            self.current_index = (self.current_index + 1) % len(self.birthday_indices)
-
-
+# content['location'] = Berlin
+# content['latitude'] = 0
+# content['longitude'] = 0
+# content['last_update'] = '2000-01-01T00:00:00'
+# content['weather'] = {'daily_weather_code': 0, 'temperature_2m_max': 0, ...}
 class WeatherContent(BaseContent):
     def __init__(self, type, title, duration, content):
         super().__init__(type, title, duration, content)
 
+        # Fetch coordinates if not provided
+        if content.get('latitude') is None or content.get('longitude') is None:
+            self.fetch_coordinates()
 
-# content = {'articles': [{'title': 'Hello World!', 'description': 'This is a description.', 'url': 'https://example.com', 'urlToImage': 'image.png'}, ...]}
+        self.fetch_weather()
+
+
+    def update(self):
+        # If last_update is older than the update interval, fetch weather
+        now = datetime.now()
+        if now > datetime.fromisoformat(self.content['last_update']) + get_setting('weather_update_interval'):
+            self.fetch_weather()
+            return True
+        
+        return False
+
+
+    def fetch_coordinates(self):
+        # Fetch coordinates of location
+        geocode_url = f"https://geocoding-api.open-meteo.com/v1/search?name={self.content['location']}&count=10&language=en&format=json"
+        response = requests.get(geocode_url)
+
+        # Set coordinates if successfully fetched
+        if response.status_code == 200:
+            data = response.json()
+            if data['results']:
+                self.content['latitude'] = data['results'][0]['latitude']
+                self.content['longitude'] = data['results'][0]['longitude']
+                self.is_visible = True
+                return
+        
+        # Hide content if coordinates could not be fetched
+        print('\033[91mCould not fetch coordinates\033[0m')
+        self.is_visible = False
+
+
+    def fetch_weather(self):
+        self.content['last_update'] = datetime.now().isoformat()
+
+        # Fetch weather from open-meteo.com
+        weather_url = f'https://api.open-meteo.com/v1/forecast?latitude={self.content['latitude']}&longitude={self.content['longitude']}&current=temperature_2m&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Europe%2FBerlin'
+        response = requests.get(weather_url)
+
+        # Set and show content if successfully fetched, else hide content
+        if response.status_code == 200:
+            data = response.json()
+            self.content['weather'] = data
+            self.is_visible = True
+            return
+        
+        print('\033[91mCould not fetch weather\033[0m')
+        self.is_visible = False
+
+
+# content['query'] = 'Hello World'
+# content['last_update'] = '2000-01-01T00:00:00'
+# content = ['articles'] = [{'title': 'Hello World!', 'description': 'This is a description.', 'url': 'https://example.com', 'urlToImage': 'image.png'}, ...]
 class NewsContent(BaseContent):
     def __init__(self, type, title, duration, content):
         super().__init__(type, title, duration, content)
         self.current_index = 0
+        self.fetch_news()
     
 
     def update(self):
-        self.rotate_news_displayed()
-        
+        # If last_update is older than the update interval, fetch news
         now = datetime.now()
-        if now > datetime.fromisoformat(self.content['last_update']) + Settings.NEWS_UPDATE_INTERVAL:
+        if now > datetime.fromisoformat(self.content['last_update']) + get_setting('news_update_interval'):
             self.fetch_news()
             return True
-        # Fetch new news
+        
+        # If news could be fetched, rotate news displayed
+        if self.is_visible:
+            self.current_index = (self.current_index + 1) % len(self.content['articles'])
+
+        return False
 
     
-
     def fetch_news(self):
-        pass
+        self.content['last_update'] = datetime.now().isoformat()
 
+        # Fetch news from newsapi.org
+        url = f"https://newsapi.org/v2/everything?q={self.content['query']}&language=de&pageSize={get_setting('news_count_items')}&apiKey={get_setting('news_api_key')}"
+        response = requests.get(url)
 
-    def rotate_news_displayed(self):
-        self.current_index = (self.current_index + 1) % len(self.content['articles'])
+        # Set and show content if successfully fetched, else hide content
+        if response.status_code == 200:
+            articles = response.json()['articles']
+            if articles:
+                self.content['articles'] = articles
+                self.is_visible = True
+                return
+        
+        # Hide content if news could not be fetched
+        print('\033[91mCould not fetch news\033[0m')
+        self.is_visible = False
 
 
 # content['folder'] = 'FlappyBird'

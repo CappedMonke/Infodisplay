@@ -1,11 +1,13 @@
 import argparse
-import threading
 from flask import Flask, render_template
 from flask_socketio import SocketIO
 from ContentManager import ContentManager
 from GameManager import GameManager
 
 
+# ---------------------------------------------------------------------------- #
+#                                Initializations                               #
+# ---------------------------------------------------------------------------- #
 app = Flask(__name__, static_folder='Static', template_folder='Templates')
 app.config['SECRET_KEY'] = 'This should be set in environment variable'
 socketio = SocketIO(app)

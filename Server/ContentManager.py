@@ -10,7 +10,7 @@ class ContentManager():
     def __init__(self):
         self.content_list = []
         self.load_content()
-        self.save_content()
+        self.save_content() # Some content gets updated on initialization, so save it again immediately
     
 
     def load_content(self):
