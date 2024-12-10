@@ -7,6 +7,7 @@ from colorama import Fore, Style
 
 
 # This class handles the gesture recognition.
+# Is a gesture is recognized, it emits the gesture to all listeners.
 # First it reads the camera frames and processes them by utilizing the cv2 library.
 # Then it uses the Mediapipe library to detect hands.
 # Finally it checks for gestures defined in GestureImplementations.py file.

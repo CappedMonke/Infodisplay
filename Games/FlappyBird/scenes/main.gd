@@ -3,7 +3,7 @@ extends Node
 @export var pipe_scene : PackedScene
 
 var client := WebSocketPeer.new()
-const SERVER_URL := "ws://127.0.0.1:5001"
+const SERVER_URL := "ws://localhost:5001"
 
 var game_running := false
 var game_over := false
@@ -67,7 +67,7 @@ func _process(delta):
 			$Debug.text = "Trying to connect..."
 			
 		WebSocketPeer.STATE_OPEN:
-			$Debug.text = "Connected to " + SERVER_URL
+			$Debug.text = "Connected"
 			
 			while client.get_available_packet_count():
 				# Check if server has sent ok-gesture
@@ -96,7 +96,7 @@ func _process(delta):
 		WebSocketPeer.STATE_CLOSED:
 			var code = client.get_close_code()
 			var reason = client.get_close_reason()
-			$Debug.text = "Connection closed with code: %d, reason %s. Clean: %s. Reconnecting..." % [code, reason, code != -1]
+			$Debug.text = "Connection closed with code: %d, reason %s. Reconnecting..." % [code, reason]
 			client.connect_to_url(SERVER_URL)
 	
 	if game_running:

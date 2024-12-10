@@ -2,7 +2,6 @@ import argparse
 from flask import Flask, render_template
 from flask_socketio import SocketIO
 from ContentManager import ContentManager
-from GameManager import GameManager
 
 
 # ---------------------------------------------------------------------------- #
@@ -13,7 +12,6 @@ app.config['SECRET_KEY'] = 'This should be set in environment variable'
 socketio = SocketIO(app)
 
 content_manager = ContentManager()
-game_manager = GameManager()
 
 
 # ---------------------------------------------------------------------------- #
@@ -24,26 +22,6 @@ def render_infodisplay():
     return render_template('InfoDisplay.html')
 
 
-@app.route('/show_previous_content', methods=['POST'])
-def show_previous_content():
-    return 'Previous content shown'
-
-
-@app.route('/show_next_content', methods=['POST'])
-def show_next_content():
-    return 'Next content shown'
-
-
-@app.route('/toggle_freeze', methods=['POST'])
-def toggle_freeze():
-    return 'Freeze toggled'
-
-
-@app.route('/receive_gesture/<gesture>')
-def receive_gesture(gesture):
-    return 'Gesture received'
-
-
 # ---------------------------------------------------------------------------- #
 #                              Add content routes                              #
 # ---------------------------------------------------------------------------- #
@@ -52,9 +30,9 @@ def render_add_content():
     return render_template('AddContent.html')
 
 
-@app.route('/add_post', methods=['POST'])
-def add_post():
-    return 'Post added'
+@app.route('/add_content', methods=['POST'])
+def add_content():
+    return 'content added'
 
 
 # ---------------------------------------------------------------------------- #
@@ -67,6 +45,7 @@ def render_manage_content():
 
 @app.route('/edit_content/<id>')
 def edit_content(id):
+    # render_template('EditContent.html', content=content_manager.get_content(id))
     return 'Content edited'
 
 
@@ -93,10 +72,18 @@ def render_settings():
     return render_template('Settings.html')
 
 
+@app.route('/set_settings', methods=['POST'])
+def set_settings():
+    return 'Settings set'
+
+
+# ---------------------------------------------------------------------------- #
+#                                     Main                                     #
+# ---------------------------------------------------------------------------- #
 if __name__ == '__main__':
     # Parse command line arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument('--server-host', type=str, default='localhost', required=True, help='Host of the server.')
+    parser.add_argument('--server-host', type=str, default='0.0.0.0', required=True, help='Host of the server.')
     parser.add_argument('--server-port', type=int, default=5000, required=True, help='Port of the server.')
     parser.add_argument('--debug', type=bool, default=False, help='Enable debug mode.')
     args = parser.parse_args()
