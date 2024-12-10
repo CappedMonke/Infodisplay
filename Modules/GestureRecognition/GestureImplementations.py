@@ -8,16 +8,21 @@ import time
 # To add a new gesture or motion, add a new gesture name and implement the gesture / motion function.
 # Then add the gesture / motion function to the functions list at the bottom of the file 
 # so it will be checked for recognition every frame by the gesture recognizer.
-# TODO: Making thresholds dynamic based on hand size
+# TODO: Making thresholds dynamic based on hand size (include z-coordinate)
 
 
+# ---------------------------------------------------------------------------- #
+#                                    Structs                                   #
+# ---------------------------------------------------------------------------- #
 class GestureResult():
     def __init__(self, was_gesture_recognized=False, gesture_name='no_gesture_recognized'):
         self.was_gesture_recognized = was_gesture_recognized
         self.gesture_name = gesture_name
 
 
-# ----------------------------- Helper functions ----------------------------- #
+# ---------------------------------------------------------------------------- #
+#                                Helper fuctions                               #
+# ---------------------------------------------------------------------------- #
 def calculate_distance(point1, point2):
     return math.sqrt((point1.x - point2.x)**2 + (point1.y - point2.y)**2)
 
@@ -71,7 +76,9 @@ def get_hand_side(handedness):
         return 'left'
 
 
-# --------------------------- Single frame gestures -------------------------- #
+# ---------------------------------------------------------------------------- #
+#                             Single frame gestures                            #
+# ---------------------------------------------------------------------------- #
 def gesture_ok(multi_hand_landmarks, *args):
     for hand_landmarks in multi_hand_landmarks:
         if is_thumb_and_index_touching(hand_landmarks):
@@ -80,7 +87,9 @@ def gesture_ok(multi_hand_landmarks, *args):
     return GestureResult()
 
 
-# --------------------------- Multi frame gestures --------------------------- #
+# ---------------------------------------------------------------------------- #
+#                             Multi frame gestures                             #
+# ---------------------------------------------------------------------------- #
 class MultiFrameState:
     def __init__(self, gesture_duration_threshold=2.0, max_dropout_frames=5):
         self.start_time = None
@@ -203,7 +212,10 @@ def gesture_switch_content(multi_hand_landmarks, multi_handedness):
     return GestureResult()
 
 
-# ------------------------------ Gestures to analyze ------------------------------ #
+
+# ---------------------------------------------------------------------------- #
+#                          Add gestures to analyze here                         #
+# ---------------------------------------------------------------------------- #
 functions = [
     # Single frame gestures
     gesture_ok,
@@ -214,6 +226,9 @@ functions = [
 ]
 
 
+# ---------------------------------------------------------------------------- #
+#                                   Interface                                  #
+# ---------------------------------------------------------------------------- #
 def analyze_multi_hand_landmarks(multi_hand_landmarks, multi_handedness) -> GestureResult:
     # Check for all gestures
     for function in functions:
