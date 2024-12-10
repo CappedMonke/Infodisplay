@@ -5,7 +5,19 @@
             "name": "Python Debugger: Run GestureRecognizer",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/GestureRecognition/GestureRecognizer.py",
+            "program": "${workspaceFolder}/Modules/GestureRecognition/GestureRecognizer.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--server-host", "localhost",
+                "--server-port", "5000",
+                "--debug", "True"
+            ]
+        },
+        {
+            "name": "Python Debugger: Run FlaskServer",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/Server/FlaskServer.py",
             "console": "integratedTerminal",
             "args": [
                 "--server-host", "localhost",
