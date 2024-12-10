@@ -1,5 +1,5 @@
 import argparse
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from flask_socketio import SocketIO
 from ContentManager import ContentManager
 
@@ -19,20 +19,27 @@ content_manager = ContentManager()
 # ---------------------------------------------------------------------------- #
 @app.route('/')
 def render_infodisplay():
-    return render_template('InfoDisplay.html')
+    content = content_manager.get_content_list_as_json()
+    return render_template('InfoDisplay.html', content=content)
 
 
 # ---------------------------------------------------------------------------- #
 #                              Add content routes                              #
 # ---------------------------------------------------------------------------- #
-@app.route('/add_content')
+@app.route('/add_content/')
 def render_add_content():
     return render_template('AddContent.html')
 
 
 @app.route('/add_content', methods=['POST'])
 def add_content():
-    return 'content added'
+    content_data = {
+        'type': request.form['type'],
+        'title': request.form['title'],
+        'duration': request.form['duration'],
+        'content': request.form['content']
+    }
+    content_manager.create_and_add_content(content_data)
 
 
 # ---------------------------------------------------------------------------- #
@@ -43,25 +50,33 @@ def render_manage_content():
     return render_template('ManageContent.html')
 
 
-@app.route('/edit_content/<id>')
-def edit_content(id):
-    # render_template('EditContent.html', content=content_manager.get_content(id))
-    return 'Content edited'
+@app.route('/edit_content')
+def edit_content():
+    id = request.args.get('id')
+    content = content_manager.get_content_as_dict_by_id(id)
+    return render_template('AddContent.html', content = content)
 
 
-@app.route('/set_visibility/<id>/<visibility>', methods=['POST'])
-def set_visibility(id, visibility):
-    return 'Visibility set'
+@app.route('/set_visibility', methods=['POST'])
+def set_visibility():
+    id = request.args.get('id')
+    is_visible = request.args.get('is_visible')
+    content_manager.set_visibility_by_id(id, is_visible)
+    return 'Visibility set', 200
 
 
-@app.route('/delete_content/<id>', methods=['POST'])
-def delete_content(id):
-    return 'Content deleted'
+@app.route('/delete_content', methods=['POST'])
+def delete_content():
+    id = request.args.get('id')
+    content_manager.delete_content_by_id(id)
+    return 'Content deleted', 200
 
 
-@app.route('/change_order/<id_list>', methods=['POST'])
-def change_order(id_list):
-    return 'Order changed'
+@app.route('/change_order', methods=['POST'])
+def change_order():
+    id_list = request.args.get('id_list')
+    content_manager.change_order(id_list)
+    return 'Order changed', 200    
 
 
 # ---------------------------------------------------------------------------- #

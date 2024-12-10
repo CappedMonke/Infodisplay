@@ -24,24 +24,35 @@ class ContentManager():
             return
         
         with open(CONTENT_FILE_PATH, 'r') as file:
-            content_data = json.load(file)
-            for content_dict in content_data:
-                content_type = content_dict['type']
-                content_class = BaseContent.get_subclass(content_type)
-                content = content_class(**content_dict)
-                self.content_list.append(content)
+            content_data_list = json.load(file)
+            for content_data in content_data_list:
+                self.create_and_add_content(**content_data)
     
     
     def save_content(self):
-        content_data_list = []
+        content_data_list = self.get_content_list_as_dict()
 
         # Add content to list
-        for content in self.content_list:
-            content_data = content.__dict__
-            content_data_list.append(content_data)
-
         with open(CONTENT_FILE_PATH, 'w') as file:
             json.dump(content_data_list, file)
+
+
+    def create_and_add_content(self, **content_data):
+        content_class = BaseContent.get_subclass(type)
+        content = content_class(**content_data)
+        self.add_content(content)
+
+
+    def get_content_as_dict_by_id(self, id):
+        content = self.get_content_by_id(id)
+        return content.__dict__
+
+
+    def get_content_list_as_dict(self):
+        content_dict_list = []
+        for content in self.content_list:
+            content_dict_list.append(content.__dict__)
+        return content_dict_list
 
 
     def get_content_by_id(self, id):

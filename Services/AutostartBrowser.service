@@ -3,7 +3,7 @@ Description=Launch Firefox in Kiosk Mode
 After=graphical.target
 
 [Service]
-ExecStart=/usr/bin/firefox --kiosk https://blank.org
+ExecStart=/usr/bin/firefox --kiosk https://InfoDisplay:5000
 Restart=always
 
 [Install]
