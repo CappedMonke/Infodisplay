@@ -1,9 +1,9 @@
 import argparse
+import threading
 from flask import Flask, render_template
 from flask_socketio import SocketIO
 from ContentManager import ContentManager
 from GameManager import GameManager
-import threading
 
 
 app = Flask(__name__, static_folder='Static', template_folder='Templates')
@@ -102,11 +102,5 @@ if __name__ == '__main__':
     server_host = args.server_host
     server_port = args.server_port
     debug = args.debug
-
-    # Start managers
-    content_manager_thread = threading.Thread(target=content_manager.run)
-    game_manager_thread = threading.Thread(target=game_manager.run)
-    content_manager_thread.start()
-    game_manager_thread.start()
 
     socketio.run(app, host=server_host, port=server_port, debug=debug)
