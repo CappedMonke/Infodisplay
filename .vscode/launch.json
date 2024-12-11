@@ -8,7 +8,7 @@
             "program": "${workspaceFolder}/Modules/GestureRecognition/GestureRecognizer.py",
             "console": "integratedTerminal",
             "args": [
-                "--debug", "True"
+                "--debug", "true"
             ]
         },
         {
@@ -18,7 +18,7 @@
             "program": "${workspaceFolder}/Server/FlaskServer.py",
             "console": "integratedTerminal",
             "args": [
-                "--debug", "True"
+                "--debug", "true"
             ]
         }
     ],

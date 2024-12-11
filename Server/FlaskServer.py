@@ -8,7 +8,6 @@ from ContentManager import ContentManager
 #                                Initializations                               #
 # ---------------------------------------------------------------------------- #
 app = Flask(__name__, static_folder='Static', template_folder='Templates')
-
 content_manager = ContentManager()
 
 
@@ -39,6 +38,7 @@ def add_content():
         'content': request.form['content']
     }
     content_manager.create_and_add_content(content_data)
+    return 'Content added', 200
 
 
 # ---------------------------------------------------------------------------- #
@@ -50,16 +50,16 @@ def render_manage_content():
     return render_template('ManageContent.html', content=content)
 
 
-@app.route('/edit_content')
+@app.route('/edit_content', methods=['POST'])
 def edit_content():
-    id = request.args.get('id')
-    content = content_manager.get_content_as_dict_by_id(id)
-    return render_template('AddContent.html', content = content)
+    id = request.form['id']
+    content = content_manager.get_content_by_id(id)
+    return render_template('AddContent.html', content=content)
 
 
 @app.route('/set_visibility', methods=['POST'])
 def set_visibility():
-    id = request.args.get('id')
+    id = request.form['id']
     is_visible = request.args.get('is_visible')
     content_manager.set_visibility_by_id(id, is_visible)
     return 'Visibility set', 200
@@ -67,14 +67,14 @@ def set_visibility():
 
 @app.route('/delete_content', methods=['POST'])
 def delete_content():
-    id = request.args.get('id')
+    id = request.form['id']
     content_manager.delete_content_by_id(id)
     return 'Content deleted', 200
 
 
 @app.route('/change_order', methods=['POST'])
 def change_order():
-    id_list = request.form.getlist('id_list')
+    id_list = request.form['id']
     content_manager.change_order(id_list)
     return 'Order changed', 200    
 
