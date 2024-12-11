@@ -21,4 +21,6 @@ function initializeDateTimeUpdater() {
 }
 
 
-document.addEventListener('DOMContentLoaded', initializeDateTimeUpdater);
+document.addEventListener('DOMContentLoaded', function() {
+    initializeDateTimeUpdater()
+});

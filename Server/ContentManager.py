@@ -34,11 +34,11 @@ class ContentManager():
 
         # Add content to list
         with open(CONTENT_FILE_PATH, 'w') as file:
-            json.dump(content_data_list, file)
+            json.dump(content_data_list, file, indent=4)
 
 
     def create_and_add_content(self, **content_data):
-        content_class = BaseContent.get_subclass(type)
+        content_class = BaseContent.get_subclass(content_data['type'])
         content = content_class(**content_data)
         self.add_content(content)
 

@@ -1,7 +1,7 @@
 from datetime import datetime
 from moviepy import VideoFileClip
-import requests
 from Settings import get_setting
+import requests
 import os
 import uuid
 
@@ -16,7 +16,7 @@ GAMES_FOLDER = f'{UPLOADS_FOLDER}/Games'
 
 
 class BaseContent():
-    def __init__(self, type, title, duration, content, is_visible=True, id=None):
+    def __init__(self, type, title, duration, content, is_visible, id):
         self.type = type
         self.title = title
         self.duration = duration
@@ -48,14 +48,14 @@ class BaseContent():
 
 # content['html'] = '<p>This is <b>bold</b>, <i>italic</i>, and <span style='color: red;'>red</span> text.</p>'
 class TextContent(BaseContent):
-    def __init__(self, type, title, duration, content):
-        super().__init__(type, title, duration, content)
+    def __init__(self, type, title, duration, content, is_visible=True, id=None):
+        super().__init__(type, title, duration, content, is_visible, id)
 
 
 # content['file'] = 'image.png'
 class ImageContent(BaseContent):
-    def __init__(self, type, title, duration, content):
-        super().__init__(type, title, duration, content)
+    def __init__(self, type, title, duration, content, is_visible=True, id=None):
+        super().__init__(type, title, duration, content, is_visible, id)
     
 
     def delete_associated_files(self):
@@ -65,8 +65,8 @@ class ImageContent(BaseContent):
 # content['html'] = '<p>This is <b>bold</b>, <i>italic</i>, and <span style='color: red;'>red</span> text.</p>'
 # content['file'] = 'image.png'
 class ImageTextContent(BaseContent):
-    def __init__(self, type, title, duration, content):
-        super().__init__(type, title, duration, content)
+    def __init__(self, type, title, duration, content, is_visible=True, id=None):
+        super().__init__(type, title, duration, content, is_visible, id)
     
 
     def delete_associated_files(self):
@@ -75,14 +75,14 @@ class ImageTextContent(BaseContent):
 
 # content['file'] = 'video.mp4'
 class VideoContent(BaseContent):
-    def __init__(self, type, title, duration, content):
+    def __init__(self, type, title, duration, content, is_visible=True, id=None):
         # If a new VideoContent is created, get duration of the video
         if duration == 0:
             clip = VideoFileClip(f'{VIDEOS_FOLDER}/{self.content['file']}')
             clip.close()
             duration = clip.duration
 
-        super().__init__(type, title, duration, content)
+        super().__init__(type, title, duration, content, is_visible, id)
 
 
     def delete_associated_files(self):
@@ -92,7 +92,7 @@ class VideoContent(BaseContent):
 # content['folder'] = 'slideshow_folder'
 # content['duration_per_image'] = 0
 class SlideshowContent(BaseContent):
-    def __init__(self, type, title, duration, content):
+    def __init__(self, type, title, duration, content, is_visible=True, id=None):
         filenames = []
 
         # Collect all image filenames in the folder
@@ -103,7 +103,7 @@ class SlideshowContent(BaseContent):
         if duration == 0:
             duration = content['duration_per_image'] * len(filenames)
         
-        super().__init__(type, title, duration, content)
+        super().__init__(type, title, duration, content, is_visible, id)
 
     
     def delete_associated_files(self):
@@ -113,8 +113,8 @@ class SlideshowContent(BaseContent):
 
 # content['file'] = 'document.pdf'
 class PDFContent(BaseContent):
-    def __init__(self, type, title, duration, content):
-        super().__init__(type, title, duration, content)
+    def __init__(self, type, title, duration, content, is_visible=True, id=None):
+        super().__init__(type, title, duration, content, is_visible, id)
     
 
     def delete_associated_files(self):
@@ -123,8 +123,8 @@ class PDFContent(BaseContent):
 
 # content['file'] = 'document.xlsx'
 class ExcelContent(BaseContent):
-    def __init__(self, type, title, duration, content):
-        super().__init__(type, title, duration, content)
+    def __init__(self, type, title, duration, content, is_visible=True, id=None):
+        super().__init__(type, title, duration, content, is_visible, id)
     
 
     def delete_associated_files(self):
@@ -133,14 +133,14 @@ class ExcelContent(BaseContent):
 
 # content['items'] = [{'text': 'Hello World!', 'date': '2000-01-01'}, ...]
 class ProgramContent(BaseContent):
-    def __init__(self, type, title, duration, content):
-        super().__init__(type, title, duration, content)
+    def __init__(self, type, title, duration, content, is_visible=True, id=None):
+        super().__init__(type, title, duration, content, is_visible, id)
 
 
 # content['people'] = [{'name': 'John Doe', 'birthday': '2000-01-01', 'image': 'image.png'}, ...]
 class BirthdayContent(BaseContent):
-    def __init__(self, type, title, duration, content):
-        super().__init__(type, title, duration, content)
+    def __init__(self, type, title, duration, content, is_visible=True, id=None):
+        super().__init__(type, title, duration, content, is_visible, id)
         self.birthday_indices = []
         self.current_index = 0
         self.setup_birthdays()

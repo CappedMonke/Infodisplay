@@ -1,7 +1,6 @@
 import argparse
 from Settings import settings, set_setting
 from flask import Flask, render_template, request
-from flask_socketio import SocketIO
 from ContentManager import ContentManager
 
 
@@ -9,8 +8,6 @@ from ContentManager import ContentManager
 #                                Initializations                               #
 # ---------------------------------------------------------------------------- #
 app = Flask(__name__, static_folder='Static', template_folder='Templates')
-app.config['SECRET_KEY'] = 'This should be set in environment variable'
-socketio = SocketIO(app)
 
 content_manager = ContentManager()
 
@@ -20,12 +17,8 @@ content_manager = ContentManager()
 # ---------------------------------------------------------------------------- #
 @app.route('/')
 def render_show_content():
-    # content = content_manager.get_content_list_as_dict()
-    content = [
-        {'type': 'TextContent', 'title': 'Title1', 'duration': 10, 'content': 'Hello World'},
-        {'type': 'ImageContent', 'title': 'Title2', 'duration': 10, 'content': 'lol.png'},
-        {'type': 'NewsContent', 'title': 'Title3', 'duration': 10, 'content': {'articles': [{'title': 'News1'}, {'title': 'News2'}]}},
-    ]
+    content_list = content_manager.get_content_list_as_dict()
+    content = [content for content in content_list if content['is_visible']] # Only visible content in sent to the ShowContent.html 
     return render_template('ShowContent.html', content=content)
 
 
@@ -53,12 +46,7 @@ def add_content():
 # ---------------------------------------------------------------------------- #
 @app.route('/manage_content')
 def render_manage_content():
-    # content = content_manager.get_content_list_as_dict()
-    content = [
-        {'id': 1, 'type': 'TextContent', 'title': 'Title1', 'duration': 10, 'content': 'Hello World', 'is_visible': True},
-        {'id': 2, 'type': 'ImageContent', 'title': 'Title2', 'duration': 10, 'content': 'lol.png', 'is_visible': True},
-        {'id': 3, 'type': 'NewsContent', 'title': 'Title3', 'duration': 10, 'content': {'articles': [{'title': 'News1'}, {'title': 'News2'}]}, 'is_visible': True},
-    ]
+    content = content_manager.get_content_list_as_dict()
     return render_template('ManageContent.html', content=content)
 
 
@@ -86,7 +74,7 @@ def delete_content():
 
 @app.route('/change_order', methods=['POST'])
 def change_order():
-    id_list = request.args.get('id_list')
+    id_list = request.form.getlist('id_list')
     content_manager.change_order(id_list)
     return 'Order changed', 200    
 
@@ -122,4 +110,4 @@ if __name__ == '__main__':
     server_port = args.server_port
     debug = args.debug
 
-    socketio.run(app, host=server_host, port=server_port, debug=debug)
+    app.run(host=server_host, port=server_port, debug=debug)
