@@ -203,7 +203,7 @@ class WeatherContent(BaseContent):
     def update(self):
         # If last_update is older than the update interval, fetch weather
         now = datetime.now()
-        if now > datetime.fromisoformat(self.content['last_update']) + get_setting('weather_update_interval'):
+        if now > datetime.fromisoformat(self.content['last_update']) + get_setting('weather_update_interval') * 60:
             self.fetch_weather()
             return True
         
@@ -260,7 +260,7 @@ class NewsContent(BaseContent):
     def update(self):
         # If last_update is older than the update interval, fetch news
         now = datetime.now()
-        if now > datetime.fromisoformat(self.content['last_update']) + get_setting('news_update_interval'):
+        if now > datetime.fromisoformat(self.content['last_update']) + get_setting('news_update_interval') * 60:
             self.fetch_news()
             return True
         

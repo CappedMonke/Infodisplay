@@ -1,4 +1,5 @@
 import argparse
+from Settings import settings, set_setting
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO
 from ContentManager import ContentManager
@@ -18,15 +19,15 @@ content_manager = ContentManager()
 #                              Info display routes                             #
 # ---------------------------------------------------------------------------- #
 @app.route('/')
-def render_infodisplay():
-    content = content_manager.get_content_list_as_json()
-    return render_template('InfoDisplay.html', content=content)
+def render_show_content():
+    content = content_manager.get_content_list_as_dict()
+    return render_template('ShowContent.html', content=content)
 
 
 # ---------------------------------------------------------------------------- #
 #                              Add content routes                              #
 # ---------------------------------------------------------------------------- #
-@app.route('/add_content/')
+@app.route('/add_content')
 def render_add_content():
     return render_template('AddContent.html')
 
@@ -84,13 +85,16 @@ def change_order():
 # ---------------------------------------------------------------------------- #
 @app.route('/settings')
 def render_settings():
-    return render_template('Settings.html')
+    return render_template('Settings.html', settings=settings)
 
 
-@app.route('/set_settings', methods=['POST'])
-def set_settings():
-    return 'Settings set'
-
+@app.route('/save_settings', methods=['POST'])
+def save_settings():
+    data = request.form
+    for key, value in data.items():
+        set_setting(key, value)
+    return 'Saved settings', 200
+    
 
 # ---------------------------------------------------------------------------- #
 #                                     Main                                     #

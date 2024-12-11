@@ -6,9 +6,9 @@ SETTINGS_FILE_PATH = 'Server/Savestate/Settings.json'
 
 
 settings = {
-    'weater_update_interval': 60 * 60, # 1 hour
-    'news_update_interval': 60 * 60 * 2, # 2 hours
-    'news_api_key': 'api_key',
+    'weather_update_interval': 60, # 1 hour
+    'news_update_interval': 60 * 2, # 2 hours
+    'news_api_key': '',
     'news_count_items': 5
 }
 
@@ -16,7 +16,8 @@ settings = {
 def load_settings():
     if not os.path.exists(SETTINGS_FILE_PATH):
         save_settings()
-
+        return
+    
     with open(SETTINGS_FILE_PATH, 'r') as file:
         settings.update(json.load(file))
     

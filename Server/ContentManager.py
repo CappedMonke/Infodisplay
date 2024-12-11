@@ -84,6 +84,10 @@ class ContentManager():
     
 
     def delete_content(self, content):
+        # Handle case where two people delete the same content at the same time
+        if content == None:
+            return
+        
         content.delete_associated_files()
         self.content_list.remove(content)
         self.save_content()
