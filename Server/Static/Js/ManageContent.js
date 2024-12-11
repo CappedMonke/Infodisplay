@@ -17,47 +17,60 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Toggle Visibility Button
         const toggleVisibilityBtn = document.createElement('button');
-        toggleVisibilityBtn.className = `btn ${item.visible ? 'btn-primary' : 'btn-outline-primary'} me-2`;
-        toggleVisibilityBtn.innerHTML = `<i class="bi ${item.visible ? 'bi-eye' : 'bi-eye-slash'}"></i>`;
-        toggleVisibilityBtn.title = 'Toggle Visibility';
+        toggleVisibilityBtn.className = `btn ${item.is_visible ? 'btn-primary' : 'btn-outline-primary'} me-2 list-item-button`;
+        toggleVisibilityBtn.innerHTML = `<i class="bi ${item.is_visible ? 'bi-eye in-button-icon' : 'bi-eye-slash in-button-icon'}"></i>`;
+        toggleVisibilityBtn.title = 'Sichtbarkeit umschalten';
         toggleVisibilityBtn.addEventListener('click', function () {
-            item.visible = !item.visible;
-            toggleVisibilityBtn.className = `btn ${item.visible ? 'btn-primary' : 'btn-outline-primary'} me-2`;
-            toggleVisibilityBtn.innerHTML = `<i class="bi ${item.visible ? 'bi-eye' : 'bi-eye-slash'}"></i>`;
+            item.is_visible = !item.is_visible;
+            toggleVisibilityBtn.className = `btn ${item.is_visible ? 'btn-primary in-button-icon' : 'btn-outline-primary in-button-icon'} me-2 list-item-button`;
+            toggleVisibilityBtn.innerHTML = `<i class="bi ${item.is_visible ? 'bi-eye in-button-icon' : 'bi-eye-slash in-button-icon'}"></i>`;
+
+            fetch('/set_visibility', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ id: item.id, is_visible: item.is_visible }),
+            })
         });
         buttonGroup.appendChild(toggleVisibilityBtn);
 
         // Edit Content Button
         const editContentBtn = document.createElement('button');
-        editContentBtn.className = 'btn btn-secondary me-2';
-        editContentBtn.innerHTML = `<i class="bi bi-pencil"></i>`;
-        editContentBtn.title = 'Edit Content';
+        editContentBtn.className = 'btn btn-secondary me-2 list-item-button';
+        editContentBtn.innerHTML = `<i class="bi bi-pencil in-button-icon"></i>`;
+        editContentBtn.title = 'Inhalt bearbeiten';
         editContentBtn.addEventListener('click', function () {
-            // Create form data
-            const formData = new FormData();
-            formData.append('id', item.id)
-
-            // Send data to server
-fetch('/edit_content', {
-    method: 'POST',
-    body: formData
-})
-.then(response => response.text())
-.then(html => {
-    // Replace part of the page with the returned HTML
-    document.getElementById('content-container').innerHTML = html;
-})
+            fetch('/edit_content', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ id: item.id }),
+                })
+                .then(response => response.text())
+                .then(html => {
+                    document.body.innerHTML = html;
+                });
         });
         buttonGroup.appendChild(editContentBtn);
 
         // Delete Content Button
         const deleteContentBtn = document.createElement('button');
-        deleteContentBtn.className = 'btn btn-danger';
-        deleteContentBtn.innerHTML = `<i class="bi bi-trash"></i>`;
-        deleteContentBtn.title = 'Delete Content';
+        deleteContentBtn.className = 'btn btn-danger list-item-button';
+        deleteContentBtn.innerHTML = `<i class="bi bi-trash in-button-icon"></i>`;
+        deleteContentBtn.title = 'Inhalt löschen';
         deleteContentBtn.addEventListener('click', function () {
             if (confirm('Soll dieser Inhalt wirklich gelöscht werden?')) {
                 div.remove();
+
+                fetch('/delete_content', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ id: item.id }),
+                });
             }
         });
         buttonGroup.appendChild(deleteContentBtn);
@@ -74,17 +87,13 @@ fetch('/edit_content', {
             // Get the updated order of IDs
             const updatedOrder = Array.from(sortableList.children).map(child => child.dataset.id);
 
-            // Create form data
-            const formData = new FormData();
-            updatedOrder.forEach(id => {
-                formData.append('id_list', id);
-            });
-
-            // Send data to server
             fetch('/change_order', {
                 method: 'POST',
-                body: formData
-            })
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ id_list: updatedOrder }),
+            });
         }
     });
 });

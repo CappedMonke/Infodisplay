@@ -32,10 +32,10 @@ def render_add_content():
 @app.route('/add_content', methods=['POST'])
 def add_content():
     content_data = {
-        'type': request.form['type'],
-        'title': request.form['title'],
-        'duration': request.form['duration'],
-        'content': request.form['content']
+        'type': request.data['type'],
+        'title': request.data['title'],
+        'duration': request.data['duration'],
+        'content': request.data['content']
     }
     content_manager.create_and_add_content(content_data)
     return 'Content added', 200
@@ -52,31 +52,35 @@ def render_manage_content():
 
 @app.route('/edit_content', methods=['POST'])
 def edit_content():
-    id = request.form['id']
+    data = request.get_json()
+    id = data['id']
     content = content_manager.get_content_by_id(id)
     return render_template('AddContent.html', content=content)
 
 
 @app.route('/set_visibility', methods=['POST'])
 def set_visibility():
-    id = request.form['id']
-    is_visible = request.args.get('is_visible')
+    data = request.get_json()
+    id = data['id']
+    is_visible = data['is_visible']
     content_manager.set_visibility_by_id(id, is_visible)
     return 'Visibility set', 200
 
 
 @app.route('/delete_content', methods=['POST'])
 def delete_content():
-    id = request.form['id']
+    data = request.get_json()
+    id = data['id']
     content_manager.delete_content_by_id(id)
     return 'Content deleted', 200
 
 
 @app.route('/change_order', methods=['POST'])
 def change_order():
-    id_list = request.form['id']
+    data = request.get_json()
+    id_list = data['id_list']
     content_manager.change_order(id_list)
-    return 'Order changed', 200    
+    return 'Order changed', 200
 
 
 # ---------------------------------------------------------------------------- #

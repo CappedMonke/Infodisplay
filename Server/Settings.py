@@ -24,7 +24,7 @@ def load_settings():
 
 def save_settings():
     with open(SETTINGS_FILE_PATH, 'w') as file:
-        json.dump(settings, file, indent=4)
+        json.dump(settings, file, indent=4, sort_keys=True)
 
 
 def get_setting(key):

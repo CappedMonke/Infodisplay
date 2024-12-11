@@ -34,7 +34,7 @@ class ContentManager():
 
         # Add content to list
         with open(CONTENT_FILE_PATH, 'w') as file:
-            json.dump(content_data_list, file, indent=4)
+            json.dump(content_data_list, file, indent=4, sort_keys=True)
 
 
     def create_and_add_content(self, **content_data):
@@ -98,7 +98,7 @@ class ContentManager():
     
 
     def set_content_visibility(self, content, is_visible):
-        content.set_visibility(is_visible)
+        content.is_visible = is_visible
         self.save_content()
 
     def set_visibility_by_id(self, id, is_visible):
