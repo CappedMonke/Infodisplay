@@ -20,7 +20,12 @@ content_manager = ContentManager()
 # ---------------------------------------------------------------------------- #
 @app.route('/')
 def render_show_content():
-    content = content_manager.get_content_list_as_dict()
+    # content = content_manager.get_content_list_as_dict()
+    content = [
+        {'type': 'TextContent', 'title': 'Title1', 'duration': 10, 'content': 'Hello World'},
+        {'type': 'ImageContent', 'title': 'Title2', 'duration': 10, 'content': 'lol.png'},
+        {'type': 'NewsContent', 'title': 'Title3', 'duration': 10, 'content': {'articles': [{'title': 'News1'}, {'title': 'News2'}]}},
+    ]
     return render_template('ShowContent.html', content=content)
 
 
@@ -48,7 +53,13 @@ def add_content():
 # ---------------------------------------------------------------------------- #
 @app.route('/manage_content')
 def render_manage_content():
-    return render_template('ManageContent.html')
+    # content = content_manager.get_content_list_as_dict()
+    content = [
+        {'id': 1, 'type': 'TextContent', 'title': 'Title1', 'duration': 10, 'content': 'Hello World', 'is_visible': True},
+        {'id': 2, 'type': 'ImageContent', 'title': 'Title2', 'duration': 10, 'content': 'lol.png', 'is_visible': True},
+        {'id': 3, 'type': 'NewsContent', 'title': 'Title3', 'duration': 10, 'content': {'articles': [{'title': 'News1'}, {'title': 'News2'}]}, 'is_visible': True},
+    ]
+    return render_template('ManageContent.html', content=content)
 
 
 @app.route('/edit_content')

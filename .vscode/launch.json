@@ -21,5 +21,14 @@
                 "--debug", "True"
             ]
         }
+    ],
+    "compounds": [
+        {
+            "name": "Run GestureRecognizer and FlaskServer",
+            "configurations": [
+                "Python Debugger: Run GestureRecognizer",
+                "Python Debugger: Run FlaskServer"
+            ]
+        }
     ]
 }

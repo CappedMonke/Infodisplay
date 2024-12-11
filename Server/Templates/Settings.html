@@ -1,23 +1,23 @@
 {% extends "Base.html" %}
 
 {% block content %}
-<div class="settings-content">
-    <form id="settingsForm">
-        <h1 class="page-heading my-5">Einstellungen</h1>
+<div class="forms-content-page">
+    <h1 class="page-heading">Einstellungen</h1>
+    <form class="page-content" id="settingsForm">
         <div class="mb-3">
-            <label for="weatherUpdateInterval" class="form-label">Wetter Update Intervall in Minuten</label>
+            <label for="weatherUpdateInterval" class="form-label">Wetter: Update-Intervall in Minuten</label>
             <input type="number" class="form-control" id="weatherUpdateInterval" name="weather_update_interval" value="{{ settings.weather_update_interval }}">
         </div>
         <div class="mb-3">
-            <label for="newsUpdateInterval" class="form-label">News Update Intervall in Minuten</label>
+            <label for="newsUpdateInterval" class="form-label">News: Update-Intervall in Minuten</label>
             <input type="number" class="form-control" id="newsUpdateInterval" name="news_update_interval" value="{{ settings.news_update_interval }}">
         </div>
         <div class="mb-3">
-            <label for="newsCountItems" class="form-label">Anzahl Artikel pro News Inhalt</label>
+            <label for="newsCountItems" class="form-label">News: Anzahl Artikel pro Inhalt</label>
             <input type="number" class="form-control" id="newsCountItems" name="news_count_items" value="{{ settings.news_count_items }}">
         </div>
         <div class="mb-3">
-            <label for="newsApiKey" class="form-label">News API Key</label>
+            <label for="newsApiKey" class="form-label">News: API-Key</label>
             <input type="password" class="form-control" id="newsApiKey" name="news_api_key" value="{{ settings.news_api_key }}">
             <div class="form-text">
                 Wird benötigt, damit News abgerufen werden können. <a href="https://newsapi.org" target="_blank" rel="noopener noreferrer">Hier</a> kostenlos erhältlich.
