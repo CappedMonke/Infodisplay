@@ -26,24 +26,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Save the content
     saveButton.addEventListener('click', function() {
         const contentType = document.getElementById('contentTypeSelect').value;
-        const capitalizedContentType = contentType.charAt(0).toUpperCase() + contentType.slice(1);
         const formElement = document.getElementById(`${contentType}ContentForm`);
         const formData = new FormData(formElement);
-        
-        let contentDict = {};
-        formData.forEach((value, key) => {
-            if (key !== 'duration' && key !== 'title' && !(value instanceof File)) {
-                contentDict[key] = value;
-            }
-        });
-
-        const data = {
-            id: crypto.randomUUID(),
-            title: formData.get('title'),
-            duration: formData.get('duration'),
-            content: contentDict,
-            type: `${capitalizedContentType}Content`
-        };
+        const capitalizedContentType = contentType.charAt(0).toUpperCase() + contentType.slice(1) + 'Content';
+        formData.append('type', capitalizedContentType);
+        const id = crypto.randomUUID();
+        formData.append('id', id);
 
         // Append file inputs to FormData
         formElement.querySelectorAll('input[type="file"]').forEach(input => {

@@ -31,7 +31,14 @@ def render_add_content():
 
 @app.route('/add_content', methods=['POST'])
 def add_content(): 
-    content_data = request.get_json()
+    # Cant use json because of file uploads
+    content_data = {
+        'type': request.form['type'],
+        'id': request.form['id'],
+        'title': request.form['title'],
+        'duration': request.form['duration'],
+        'content': {key: value for key, value in request.form.items() if key not in ['id', 'title', 'duration', 'type']},
+    }
     content_manager.create_and_add_content(content_data)
     return 'Content added', 200
 
@@ -54,7 +61,13 @@ def edit_content():
 
 @app.route('/update_content', methods=['POST'])
 def update_content():
-    content_data = request.get_json()
+    # Cant use json because of file uploads
+    content_data = {
+        'id': request.form['id'],
+        'title': request.form['title'],
+        'duration': request.form['duration'],
+        'content': {key: value for key, value in request.form.items() if key not in ['id', 'title', 'duration']},
+    }
     content_manager.update_content(content_data)
     return 'Content updated', 200
 
