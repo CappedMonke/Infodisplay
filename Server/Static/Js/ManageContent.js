@@ -41,17 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
         editContentBtn.innerHTML = `<i class="bi bi-pencil in-button-icon"></i>`;
         editContentBtn.title = 'Inhalt bearbeiten';
         editContentBtn.addEventListener('click', function () {
-            fetch('/edit_content', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ id: item.id }),
-                })
-                .then(response => response.text())
-                .then(html => {
-                    document.body.innerHTML = html;
-                });
+            window.location.href = `/edit_content?id=${item.id}`;
         });
         buttonGroup.appendChild(editContentBtn);
 

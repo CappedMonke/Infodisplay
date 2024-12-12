@@ -2,39 +2,20 @@
 
 {% block content %}
 <div class="forms-content-page">
-	<h1 class="page-heading">Inhalte erstellen</h1>
+	<h1 class="page-heading">Inhalt bearbeiten</h1>
     <div class="page-content">
-
-        <!-- Select for selecting the content type -->
-        <div class="mb-3">
-            <label for="contentTypeSelect" class="form-label">Content Type</label>
-            <select class="form-control mb-3" id="contentTypeSelect" name="contentType">
-                <option value="text">Text</option>
-                <option value="image">Image</option>
-                <option value="imageText">ImageText</option>
-                <option value="video">Video</option>
-                <option value="slideshow">Slideshow</option>
-                <option value="pdf">PDF</option>
-                <option value="excel">Excel</option>
-                <option value="program">Program</option>
-                <option value="birthday">Birthday</option>
-                <option value="weather">Weather</option>
-                <option value="news">News</option>
-                <option value="game">Game</option>
-            </select>
-
         <form id="textContentForm">
             <div class="mb-3">
                 <label for="title" class="form-label">Titel</label>
-                <input type="text" class="form-control" id="title" name="title">
+                <input type="text" class="form-control" id="title" name="title" value="{{ content.title }}">
             </div>
             <div class="mb-3">
                 <label for="duration" class="form-label">Anzeigedauer (Sekunden)</label>
-                <input type="number" class="form-control" id="duration" name="duration">
+                <input type="number" class="form-control" id="duration" name="duration" value="{{ content.duration }}">
             </div>
             <div class="mb-3">
                 <label for="content" class="form-label">Text</label>
-                <input type="text" class="form-control" id="content" name="content">
+                <input type="text" class="form-control" id="content" name="content" value="{{ content.content }}">
             </div>
         </form>
 
@@ -81,20 +62,23 @@
         <form id="gameContentForm">
             <!-- Game content form elements go here -->
         </form>
+        <button type="button" class="btn btn-primary" id="saveButton">Speichern</button>
     </div>
-    <button type="button" class="btn btn-primary" id="saveButton">Speichern</button>
 </div>
 
 <!-- Toast -->
 <div class="toast-container position-fixed bottom-0 end-0 p-3">
     <div id="updatedToast" class="toast bg-success text-white" role="alert">
         <div class="toast-body">
-            Inhalt wurde erfolgreich hinzugefügt.
+            Inhalt wurde erfolgreich aktualisiert.
         </div>
     </div>
 </div>
 {% endblock %}
 
 {% block scripts %}
-<script src="{{ url_for('static', filename='Js/AddContent.js') }}"></script>
+<script>
+    const content = {{ content | tojson }};
+</script>
+<script src="{{ url_for('static', filename='Js/EditContent.js') }}"></script>
 {% endblock %}

@@ -30,13 +30,8 @@ def render_add_content():
 
 
 @app.route('/add_content', methods=['POST'])
-def add_content():
-    content_data = {
-        'type': request.data['type'],
-        'title': request.data['title'],
-        'duration': request.data['duration'],
-        'content': request.data['content']
-    }
+def add_content(): 
+    content_data = request.form
     content_manager.create_and_add_content(content_data)
     return 'Content added', 200
 
@@ -50,12 +45,18 @@ def render_manage_content():
     return render_template('ManageContent.html', content=content)
 
 
-@app.route('/edit_content', methods=['POST'])
+@app.route('/edit_content')
 def edit_content():
-    data = request.get_json()
-    id = data['id']
-    content = content_manager.get_content_by_id(id)
-    return render_template('AddContent.html', content=content)
+    id = request.args.get('id')
+    content = content_manager.get_content_as_dict_by_id(id)
+    return render_template('EditContent.html', content=content)
+
+
+@app.route('/update_content', methods=['POST'])
+def update_content():
+    content_data = request.form.to_dict()
+    content_manager.update_content(content_data)
+    return 'Content updated', 200
 
 
 @app.route('/set_visibility', methods=['POST'])

@@ -26,7 +26,7 @@ class ContentManager():
         with open(CONTENT_FILE_PATH, 'r') as file:
             content_data_list = json.load(file)
             for content_data in content_data_list:
-                self.create_and_add_content(**content_data)
+                self.create_and_add_content(content_data)
     
     
     def save_content(self):
@@ -37,7 +37,7 @@ class ContentManager():
             json.dump(content_data_list, file, indent=4, sort_keys=True)
 
 
-    def create_and_add_content(self, **content_data):
+    def create_and_add_content(self, content_data):
         content_class = BaseContent.get_subclass(content_data['type'])
         content = content_class(**content_data)
         self.add_content(content)
@@ -62,20 +62,17 @@ class ContentManager():
         return None
 
 
+    def update_content(self, content_data):
+        # Assuming content_data is a dictionary with the necessary keys
+        id = content_data.get('id')
+        content = self.get_content_by_id(id)
+        content.delete_associated_files()
+        content.__dict__.update(content_data)
+        self.save_content()
+
+
     def add_content(self, content):
-        does_content_exist = self.get_content_by_id(content.id)
-
-        # If content with same id doesn't exist, add it
-        if not does_content_exist:
-            self.content_list.append(content)
-
-        # If content with same id exists, replace it
-        else:
-            existing_content_index = self.content.index(content)
-            existing_content = self.content_list[existing_content_index]
-            existing_content.delete_associated_files()
-            existing_content = content
-       
+        self.content_list.append(content)
         self.save_content()
     
     def add_content_by_id(self, id, content):

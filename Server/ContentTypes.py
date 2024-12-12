@@ -137,6 +137,7 @@ class ProgramContent(BaseContent):
         super().__init__(type, title, duration, content, is_visible, id)
 
 
+# BUG: if visibility was set to false by the user, it will be automatically set to true when someone has their birthday.
 # content['people'] = [{'name': 'John Doe', 'birthday': '2000-01-01', 'image': 'image.png'}, ...]
 class BirthdayContent(BaseContent):
     def __init__(self, type, title, duration, content, is_visible=True, id=None):
