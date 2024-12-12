@@ -6,26 +6,6 @@ import os
 import uuid
 
 
-UPLOADS_FOLDER = 'Static/Uploads'
-
-
-# Get the first uploaded file in the folder with the id as name
-def get_uploaded_file_by_id(id):
-    files = os.listdir(UPLOADS_FOLDER)
-    return files[0]
-
-
-# Upload files to the server and save them in a folder with the id as name
-def upload_files_by_id(id, files):
-    folder = f'{UPLOADS_FOLDER}/{id}'
-    if os.path.exists(folder):
-        os.rmdir(folder)
-    os.makedirs(folder)
-
-    for file in files:
-        file.save(f'{folder}/{file.filename}')
-
-
 class BaseContent():
     def __init__(self, type, title, duration, content, is_visible, id):
         self.type = type
@@ -50,12 +30,6 @@ class BaseContent():
     # Use it for updating the content (e.g. fetching new data)
     def update(self):
         return False # Return false if content is not updated
-
-
-    # This method is called when the content is deleted
-    def delete_associated_files(self):
-        if os.path.exists(f'{UPLOADS_FOLDER}/{self.id}'):
-            os.rmdir(f'{UPLOADS_FOLDER}/{self.id}')
 
 
 # content['text'] = 'Hello World!'
@@ -277,5 +251,5 @@ class GameContent(BaseContent):
                 if file.endswith('.html'):
                     content['html'] = file
                     break
-                
+
         super().__init__(type, title, duration, content)

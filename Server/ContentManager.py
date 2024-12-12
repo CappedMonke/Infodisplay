@@ -4,6 +4,7 @@ from ContentTypes import BaseContent
 
 
 CONTENT_FILE_PATH = 'Server/Savestate/Content.json'
+UPLOAD_FOLDER = 'Server/Static/Uploads'
 
 
 class ContentManager():
@@ -65,8 +66,14 @@ class ContentManager():
     def update_content(self, content_data):
         # Assuming content_data is a dictionary with the necessary keys
         id = content_data.get('id')
-        content = self.get_content_by_id(id)
-        content.delete_associated_files()
+        content = self.get_content_by_id(id)\
+        
+        # Remove files that were removed
+        if 'files' in content_data['content']:
+            for filename in self.get_files(id):
+                if filename not in content_data['content']['files']:
+                    self.delete_file(id, filename)
+    
         content.__dict__.update(content_data)
         self.save_content()
 
@@ -85,7 +92,7 @@ class ContentManager():
         if content == None:
             return
         
-        content.delete_associated_files()
+        self.delete_files(content.id)
         self.content_list.remove(content)
         self.save_content()
 
@@ -110,3 +117,29 @@ class ContentManager():
             new_content_list.append(content)
         self.content_list = new_content_list
         self.save_content()
+
+
+    def save_file(self, id, file):
+        file_path = f'{UPLOAD_FOLDER}/{id}'
+        os.makedirs(file_path, exist_ok=True)
+        file.save(os.path.join(file_path, file.filename))
+
+
+    def get_files(self, id):
+        file_path = f'{UPLOAD_FOLDER}/{id}'
+        return os.listdir(file_path)
+    
+    def delete_files(self, id):
+        # Remove all files in the folder and the folder itself
+        file_path = f'{UPLOAD_FOLDER}/{id}'
+        for root, dirs, files in os.walk(file_path, topdown=False):
+            for file in files:
+                os.remove(os.path.join(root, file))
+            for dir in dirs:
+                os.rmdir(os.path.join(root, dir))
+        os.rmdir(file_path)
+    
+    
+    def delete_file(self, id, filename):
+        file_path = f'{UPLOAD_FOLDER}/{id}/{filename}'
+        os.remove(file_path)

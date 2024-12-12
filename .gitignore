@@ -1,7 +1,12 @@
 # ---------------------------------- Folders --------------------------------- #
-**/.venv
 **/__pycache__
-**/.dev
+
+.venv
+.dev
+
+# Ignore anything inside the Uploads folder except the .gitkeep
+Server/Static/Uploads/*
+!Server/Static/Uploads/.gitkeep
 
 # ---------------------------------- Files ----------------------------------- #
 Content.json
