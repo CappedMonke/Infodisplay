@@ -36,6 +36,8 @@ function toggle_freeze() {
 /*                               Render content                               */
 /* -------------------------------------------------------------------------- */
 let currentContentIndex = 0
+let currentContent = null; // Define currentContent globally
+
 function showNextContent(){
     currentContentIndex = (currentContentIndex + 1) % content.length
     renderContent()
@@ -161,7 +163,14 @@ function connectWebSocket() {
         } else if (event.data === 'switch_content_next') {
             highlightButton('nextContentButton');
         } else if (event.data === 'toggle_freeze'){
-            toggle_freeze()
+            toggle_freeze();
+        } else if (event.data === 'ok' && currentContent && currentContent.type === 'GameContent') {
+            isFrozen = true;
+            freezeButton.classList.remove('btn-dark');
+            freezeButton.classList.add('btn-primary');
+            if (contentTimer) {
+                clearTimeout(contentTimer);
+            }
         }
     });
 
