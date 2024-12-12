@@ -1,5 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const sortableList = document.getElementById('sortableList');
+    const noContentParagraph = document.getElementById('emptyMessage');
+    const dragHint = document.getElementById('dragHint');
 
     // Add content to the list
     content.forEach(item => {
@@ -60,7 +62,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({ id: item.id }),
-                });
+                })
+
+                if (sortableList.children.length === 0) {
+                    noContentParagraph.style.display = 'block';
+                    dragHint.style.display = 'none';
+                }
             }
         });
         buttonGroup.appendChild(deleteContentBtn);
@@ -68,7 +75,6 @@ document.addEventListener('DOMContentLoaded', function() {
         div.appendChild(buttonGroup);
         sortableList.appendChild(div);
     });
-
 
     // Initialize SortableJS
     Sortable.create(sortableList, {
@@ -86,4 +92,12 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     });
+
+    if (sortableList.children.length === 0) {
+        noContentParagraph.style.display = 'block';
+        dragHint.style.display = 'none';
+    } else {
+        noContentParagraph.style.display = 'none';
+        dragHint.style.display = 'block';
+    }
 });
