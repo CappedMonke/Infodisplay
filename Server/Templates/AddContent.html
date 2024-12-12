@@ -7,82 +7,192 @@
 
         <!-- Select for selecting the content type -->
         <div class="mb-3">
-            <label for="contentTypeSelect" class="form-label">Content Type</label>
+            <label for="contentTypeSelect" class="form-label">Contenttyp</label>
             <select class="form-control mb-3" id="contentTypeSelect" name="contentType">
+                <option value="" hidden selected>Inhalt auswählen</option>
                 <option value="text">Text</option>
-                <option value="image">Image</option>
-                <option value="imageText">ImageText</option>
+                <option value="image">Bild</option>
+                <option value="imageText">Text und Bild</option>
                 <option value="video">Video</option>
-                <option value="slideshow">Slideshow</option>
+                <option value="slideshow">Diashow</option>
                 <option value="pdf">PDF</option>
                 <option value="excel">Excel</option>
-                <option value="program">Program</option>
-                <option value="birthday">Birthday</option>
-                <option value="weather">Weather</option>
-                <option value="news">News</option>
-                <option value="game">Game</option>
+                <option value="program">Programm</option>
+                <option value="birthday">Geburtstage</option>
+                <option value="weather">Wetter</option>
+                <option value="news">Nachrichten</option>
+                <option value="game">Spiel</option>
             </select>
 
         <form id="textContentForm">
             <div class="mb-3">
-                <label for="title" class="form-label">Titel</label>
-                <input type="text" class="form-control" id="title" name="title">
+                <label for="titleText" class="form-label">Titel</label>
+                <input type="text" class="form-control" id="titleText" name="title">
             </div>
             <div class="mb-3">
-                <label for="duration" class="form-label">Anzeigedauer (Sekunden)</label>
-                <input type="number" class="form-control" id="duration" name="duration">
+                <label for="durationText" class="form-label">Anzeigedauer (Sekunden)</label>
+                <input type="number" class="form-control" id="durationText" name="duration">
             </div>
             <div class="mb-3">
-                <label for="content" class="form-label">Text</label>
-                <input type="text" class="form-control" id="content" name="content">
+                <label for="contentText" class="form-label">Text</label>
+                <textarea class="form-control" id="contentText" name="text"></textarea>
             </div>
         </form>
 
         <form id="imageContentForm">
-            <!-- Image content form elements go here -->
+            <div class="mb-3">
+                <label for="titleImage" class="form-label">Titel</label>
+                <input type="text" class="form-control" id="titleImage" name="title">
+            </div>
+            <div class="mb-3">
+                <label for="durationImage" class="form-label">Anzeigedauer (Sekunden)</label>
+                <input type="number" class="form-control" id="durationImage" name="duration">
+            </div>
+            <div class="mb-3">
+                <label for="fileImage" class="form-label">Datei</label>
+                <input type="file" class="form-control" id="fileImage" name="content" accept="image/*">
+            </div>
         </form>
 
         <form id="imageTextContentForm">
-            <!-- ImageText content form elements go here -->
+            <div class="mb-3">
+                <label for="titleImageText" class="form-label">Titel</label>
+                <input type="text" class="form-control" id="titleImageText" name="title">
+            </div>
+            <div class="mb-3">
+                <label for="durationImageText" class="form-label">Anzeigedauer (Sekunden)</label>
+                <input type="number" class="form-control" id="durationImageText" name="duration">
+            </div>
+            <div class="mb-3">
+                <label for="contentImageText" class="form-label">Text</label>
+                <textarea class="form-control" id="contentImageText" name="content"></textarea>
+            </div>
         </form>
 
         <form id="videoContentForm">
-            <!-- Video content form elements go here -->
+            <div class="mb-3">
+                <label for="titleVideo" class="form-label">Titel</label>
+                <input type="text" class="form-control" id="titleVideo" name="title">
+            </div>
+            <div class="mb-3">
+                <label for="fileVideo" class="form-label">Datei</label>
+                <input type="file" class="form-control" id="fileVideo" name="content" accept="video/*">
+            </div>
         </form>
 
         <form id="slideshowContentForm">
-            <!-- Slideshow content form elements go here -->
+            <div class="mb-3">
+                <label for="titleSlideshow" class="form-label">Titel</label>
+                <input type="text" class="form-control" id="titleSlideshow" name="title">
+            </div>
+            <div class="mb-3">
+                <label for="durationSlideshow" class="form-label">Anzeigedauer (Sekunden)</label>
+                <input type="number" class="form-control" id="durationSlideshow" name="duration">
+            </div>
+            <div class="mb-3">
+                <label for="fileSlideshow" class="form-label">Ordner</label>
+                <input type="file" class="form-control" id="fileSlideshow" name="content" webkitdirectory directory multiple>
+            </div>
         </form>
 
         <form id="pdfContentForm">
-            <!-- PDF content form elements go here -->
+            <div class="mb-3">
+                <label for="titlePdf" class="form-label">Titel</label>
+                <input type="text" class="form-control" id="titlePdf" name="title">
+            </div>
+            <div class="mb-3">
+                <label for="durationPdf" class="form-label">Anzeigedauer (Sekunden)</label>
+                <input type="number" class="form-control" id="durationPdf" name="duration">
+            </div>
+            <div class="mb-3">
+                <label for="filePdf" class="form-label">Datei</label>
+                <input type="file" class="form-control" id="file" name="contentPdf" accept="video/*">
+            </div>
         </form>
 
         <form id="excelContentForm">
-            <!-- Excel content form elements go here -->
+            <div class="mb-3">
+                <label for="titleExcel" class="form-label">Titel</label>
+                <input type="text" class="form-control" id="titleExcel" name="title">
+            </div>
+            <div class="mb-3">
+                <label for="durationExcel" class="form-label">Anzeigedauer (Sekunden)</label>
+                <input type="number" class="form-control" id="durationExcel" name="duration">
+            </div>
+            <div class="mb-3">
+                <label for="fileExcel" class="form-label">Datei</label>
+                <input type="file" class="form-control" id="fileExcel" name="content" accept=".xls,.xlsx">
+            </div>
         </form>
 
         <form id="programContentForm">
-            <!-- Program content form elements go here -->
+            <div class="mb-3">
+                <label for="titleProgram" class="form-label">Titel</label>
+                <input type="text" class="form-control" id="titleProgram" name="title">
+            </div>
+            <div class="mb-3">
+                <label for="durationProgram" class="form-label">Anzeigedauer (Sekunden)</label>
+                <input type="number" class="form-control" id="durationProgram" name="duration">
+            </div>
         </form>
 
         <form id="birthdayContentForm">
-            <!-- Birthday content form elements go here -->
+            <div class="mb-3">
+                <label for="titleBirthday" class="form-label">Titel</label>
+                <input type="text" class="form-control" id="titleBirthday" name="title">
+            </div>
+            <div class="mb-3">
+                <label for="durationBirthday" class="form-label">Anzeigedauer (Sekunden)</label>
+                <input type="number" class="form-control" id="durationBirthday" name="duration">
+            </div>
         </form>
 
         <form id="weatherContentForm">
-            <!-- Weather content form elements go here -->
+            <div class="mb-3">
+                <label for="titleWeather" class="form-label">Titel</label>
+                <input type="text" class="form-control" id="titleWeather" name="title">
+            </div>
+            <div class="mb-3">
+                <label for="durationWeather" class="form-label">Anzeigedauer (Sekunden)</label>
+                <input type="number" class="form-control" id="durationWeather" name="duration">
+            </div>
+            <div class="mb-3">
+                <label for="contentWeather" class="form-label">Ort</label>
+                <input class="form-control" id="contentWeather" name="content">
+            </div>
         </form>
 
         <form id="newsContentForm">
-            <!-- News content form elements go here -->
+            <div class="mb-3">
+                <label for="titleNews" class="form-label">Titel</label>
+                <input type="text" class="form-control" id="titleNews" name="title">
+            </div>
+            <div class="mb-3">
+                <label for="durationNews" class="form-label">Anzeigedauer (Sekunden)</label>
+                <input type="number" class="form-control" id="durationNews" name="duration">
+            </div>
+            <div class="mb-3">
+                <label for="contentNews" class="form-label">Thema (z.B. "Deutschland", "Gesunde Ernährung", etc.)</label>
+                <input class="form-control" id="contentNews" name="content">
+            </div>
         </form>
 
         <form id="gameContentForm">
-            <!-- Game content form elements go here -->
+            <div class="mb-3">
+                <label for="titleGame" class="form-label">Titel</label>
+                <input type="text" class="form-control" id="titleGame" name="title">
+            </div>
+            <div class="mb-3">
+                <label for="durationGame" class="form-label">Anzeigedauer (Sekunden)</label>
+                <input type="number" class="form-control" id="durationGame" name="duration">
+            </div>
+            <div class="mb-3">
+                <label for="folderGame" class="form-label">Ordner</label>
+                <input type="file" class="form-control" id="folderGame" name="content" webkitdirectory directory multiple>
+            </div>
         </form>
     </div>
-    <button type="button" class="btn btn-primary" id="saveButton">Speichern</button>
+    <button type="button" class="btn btn-primary" id="saveButton" style="display: none;">Speichern</button>
 </div>
 
 <!-- Toast -->

@@ -5,22 +5,40 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
 
-    
+    // Hide the save button
+    const saveButton = document.getElementById('saveButton');
+    saveButton.style.display = 'none';
+
+
     // Show the form for the selected content type
     let formToShow = null;
     document.getElementById('contentTypeSelect').addEventListener('change', function() {
+        if (formToShow !== null)
+            formToShow.style.display = 'none';
+        else
+            saveButton.style.display = 'block';
         const contentType = document.getElementById('contentTypeSelect').value;
         formToShow = document.getElementById(`${contentType}ContentForm`);
         formToShow.style.display = 'block';
     });
 
-
     
-
-    document.getElementById('saveButton').addEventListener('click', function() {
-        const formData = new FormData(formToShow);
+    // Save the content
+    saveButton.addEventListener('click', function() {
         const contentType = document.getElementById('contentTypeSelect').value;
         const capitalizedContentType = contentType.charAt(0).toUpperCase() + contentType.slice(1);
+        const formData = new FormData(document.getElementById(`${contentType}ContentForm`));
+        
+        // Save everything besides the title and duration in a dictionary 'content'
+        let contentDict = {};
+        formData.forEach((value, key) => {
+            if (key !== 'duration' && key !== 'title') {
+                contentDict[key] = value;
+                formData.delete(key);
+            }
+        });
+
+        formData.append('content', JSON.stringify(contentDict));
         formData.append('type', `${capitalizedContentType}Content`);
 
         fetch('/add_content', {

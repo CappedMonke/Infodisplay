@@ -52,6 +52,12 @@ let contentContainers = {}
 let currentlyVisibleContentContainer = null
 // Start the timer when content is rendered
 function renderContent() {
+    // Exit if there is no content
+    if (content.length === 0) {
+        console.log("No content to display");
+        return;
+    }
+
     currentContent = content[currentContentIndex];
     console.log(currentContent)
 

@@ -46,7 +46,7 @@ class BaseContent():
         pass
 
 
-# content['html'] = '<p>This is <b>bold</b>, <i>italic</i>, and <span style='color: red;'>red</span> text.</p>'
+# content['text'] = 'Hello World!'
 class TextContent(BaseContent):
     def __init__(self, type, title, duration, content, is_visible=True, id=None):
         super().__init__(type, title, duration, content, is_visible, id)
@@ -75,12 +75,11 @@ class ImageTextContent(BaseContent):
 
 # content['file'] = 'video.mp4'
 class VideoContent(BaseContent):
-    def __init__(self, type, title, duration, content, is_visible=True, id=None):
+    def __init__(self, type, title, content, duration=0, is_visible=True, id=None):
         # If a new VideoContent is created, get duration of the video
-        if duration == 0:
-            clip = VideoFileClip(f'{VIDEOS_FOLDER}/{self.content['file']}')
-            clip.close()
-            duration = clip.duration
+        clip = VideoFileClip(f'{VIDEOS_FOLDER}/{self.content['file']}')
+        clip.close()
+        duration = clip.duration
 
         super().__init__(type, title, duration, content, is_visible, id)
 
@@ -92,7 +91,7 @@ class VideoContent(BaseContent):
 # content['folder'] = 'slideshow_folder'
 # content['duration_per_image'] = 0
 class SlideshowContent(BaseContent):
-    def __init__(self, type, title, duration, content, is_visible=True, id=None):
+    def __init__(self, type, title, content, duration=0, is_visible=True, id=None):
         filenames = []
 
         # Collect all image filenames in the folder
@@ -100,8 +99,7 @@ class SlideshowContent(BaseContent):
             if filename.endswith('.png', '.jpg', '.jpeg', '.gif'):
                 filenames.append(filename)
         
-        if duration == 0:
-            duration = content['duration_per_image'] * len(filenames)
+        duration = content['duration_per_image'] * len(filenames)
         
         super().__init__(type, title, duration, content, is_visible, id)
 
@@ -112,7 +110,7 @@ class SlideshowContent(BaseContent):
 
 
 # content['file'] = 'document.pdf'
-class PDFContent(BaseContent):
+class PdfContent(BaseContent):
     def __init__(self, type, title, duration, content, is_visible=True, id=None):
         super().__init__(type, title, duration, content, is_visible, id)
     

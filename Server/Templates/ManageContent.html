@@ -7,7 +7,11 @@
 {% block content %}
 <div class="forms-content-page">
 	<h1 class="page-heading">Inhalte verwalten</h1>
-	<label for="sortableList" class="form-label page-content">Inhalte ziehen um Reihenfolge zu wechseln!</label>
+	{% if content %}
+		<label for="sortableList" class="form-label page-content">Inhalte ziehen um Reihenfolge zu wechseln!</label>
+	{% else %}
+		<p class="page-content">Noch keine Inhalt erstellt</p>
+	{% endif %}
 	<div id="sortableList" class="list-group page-content mb-5">
 	</div>
 </div>
