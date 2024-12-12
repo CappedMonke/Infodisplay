@@ -7,12 +7,23 @@ import uuid
 
 
 UPLOADS_FOLDER = 'Static/Uploads'
-IMAGES_FOLDER = f'{UPLOADS_FOLDER}/Images'
-VIDEOS_FOLDER = f'{UPLOADS_FOLDER}/Videos'
-SLIDESHOWS_FOLDER = f'{UPLOADS_FOLDER}/Slideshows'
-PDFS_FOLDER = f'{UPLOADS_FOLDER}/PDFs'
-EXCELS_FOLDER = f'{UPLOADS_FOLDER}/Excels'
-GAMES_FOLDER = f'{UPLOADS_FOLDER}/Games'
+
+
+# Get the first uploaded file in the folder with the id as name
+def get_uploaded_file_by_id(id):
+    files = os.listdir(UPLOADS_FOLDER)
+    return files[0]
+
+
+# Upload files to the server and save them in a folder with the id as name
+def upload_files_by_id(id, files):
+    folder = f'{UPLOADS_FOLDER}/{id}'
+    if os.path.exists(folder):
+        os.rmdir(folder)
+    os.makedirs(folder)
+
+    for file in files:
+        file.save(f'{folder}/{file.filename}')
 
 
 class BaseContent():
@@ -43,7 +54,8 @@ class BaseContent():
 
     # This method is called when the content is deleted
     def delete_associated_files(self):
-        pass
+        if os.path.exists(f'{UPLOADS_FOLDER}/{self.id}'):
+            os.rmdir(f'{UPLOADS_FOLDER}/{self.id}')
 
 
 # content['text'] = 'Hello World!'
@@ -58,55 +70,37 @@ class ImageContent(BaseContent):
         super().__init__(type, title, duration, content, is_visible, id)
     
 
-    def delete_associated_files(self):
-        os.remove(f'{IMAGES_FOLDER}/{self.content['file']}')
-
-
-# content['html'] = '<p>This is <b>bold</b>, <i>italic</i>, and <span style='color: red;'>red</span> text.</p>'
+# content['text'] = 'Hello World!'
 # content['file'] = 'image.png'
 class ImageTextContent(BaseContent):
     def __init__(self, type, title, duration, content, is_visible=True, id=None):
         super().__init__(type, title, duration, content, is_visible, id)
-    
-
-    def delete_associated_files(self):
-        os.remove(f'{IMAGES_FOLDER}/{self.content['file']}')
 
 
 # content['file'] = 'video.mp4'
 class VideoContent(BaseContent):
     def __init__(self, type, title, content, duration=0, is_visible=True, id=None):
         # If a new VideoContent is created, get duration of the video
-        clip = VideoFileClip(f'{VIDEOS_FOLDER}/{self.content['file']}')
+        clip = VideoFileClip(f'{UPLOADS_FOLDER}/{self.content['file']}')
         clip.close()
         duration = clip.duration
 
         super().__init__(type, title, duration, content, is_visible, id)
 
 
-    def delete_associated_files(self):
-        os.remove(f'{VIDEOS_FOLDER}/{self.content['file']}')
-
-
-# content['folder'] = 'slideshow_folder'
 # content['duration_per_image'] = 0
 class SlideshowContent(BaseContent):
     def __init__(self, type, title, content, duration=0, is_visible=True, id=None):
         filenames = []
 
         # Collect all image filenames in the folder
-        for filename in os.listdir(f'{SLIDESHOWS_FOLDER}/{content['folder']}'):
+        for filename in os.listdir(f'{UPLOADS_FOLDER}/{content['folder']}'):
             if filename.endswith('.png', '.jpg', '.jpeg', '.gif'):
                 filenames.append(filename)
         
         duration = content['duration_per_image'] * len(filenames)
         
         super().__init__(type, title, duration, content, is_visible, id)
-
-    
-    def delete_associated_files(self):
-        folder_path = f'{SLIDESHOWS_FOLDER}/{self.content['folder']}'
-        os.rmdir(folder_path)
 
 
 # content['file'] = 'document.pdf'
@@ -115,19 +109,11 @@ class PdfContent(BaseContent):
         super().__init__(type, title, duration, content, is_visible, id)
     
 
-    def delete_associated_files(self):
-        os.remove(f'{PDFS_FOLDER}/{self.content['file']}')
-
-
 # content['file'] = 'document.xlsx'
 class ExcelContent(BaseContent):
     def __init__(self, type, title, duration, content, is_visible=True, id=None):
         super().__init__(type, title, duration, content, is_visible, id)
     
-
-    def delete_associated_files(self):
-        os.remove(f'{EXCELS_FOLDER}/{self.content['file']}')
-
 
 # content['items'] = [{'text': 'Hello World!', 'date': '2000-01-01'}, ...]
 class ProgramContent(BaseContent):
@@ -156,14 +142,6 @@ class BirthdayContent(BaseContent):
             self.current_index = (self.current_index + 1) % len(self.birthday_indices)
 
         return False
-
-
-    def delete_associated_files(self):
-        for person in self.content['people']:
-            file_path = f'{IMAGES_FOLDER}/{person["image"]}'
-            # Because the image is optional, check if it exists
-            if os.path.exists(file_path):
-                os.remove(file_path)
 
 
     def setup_birthdays(self):
@@ -290,20 +268,14 @@ class NewsContent(BaseContent):
         self.is_visible = False
 
 
-# content['folder'] = 'FlappyBird'
 # content['html'] = 'FlappyBird.html'
 class GameContent(BaseContent):
     def __init__(self, type, title, duration, content):
-        super().__init__(type, title, duration, content)
-
         # Find the html in the folder if not provided
         if content.get('html') is None:
-            for file in os.listdir(f'{GAMES_FOLDER}/{content['folder']}'):
+            for file in os.listdir(f'{UPLOADS_FOLDER}/{self.id}'):
                 if file.endswith('.html'):
                     content['html'] = file
                     break
-
-
-    def delete_associated_files(self):
-        folder_path = f'{GAMES_FOLDER}/{self.content['folder']}'
-        os.rmdir(folder_path)
+                
+        super().__init__(type, title, duration, content)

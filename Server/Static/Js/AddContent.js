@@ -22,33 +22,39 @@ document.addEventListener('DOMContentLoaded', function() {
         formToShow.style.display = 'block';
     });
 
-    
+
     // Save the content
     saveButton.addEventListener('click', function() {
         const contentType = document.getElementById('contentTypeSelect').value;
         const capitalizedContentType = contentType.charAt(0).toUpperCase() + contentType.slice(1);
-        const formData = new FormData(document.getElementById(`${contentType}ContentForm`));
+        const formElement = document.getElementById(`${contentType}ContentForm`);
+        const formData = new FormData(formElement);
         
         let contentDict = {};
         formData.forEach((value, key) => {
-            if (key !== 'duration' && key !== 'title') {
+            if (key !== 'duration' && key !== 'title' && !(value instanceof File)) {
                 contentDict[key] = value;
             }
         });
 
         const data = {
+            id: crypto.randomUUID(),
             title: formData.get('title'),
             duration: formData.get('duration'),
             content: contentDict,
             type: `${capitalizedContentType}Content`
         };
 
+        // Append file inputs to FormData
+        formElement.querySelectorAll('input[type="file"]').forEach(input => {
+            if (input.files.length > 0) {
+                formData.append(input.name, input.files[0]);
+            }
+        });
+
         fetch('/add_content', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
+            body: formData // Send FormData directly
         })
         
         const updatedToast = document.getElementById('updatedToast');
