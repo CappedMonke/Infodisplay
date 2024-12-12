@@ -29,21 +29,26 @@ document.addEventListener('DOMContentLoaded', function() {
         const capitalizedContentType = contentType.charAt(0).toUpperCase() + contentType.slice(1);
         const formData = new FormData(document.getElementById(`${contentType}ContentForm`));
         
-        // Save everything besides the title and duration in a dictionary 'content'
         let contentDict = {};
         formData.forEach((value, key) => {
             if (key !== 'duration' && key !== 'title') {
                 contentDict[key] = value;
-                formData.delete(key);
             }
         });
 
-        formData.append('content', JSON.stringify(contentDict));
-        formData.append('type', `${capitalizedContentType}Content`);
+        const data = {
+            title: formData.get('title'),
+            duration: formData.get('duration'),
+            content: contentDict,
+            type: `${capitalizedContentType}Content`
+        };
 
         fetch('/add_content', {
             method: 'POST',
-            body: formData
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
         })
         
         const updatedToast = document.getElementById('updatedToast');

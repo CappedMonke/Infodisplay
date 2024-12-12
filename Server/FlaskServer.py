@@ -31,7 +31,7 @@ def render_add_content():
 
 @app.route('/add_content', methods=['POST'])
 def add_content(): 
-    content_data = request.form
+    content_data = request.get_json()
     content_manager.create_and_add_content(content_data)
     return 'Content added', 200
 
@@ -54,7 +54,7 @@ def edit_content():
 
 @app.route('/update_content', methods=['POST'])
 def update_content():
-    content_data = request.form.to_dict()
+    content_data = request.get_json()
     content_manager.update_content(content_data)
     return 'Content updated', 200
 
@@ -94,7 +94,7 @@ def render_settings():
 
 @app.route('/save_settings', methods=['POST'])
 def save_settings():
-    data = request.form
+    data = request.get_json()
     for key, value in data.items():
         set_setting(key, value)
     return 'Saved settings', 200

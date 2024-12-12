@@ -19,11 +19,27 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.getElementById('saveButton').addEventListener('click', function() {
         const formData = new FormData(formToShow);
-        formData.append('id', content.id);
+        
+        let contentDict = {};
+        formData.forEach((value, key) => {
+            if (key !== 'duration' && key !== 'title') {
+                contentDict[key] = value;
+            }
+        });
+
+        const data = {
+            id: content.id,
+            title: formData.get('title'),
+            duration: formData.get('duration'),
+            content: contentDict,
+        };
 
         fetch('/update_content', {
             method: 'POST',
-            body: formData
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
         })
 
         const updatedToast = document.getElementById('updatedToast')
