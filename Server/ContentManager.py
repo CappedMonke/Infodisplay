@@ -68,7 +68,7 @@ class ContentManager():
         id = content_data.get('id')
         content = self.get_content_by_id(id)\
         
-        # Remove files that were removed
+        # Remove files that were removed while editing
         if 'files' in content_data['content']:
             for filename in self.get_files(id):
                 if filename not in content_data['content']['files']:
@@ -92,7 +92,9 @@ class ContentManager():
         if content == None:
             return
         
-        self.delete_files(content.id)
+        if 'files' in content.content:
+            self.delete_files(content.id)
+            
         self.content_list.remove(content)
         self.save_content()
 
@@ -129,6 +131,7 @@ class ContentManager():
         file_path = f'{UPLOAD_FOLDER}/{id}'
         return os.listdir(file_path)
     
+
     def delete_files(self, id):
         # Remove all files in the folder and the folder itself
         file_path = f'{UPLOAD_FOLDER}/{id}'
@@ -139,7 +142,7 @@ class ContentManager():
                 os.rmdir(os.path.join(root, dir))
         os.rmdir(file_path)
     
-    
+
     def delete_file(self, id, filename):
         file_path = f'{UPLOAD_FOLDER}/{id}/{filename}'
         os.remove(file_path)

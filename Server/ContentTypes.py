@@ -2,8 +2,10 @@ from datetime import datetime
 from moviepy import VideoFileClip
 from Settings import get_setting
 import requests
-import os
 import uuid
+
+
+UPLOADS_FOLDER = 'Server/Static/Uploads'
 
 
 class BaseContent():
@@ -58,22 +60,13 @@ class VideoContent(BaseContent):
         clip = VideoFileClip(f'{UPLOADS_FOLDER}/{self.content['file']}')
         clip.close()
         duration = clip.duration
-
         super().__init__(type, title, duration, content, is_visible, id)
 
 
 # content['duration_per_image'] = 0
 class SlideshowContent(BaseContent):
     def __init__(self, type, title, content, duration=0, is_visible=True, id=None):
-        filenames = []
-
-        # Collect all image filenames in the folder
-        for filename in os.listdir(f'{UPLOADS_FOLDER}/{content['folder']}'):
-            if filename.endswith('.png', '.jpg', '.jpeg', '.gif'):
-                filenames.append(filename)
-        
-        duration = content['duration_per_image'] * len(filenames)
-        
+        duration = content['duration_per_image'] * len(content['files'])
         super().__init__(type, title, duration, content, is_visible, id)
 
 
@@ -246,8 +239,8 @@ class NewsContent(BaseContent):
 class GameContent(BaseContent):
     def __init__(self, type, title, duration, content):
         # Find the html in the folder if not provided
-        if content.get('html') is None:
-            for file in os.listdir(f'{UPLOADS_FOLDER}/{self.id}'):
+        if content['html'] is None:
+            for file in content['files']:
                 if file.endswith('.html'):
                     content['html'] = file
                     break

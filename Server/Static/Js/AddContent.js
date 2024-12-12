@@ -4,27 +4,29 @@ document.addEventListener('DOMContentLoaded', function() {
         form.style.display = 'none';
     });
 
-
     // Hide the save button
-    const saveButton = document.getElementById('saveButton');
-    saveButton.style.display = 'none';
-
+    const addButton = document.getElementById('addButton');
+    addButton.style.display = 'none';
 
     // Show the form for the selected content type
     let formToShow = null;
     document.getElementById('contentTypeSelect').addEventListener('change', function() {
+        // Reset all form data
+        document.querySelectorAll('.forms-content-page form').forEach(form => {
+            form.reset();
+        });
+
         if (formToShow !== null)
             formToShow.style.display = 'none';
         else
-            saveButton.style.display = 'block';
+            addButton.style.display = 'block';
         const contentType = document.getElementById('contentTypeSelect').value;
         formToShow = document.getElementById(`${contentType}ContentForm`);
         formToShow.style.display = 'block';
     });
 
-
     // Save the content
-    saveButton.addEventListener('click', function() {
+    addButton.addEventListener('click', function() {
         const contentType = document.getElementById('contentTypeSelect').value;
         const formElement = document.getElementById(`${contentType}ContentForm`);
         const formData = new FormData(formElement);
@@ -44,7 +46,16 @@ document.addEventListener('DOMContentLoaded', function() {
             method: 'POST',
             body: formData // Send FormData directly
         })
-        
+
+        // Hide the addButton and reset the content type selection
+        addButton.style.display = 'none';
+        document.getElementById('contentTypeSelect').value = '';
+        if (formToShow !== null) {
+            formToShow.style.display = 'none';
+            formToShow = null;
+        }
+
+        // Show success toast
         const updatedToast = document.getElementById('updatedToast');
         const toastBootstrap = bootstrap.Toast.getOrCreateInstance(updatedToast);
         toastBootstrap.show();

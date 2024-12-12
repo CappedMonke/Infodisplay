@@ -46,7 +46,7 @@ def add_content():
         for file in request.files.getlist('file'):
             files_set.add(file.filename)
             content_manager.save_file(content_data['id'], file)
-        content_data['content']['files'] = list(files_set)
+        content_data['content']['files'] = list(files_set) if files_set else None
 
     content_manager.create_and_add_content(content_data)
     return 'Content added', 200
@@ -77,6 +77,22 @@ def update_content():
         'duration': request.form['duration'],
         'content': {key: value for key, value in request.form.items() if key not in ['id', 'title', 'duration']},
     }
+
+    # Get existing files
+    if 'files' in request.form:
+        existing_files = set(request.form.getlist('files'))
+    else:
+        existing_files = set()
+
+    # Handle file uploads
+    if 'file' in request.files:
+        for file in request.files.getlist('file'):
+            existing_files.add(file.filename)
+            content_manager.save_file(content_data['id'], file)
+    
+    if existing_files:
+        content_data['content']['files'] = list(existing_files)
+
     content_manager.update_content(content_data)
     return 'Content updated', 200
 
