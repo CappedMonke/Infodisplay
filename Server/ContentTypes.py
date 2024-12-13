@@ -2,7 +2,6 @@ from datetime import datetime
 from moviepy import VideoFileClip
 from Settings import get_setting
 import requests
-import uuid
 
 
 UPLOADS_FOLDER = 'Server/Static/Uploads'
@@ -13,7 +12,7 @@ class BaseContent():
         self.id = id
         self.type = type
         self.title = title
-        self.duration = duration
+        self.duration = int(duration)
         self.content = content
         self.is_visible = is_visible
 
@@ -24,11 +23,13 @@ class BaseContent():
                 return subclass
         raise ValueError('Content type not found')
 
-
     # This method is called when the content is shown
     # Use it for updating the content (e.g. fetching new data)
+    def refresh(self):
+        return False # Return false if content is not refreshd
+    
     def update(self):
-        return False # Return false if content is not updated
+        pass
 
 
 # content['text'] = 'Hello World!'
@@ -55,15 +56,21 @@ class VideoContent(BaseContent):
     def __init__(self, id, type, title, duration, content, is_visible=True):
         # If a new VideoContent is created, get duration of the video
         clip = VideoFileClip(f'{UPLOADS_FOLDER}/{id}/{content['files'][0]}')
-        clip.close()
         duration = clip.duration
+        clip.close()
         super().__init__(id, type, title, duration, content, is_visible)
+
+    def update(self):
+        # Get duration of the video
+        clip = VideoFileClip(f'{UPLOADS_FOLDER}/{self.id}/{self.content['files'][0]}')
+        self.duration = clip.duration
+        clip.close()
 
 
 # content['duration_per_image'] = 0
 class SlideshowContent(BaseContent):
     def __init__(self, id, type, title, duration, content, is_visible=True):
-        duration = content['duration_per_image'] * len(content['files'])
+        duration = int(content['duration_per_image']) * len(content['files'])
         super().__init__(id, type, title, duration, content, is_visible)
 
 
@@ -95,9 +102,9 @@ class BirthdayContent(BaseContent):
         self.setup_birthdays()
     
 
-    def update(self):
-        # If last_update is not today, setup birthdays
-        if datetime.fromisoformat(self.content['last_update']).day != datetime.now().day:
+    def refresh(self):
+        # If last_refresh is not today, setup birthdays
+        if datetime.fromisoformat(self.content['last_refresh']).day != datetime.now().day:
             self.setup_birthdays()
             return True
         
@@ -108,9 +115,13 @@ class BirthdayContent(BaseContent):
         return False
 
 
+    def update(self):
+        self.setup_birthdays()
+
+
     def setup_birthdays(self):
         now = datetime.now()
-        self.content['last_update'] = now.isoformat()
+        self.content['last_refresh'] = now.isoformat()
 
         # Get indices of people who have their birthday today
         for i, person in enumerate(self.content['people']):
@@ -128,7 +139,7 @@ class BirthdayContent(BaseContent):
 # content['location'] = Berlin
 # content['latitude'] = 0
 # content['longitude'] = 0
-# content['last_update'] = '2000-01-01T00:00:00'
+# content['last_refresh'] = '2000-01-01T00:00:00'
 # content['weather'] = {'daily_weather_code': 0, 'temperature_2m_max': 0, ...}
 class WeatherContent(BaseContent):
     def __init__(self, id, type, title, duration, content, is_visible=True):
@@ -141,14 +152,19 @@ class WeatherContent(BaseContent):
         self.fetch_weather()
 
 
-    def update(self):
-        # If last_update is older than the update interval, fetch weather
+    def refresh(self):
+        # If last_refresh is older than the refresh interval, fetch weather
         now = datetime.now()
-        if now > datetime.fromisoformat(self.content['last_update']) + get_setting('weather_update_interval') * 60:
+        if now > datetime.fromisoformat(self.content['last_refresh']) + get_setting('weather_refresh_interval') * 60:
             self.fetch_weather()
             return True
         
         return False
+
+
+    def update(self):
+        self.fetch_coordinates()
+        self.fetch_weather()
 
 
     def fetch_coordinates(self):
@@ -171,7 +187,7 @@ class WeatherContent(BaseContent):
 
 
     def fetch_weather(self):
-        self.content['last_update'] = datetime.now().isoformat()
+        self.content['last_refresh'] = datetime.now().isoformat()
 
         # Fetch weather from open-meteo.com
         weather_url = f'https://api.open-meteo.com/v1/forecast?latitude={self.content['latitude']}&longitude={self.content['longitude']}&current=temperature_2m&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Europe%2FBerlin'
@@ -189,7 +205,7 @@ class WeatherContent(BaseContent):
 
 
 # content['query'] = 'Hello World'
-# content['last_update'] = '2000-01-01T00:00:00'
+# content['last_refresh'] = '2000-01-01T00:00:00'
 # content = ['articles'] = [{'title': 'Hello World!', 'description': 'This is a description.', 'url': 'https://example.com', 'urlToImage': 'image.png'}, ...]
 class NewsContent(BaseContent):
     def __init__(self, id, type, title, duration, content, is_visible=True):
@@ -198,10 +214,10 @@ class NewsContent(BaseContent):
         self.fetch_news()
     
 
-    def update(self):
-        # If last_update is older than the update interval, fetch news
+    def refresh(self):
+        # If last_refresh is older than the refresh interval, fetch news
         now = datetime.now()
-        if now > datetime.fromisoformat(self.content['last_update']) + get_setting('news_update_interval') * 60:
+        if now > datetime.fromisoformat(self.content['last_refresh']) + get_setting('news_refresh_interval') * 60:
             self.fetch_news()
             return True
         
@@ -211,9 +227,13 @@ class NewsContent(BaseContent):
 
         return False
 
+
+    def update(self):
+        self.fetch_news()
+
     
     def fetch_news(self):
-        self.content['last_update'] = datetime.now().isoformat()
+        self.content['last_refresh'] = datetime.now().isoformat()
 
         # Fetch news from newsapi.org
         url = f"https://newsapi.org/v2/everything?q={self.content['query']}&language=de&pageSize={get_setting('news_count_items')}&apiKey={get_setting('news_api_key')}"

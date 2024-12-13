@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const formToShow = document.getElementById(`${toCamelCase(content.type)}Form`);
     if (formToShow) {
         formToShow.style.display = 'block';
-        formToShow.setAttribute('action', '/update_content');
     }
 
 

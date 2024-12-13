@@ -75,6 +75,7 @@ class ContentManager():
                     self.delete_file(id, filename)
     
         content.__dict__.update(content_data)
+        content.update() # Update content if necessary (like fetching weather for other location)
         self.save_content()
 
 
