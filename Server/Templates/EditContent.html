@@ -30,7 +30,12 @@
             </div>
             <div class="mb-3">
                 <label for="fileImage" class="form-label">Datei</label>
-                <input type="file" class="form-control" id="fileImage" accept="image/*" required>
+                <input type="file" class="form-control" id="fileImage" accept="image/*">
+                <small class="form-text text-muted">
+                    {% if content.content.files %}
+                        Aktuelle Datei: {{ content.content.files[0] }}
+                    {% endif %}
+                </small>
             </div>
         </form>
 
@@ -49,7 +54,12 @@
             </div>
             <div class="mb-3">
                 <label for="fileImageText" class="form-label">Datei</label>
-                <input type="file" class="form-control" id="fileImageText" accept="image/*" required>
+                <input type="file" class="form-control" id="fileImageText" accept="image/*">
+                <small class="form-text text-muted">
+                    {% if content.content.files %}
+                        Aktuelle Datei: {{ content.content.files[0] }}
+                    {% endif %}
+                </small>
             </div>
         </form>
 
@@ -60,7 +70,12 @@
             </div>
             <div class="mb-3">
                 <label for="fileVideo" class="form-label">Datei</label>
-                <input type="file" class="form-control" id="fileVideo" accept="video/*" required>
+                <input type="file" class="form-control" id="fileVideo" accept="video/*">
+                <small class="form-text text-muted">
+                    {% if content.content.files %}
+                        Aktuelle Datei: {{ content.content.files[0] }}
+                    {% endif %}
+                </small>
             </div>
         </form>
 
@@ -75,7 +90,15 @@
             </div>
             <div class="mb-3">
                 <label for="fileSlideshow" class="form-label">Ordner</label>
-                <input type="file" class="form-control" id="fileSlideshow" accept="image/*" webkitdirectory directory multiple required>
+                <input type="file" class="form-control" id="fileSlideshow" accept="image/*" webkitdirectory directory multiple>
+                <small class="form-text text-muted">
+                    {% if content.content.files %}
+                        Aktuelle Dateien:
+                        {% for file in content.content.files %}
+                            <div>{{ file }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </small>
             </div>
         </form>
 
@@ -90,7 +113,12 @@
             </div>
             <div class="mb-3">
                 <label for="filePdf" class="form-label">Datei</label>
-                <input type="file" class="form-control" id="filePdf" accept="application/pdf" required>
+                <input type="file" class="form-control" id="filePdf" accept="application/pdf">
+                <small class="form-text text-muted">
+                    {% if content.content.files %}
+                        Aktuelle Datei: {{ content.content.files[0] }}
+                    {% endif %}
+                </small>
             </div>
         </form>
 
@@ -105,7 +133,12 @@
             </div>
             <div class="mb-3">
                 <label for="fileExcel" class="form-label">Datei</label>
-                <input type="file" class="form-control" id="fileExcel" accept=".xls,.xlsx" required>
+                <input type="file" class="form-control" id="fileExcel" accept=".xls,.xlsx">
+                <small class="form-text text-muted">
+                    {% if content.content.files %}
+                        Aktuelle Datei: {{ content.content.files[0] }}
+                    {% endif %}
+                </small>
             </div>
         </form>
 
@@ -132,11 +165,6 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td><input type="time" class="form-control" name="time[]" required></td>
-                            <td><input type="text" class="form-control" name="activity[]" required></td>
-                            <td><input type="text" class="form-control" name="location[]" required></td>
-                            <td><input type="text" class="form-control" name="notes[]" required></td>
-                            <td><button type="button" class="btn btn-danger removeRowButton">Entfernen</button></td>
                         </tr>
                     </tbody>
                 </table>
@@ -166,10 +194,6 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td><input type="date" class="form-control" name="birthday[]" required></td>
-                            <td><input type="text" class="form-control" name="name[]" required></td>
-                            <td><input type="file" class="form-control" name="image[]" accept="image/*"></td>
-                            <td><button type="button" class="btn btn-danger removeRowButton">Entfernen</button></td>
                         </tr>
                     </tbody>
                 </table>
@@ -218,10 +242,17 @@
             </div>
             <div class="mb-3">
                 <label for="folderGame" class="form-label">Ordner</label>
-                <input type="file" class="form-control" id="folderGame" webkitdirectory directory multiple required>
+                <input type="file" class="form-control" id="folderGame" webkitdirectory directory multiple>
+                <small class="form-text text-muted">
+                    {% if content.content.files %}
+                        Aktuelle Dateien:
+                        {% for file in content.content.files %}
+                            <div>{{ file }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </small>
             </div>
         </form>
-    </div>
         <button type="button" class="btn btn-primary mb-5" id="saveButton">Speichern</button>
     </div>
 </div>

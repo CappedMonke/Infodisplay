@@ -37,7 +37,7 @@ def add_content():
         'type': request.form.get('type', ''),
         'id': request.form.get('id', ''),
         'title': request.form.get('title', ''),
-        'duration': request.form.get('duration', ''),
+        'duration': int(request.form.get('duration', 0)),
         'content': {key: value for key, value in request.form.items() if key not in ['id', 'title', 'duration', 'type']},
     }
 
@@ -86,7 +86,7 @@ def update_content():
     content_data = {
         'id': request.form['id'],
         'title': request.form['title'],
-        'duration': request.form['duration'],
+        'duration': int(request.form.get('duration', 0)),
         'content': {key: value for key, value in request.form.items() if key not in ['id', 'title', 'duration']},
     }
 
@@ -104,6 +104,15 @@ def update_content():
     
     if existing_files:
         content_data['content']['files'] = list(existing_files)
+
+    for key, value in content_data['content'].items():
+        if isinstance(value, str):
+            try:
+                # Try to parse the string as JSON
+                content_data['content'][key] = json.loads(value)
+            except json.JSONDecodeError:
+                # If it fails, keep the original string
+                content_data['content'][key] = value
 
     content_manager.update_content(content_data)
     return 'Content updated', 200

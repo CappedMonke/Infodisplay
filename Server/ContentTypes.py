@@ -12,7 +12,7 @@ class BaseContent():
         self.id = id
         self.type = type
         self.title = title
-        self.duration = int(duration)
+        self.duration = duration
         self.content = content
         self.is_visible = is_visible
         self.should_show = True
@@ -73,6 +73,9 @@ class SlideshowContent(BaseContent):
     def __init__(self, id, type, title, duration, content, is_visible=True, **kwargs):
         duration = int(content['duration_per_image']) * len(content['files'])
         super().__init__(id, type, title, duration, content, is_visible)
+
+    def update(self):
+        self.duration = int(self.content['duration_per_image']) * len(self.content['files'])
 
 
 # content['file'] = 'document.pdf'
