@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
         form.style.display = 'none';
     });
 
-
+    
     // Convert PascalCase to camelCase
     const toCamelCase = str => str.charAt(0).toLowerCase() + str.slice(1);
 
@@ -29,4 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const toastBootstrap = bootstrap.Toast.getOrCreateInstance(updatedToast)
         toastBootstrap.show()
     });
+
+
+    console.log("content to edit: ", content);
 });

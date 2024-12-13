@@ -6,62 +6,222 @@
     <div class="page-content">
         <form id="textContentForm">
             <div class="mb-3">
-                <label for="title" class="form-label">Titel</label>
-                <input type="text" class="form-control" id="title" name="title" value="{{ content.title }}">
+                <label for="titleText" class="form-label">Titel</label>
+                <input type="text" class="form-control" id="titleText" name="title" value="{{ content.title }}" required>
             </div>
             <div class="mb-3">
-                <label for="duration" class="form-label">Anzeigedauer (Sekunden)</label>
-                <input type="number" class="form-control" id="duration" name="duration" value="{{ content.duration }}">
+                <label for="durationText" class="form-label">Anzeigedauer (Sekunden)</label>
+                <input type="number" class="form-control" id="durationText" name="duration" value="{{ content.duration }}" required>
             </div>
             <div class="mb-3">
-                <label for="content" class="form-label">Text</label>
-                <input type="text" class="form-control" id="content" name="text" value="{{ content.content.text }}">
+                <label for="contentText" class="form-label">Text</label>
+                <textarea class="form-control" id="contentText" name="text" required>{{ content.content.text }}</textarea>
             </div>
         </form>
 
         <form id="imageContentForm">
-            <!-- Image content form elements go here -->
+            <div class="mb-3">
+                <label for="titleImage" class="form-label">Titel</label>
+                <input type="text" class="form-control" id="titleImage" name="title" value="{{ content.title }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="durationImage" class="form-label">Anzeigedauer (Sekunden)</label>
+                <input type="number" class="form-control" id="durationImage" name="duration" value="{{ content.duration }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="fileImage" class="form-label">Datei</label>
+                <input type="file" class="form-control" id="fileImage" accept="image/*" required>
+            </div>
         </form>
 
         <form id="imageTextContentForm">
-            <!-- ImageText content form elements go here -->
+            <div class="mb-3">
+                <label for="titleImageText" class="form-label">Titel</label>
+                <input type="text" class="form-control" id="titleImageText" name="title" value="{{ content.title }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="durationImageText" class="form-label">Anzeigedauer (Sekunden)</label>
+                <input type="number" class="form-control" id="durationImageText" name="duration" value="{{ content.duration }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="contentImageText" class="form-label">Text</label>
+                <textarea class="form-control" id="contentImageText" name="text" required>{{ content.content.text }}</textarea>
+            </div>
+            <div class="mb-3">
+                <label for="fileImageText" class="form-label">Datei</label>
+                <input type="file" class="form-control" id="fileImageText" accept="image/*" required>
+            </div>
         </form>
 
         <form id="videoContentForm">
-            <!-- Video content form elements go here -->
+            <div class="mb-3">
+                <label for="titleVideo" class="form-label">Titel</label>
+                <input type="text" class="form-control" id="titleVideo" name="title" value="{{ content.title }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="fileVideo" class="form-label">Datei</label>
+                <input type="file" class="form-control" id="fileVideo" accept="video/*" required>
+            </div>
         </form>
 
         <form id="slideshowContentForm">
-            <!-- Slideshow content form elements go here -->
+            <div class="mb-3">
+                <label for="titleSlideshow" class="form-label">Titel</label>
+                <input type="text" class="form-control" id="titleSlideshow" name="title" value="{{ content.title }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="durationSlideshow" class="form-label">Anzeigedauer pro Bild (Sekunden)</label>
+                <input type="number" class="form-control" id="durationSlideshow" name="duration_per_image" value="{{ content.duration }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="fileSlideshow" class="form-label">Ordner</label>
+                <input type="file" class="form-control" id="fileSlideshow" accept="image/*" webkitdirectory directory multiple required>
+            </div>
         </form>
 
         <form id="pdfContentForm">
-            <!-- PDF content form elements go here -->
+            <div class="mb-3">
+                <label for="titlePdf" class="form-label">Titel</label>
+                <input type="text" class="form-control" id="titlePdf" name="title" value="{{ content.title }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="durationPdf" class="form-label">Anzeigedauer (Sekunden)</label>
+                <input type="number" class="form-control" id="durationPdf" name="duration" value="{{ content.duration }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="filePdf" class="form-label">Datei</label>
+                <input type="file" class="form-control" id="filePdf" accept="application/pdf" required>
+            </div>
         </form>
 
         <form id="excelContentForm">
-            <!-- Excel content form elements go here -->
+            <div class="mb-3">
+                <label for="titleExcel" class="form-label">Titel</label>
+                <input type="text" class="form-control" id="titleExcel" name="title" value="{{ content.title }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="durationExcel" class="form-label">Anzeigedauer (Sekunden)</label>
+                <input type="number" class="form-control" id="durationExcel" name="duration" value="{{ content.duration }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="fileExcel" class="form-label">Datei</label>
+                <input type="file" class="form-control" id="fileExcel" accept=".xls,.xlsx" required>
+            </div>
         </form>
 
         <form id="programContentForm">
-            <!-- Program content form elements go here -->
+            <div class="mb-3">
+                <label for="titleProgram" class="form-label">Titel</label>
+                <input type="text" class="form-control" id="titleProgram" name="title" value="{{ content.title }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="durationProgram" class="form-label">Anzeigedauer (Sekunden)</label>
+                <input type="number" class="form-control" id="durationProgram" name="duration" value="{{ content.duration }}" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Programm</label>
+                <table class="table" id="programDetailsTable">
+                    <thead>
+                        <tr>
+                            <th>Zeit</th>
+                            <th>Aktivität</th>
+                            <th>Ort</th>
+                            <th>Notizen</th>
+                            <th>Aktion</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="time" class="form-control" name="time[]" required></td>
+                            <td><input type="text" class="form-control" name="activity[]" required></td>
+                            <td><input type="text" class="form-control" name="location[]" required></td>
+                            <td><input type="text" class="form-control" name="notes[]" required></td>
+                            <td><button type="button" class="btn btn-danger removeRowButton">Entfernen</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button type="button" class="btn btn-secondary" id="addRowButton">Zeile hinzufügen</button>
+            </div>
         </form>
 
         <form id="birthdayContentForm">
-            <!-- Birthday content form elements go here -->
+            <div class="mb-3">
+                <label for="titleBirthday" class="form-label">Titel</label>
+                <input type="text" class="form-control" id="titleBirthday" name="title" value="{{ content.title }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="durationBirthday" class="form-label">Anzeigedauer (Sekunden)</label>
+                <input type="number" class="form-control" id="durationBirthday" name="duration" value="{{ content.duration }}" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Geburtstage</label>
+                <table class="table" id="birthdayDetailsTable">
+                    <thead>
+                        <tr>
+                            <th>Datum</th>
+                            <th>Name</th>
+                            <th>Bild (optional)</th>
+                            <th>Aktion</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="date" class="form-control" name="birthday[]" required></td>
+                            <td><input type="text" class="form-control" name="name[]" required></td>
+                            <td><input type="file" class="form-control" name="image[]" accept="image/*"></td>
+                            <td><button type="button" class="btn btn-danger removeRowButton">Entfernen</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button type="button" class="btn btn-secondary" id="addBirthdayRowButton">Zeile hinzufügen</button>
+            </div>
         </form>
 
         <form id="weatherContentForm">
-            <!-- Weather content form elements go here -->
+            <div class="mb-3">
+                <label for="titleWeather" class="form-label">Titel</label>
+                <input type="text" class="form-control" id="titleWeather" name="title" value="{{ content.title }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="durationWeather" class="form-label">Anzeigedauer (Sekunden)</label>
+                <input type="number" class="form-control" id="durationWeather" name="duration" value="{{ content.duration }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="contentWeather" class="form-label">Ort</label>
+                <input class="form-control" id="contentWeather" name="location" value="{{ content.content.location }}" required>
+            </div>
         </form>
 
         <form id="newsContentForm">
-            <!-- News content form elements go here -->
+            <div class="mb-3">
+                <label for="titleNews" class="form-label">Titel</label>
+                <input type="text" class="form-control" id="titleNews" name="title" value="{{ content.title }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="durationNews" class="form-label">Anzeigedauer (Sekunden)</label>
+                <input type="number" class="form-control" id="durationNews" name="duration" value="{{ content.duration }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="contentNews" class="form-label">Thema (z.B. "Deutschland Politik", "Gesunde Ernährung", etc.)</label>
+                <input class="form-control" id="contentNews" name="query" value="{{ content.content.query }}" required>
+            </div>
         </form>
 
         <form id="gameContentForm">
-            <!-- Game content form elements go here -->
+            <div class="mb-3">
+                <label for="titleGame" class="form-label">Titel</label>
+                <input type="text" class="form-control" id="titleGame" name="title" value="{{ content.title }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="durationGame" class="form-label">Anzeigedauer (Sekunden)</label>
+                <input type="number" class="form-control" id="durationGame" name="duration" value="{{ content.duration }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="folderGame" class="form-label">Ordner</label>
+                <input type="file" class="form-control" id="folderGame" webkitdirectory directory multiple required>
+            </div>
         </form>
+    </div>
         <button type="button" class="btn btn-primary mb-5" id="saveButton">Speichern</button>
     </div>
 </div>

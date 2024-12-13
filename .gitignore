@@ -8,6 +8,5 @@
 Server/Static/Uploads/*
 !Server/Static/Uploads/.gitkeep
 
-# ---------------------------------- Files ----------------------------------- #
-Content.json
-Settings.json
+Server/Savestate/*
+!Server/Savestate/.gitkeep

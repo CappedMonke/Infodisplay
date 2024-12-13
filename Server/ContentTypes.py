@@ -15,6 +15,7 @@ class BaseContent():
         self.duration = int(duration)
         self.content = content
         self.is_visible = is_visible
+        self.should_show = True
 
 
     def get_subclass(type):
@@ -89,15 +90,9 @@ class ExcelContent(BaseContent):
 # content['items'] = [{'text': 'Hello World!', 'date': '2000-01-01'}, ...]
 class ProgramContent(BaseContent):
     def __init__(self, id, type, title, duration, content, is_visible=True, **kwargs):
-
-        # TODO: If show_till_program_is_over is true and we are in the time range of the program, set duration to the time of the last item minus the time of now
-        # if content.get('show_till_program_is_over']) and ... == 'true':
-        #     pass
-
         super().__init__(id, type, title, duration, content, is_visible)
 
 
-# BUG: if visibility was set to false by the user, it will be automatically set to true when someone has their birthday.
 # content['people'] = [{'name': 'John Doe', 'birthday': '2000-01-01', 'image': 'image.png'}, ...]
 class BirthdayContent(BaseContent):
     def __init__(self, id, type, title, duration, content, is_visible=True, **kwargs):
@@ -114,7 +109,7 @@ class BirthdayContent(BaseContent):
             return True
         
         # If people have their birthday today, rotate person displayed
-        if self.is_visible:
+        if self.should_show:
             self.current_index = (self.current_index + 1) % len(self.birthday_indices)
 
         return False
@@ -136,9 +131,9 @@ class BirthdayContent(BaseContent):
 
         # If no birthdays today, hide content
         if self.birthday_indices:
-            self.is_visible = True
+            self.should_show = True
         else:
-            self.is_visible = False
+            self.should_show = False
         
 
 # content['location'] = Berlin
@@ -183,12 +178,12 @@ class WeatherContent(BaseContent):
             if data['results']:
                 self.content['latitude'] = data['results'][0]['latitude']
                 self.content['longitude'] = data['results'][0]['longitude']
-                self.is_visible = True
+                self.should_show = True
                 return
         
         # Hide content if coordinates could not be fetched
         print('\033[91mCould not fetch coordinates\033[0m')
-        self.is_visible = False
+        self.should_show = False
 
 
     def fetch_weather(self):
@@ -202,11 +197,11 @@ class WeatherContent(BaseContent):
         if response.status_code == 200:
             data = response.json()
             self.content['weather'] = data
-            self.is_visible = True
+            self.should_show = True
             return
         
         print('\033[91mCould not fetch weather\033[0m')
-        self.is_visible = False
+        self.should_show = False
 
 
 # content['query'] = 'Hello World'
@@ -227,7 +222,7 @@ class NewsContent(BaseContent):
             return True
         
         # If news could be fetched, rotate news displayed
-        if self.is_visible:
+        if self.should_show:
             self.current_index = (self.current_index + 1) % len(self.content['articles'])
 
         return False
@@ -249,12 +244,12 @@ class NewsContent(BaseContent):
             articles = response.json()['articles']
             if articles:
                 self.content['articles'] = articles
-                self.is_visible = True
+                self.should_show = True
                 return
         
         # Hide content if news could not be fetched
         print('\033[91mCould not fetch news\033[0m')
-        self.is_visible = False
+        self.should_show = False
 
 
 # content['html'] = 'FlappyBird.html'

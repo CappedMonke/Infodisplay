@@ -53,7 +53,12 @@ def add_content():
     # Convert nested JSON strings to dictionaries
     for key, value in content_data['content'].items():
         if isinstance(value, str):
-            content_data['content'][key] = json.loads(value)
+            try:
+                # Try to parse the string as JSON
+                content_data['content'][key] = json.loads(value)
+            except json.JSONDecodeError:
+                # If it fails, keep the original string
+                content_data['content'][key] = value
 
     content_manager.create_and_add_content(content_data)
     return 'Content added', 200
