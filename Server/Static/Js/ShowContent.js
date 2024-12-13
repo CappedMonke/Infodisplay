@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function() {
         'ImageTextContent': document.getElementById('imageTextContent'),
         'VideoContent': document.getElementById('videoContent'),
         'SlideshowContent': document.getElementById('slideshowContent'),
-        'PDFContent': document.getElementById('pdfContent'),
+        'PdfContent': document.getElementById('pdfContent'),
         'ExcelContent': document.getElementById('excelContent'),
         'ProgramContent': document.getElementById('programContent'),
         'BirthdayContent': document.getElementById('birthdayContent'),

@@ -34,26 +34,26 @@ class BaseContent():
 
 # content['text'] = 'Hello World!'
 class TextContent(BaseContent):
-    def __init__(self, id, type, title, duration, content, is_visible=True):
+    def __init__(self, id, type, title, duration, content, is_visible=True, **kwargs):
         super().__init__(id, type, title, duration, content, is_visible)
 
 
 # content['file'] = 'image.png'
 class ImageContent(BaseContent):
-    def __init__(self, id, type, title, duration, content, is_visible=True):
+    def __init__(self, id, type, title, duration, content, is_visible=True, **kwargs):
         super().__init__(id, type, title, duration, content, is_visible)
     
 
 # content['text'] = 'Hello World!'
 # content['file'] = 'image.png'
 class ImageTextContent(BaseContent):
-    def __init__(self, id, type, title, duration, content, is_visible=True):
+    def __init__(self, id, type, title, duration, content, is_visible=True, **kwargs):
         super().__init__(id, type, title, duration, content, is_visible)
 
 
 # content['file'] = 'video.mp4'
 class VideoContent(BaseContent):
-    def __init__(self, id, type, title, duration, content, is_visible=True):
+    def __init__(self, id, type, title, duration, content, is_visible=True, **kwargs):
         # If a new VideoContent is created, get duration of the video
         clip = VideoFileClip(f'{UPLOADS_FOLDER}/{id}/{content['files'][0]}')
         duration = clip.duration
@@ -69,33 +69,33 @@ class VideoContent(BaseContent):
 
 # content['duration_per_image'] = 0
 class SlideshowContent(BaseContent):
-    def __init__(self, id, type, title, duration, content, is_visible=True):
+    def __init__(self, id, type, title, duration, content, is_visible=True, **kwargs):
         duration = int(content['duration_per_image']) * len(content['files'])
         super().__init__(id, type, title, duration, content, is_visible)
 
 
 # content['file'] = 'document.pdf'
 class PdfContent(BaseContent):
-    def __init__(self, id, type, title, duration, content, is_visible=True):
+    def __init__(self, id, type, title, duration, content, is_visible=True, **kwargs):
         super().__init__(id, type, title, duration, content, is_visible)
     
 
 # content['file'] = 'document.xlsx'
 class ExcelContent(BaseContent):
-    def __init__(self, id, type, title, duration, content, is_visible=True):
+    def __init__(self, id, type, title, duration, content, is_visible=True, **kwargs):
         super().__init__(id, type, title, duration, content, is_visible)
     
 
 # content['items'] = [{'text': 'Hello World!', 'date': '2000-01-01'}, ...]
 class ProgramContent(BaseContent):
-    def __init__(self, id, type, title, duration, content, is_visible=True):
+    def __init__(self, id, type, title, duration, content, is_visible=True, **kwargs):
         super().__init__(id, type, title, duration, content, is_visible)
 
 
 # BUG: if visibility was set to false by the user, it will be automatically set to true when someone has their birthday.
 # content['people'] = [{'name': 'John Doe', 'birthday': '2000-01-01', 'image': 'image.png'}, ...]
 class BirthdayContent(BaseContent):
-    def __init__(self, id, type, title, duration, content, is_visible=True):
+    def __init__(self, id, type, title, duration, content, is_visible=True, **kwargs):
         super().__init__(id, type, title, duration, content, is_visible)
         self.birthday_indices = []
         self.current_index = 0
@@ -142,7 +142,7 @@ class BirthdayContent(BaseContent):
 # content['last_refresh'] = '2000-01-01T00:00:00'
 # content['weather'] = {'daily_weather_code': 0, 'temperature_2m_max': 0, ...}
 class WeatherContent(BaseContent):
-    def __init__(self, id, type, title, duration, content, is_visible=True):
+    def __init__(self, id, type, title, duration, content, is_visible=True, **kwargs):
         super().__init__(id, type, title, duration, content, is_visible)
 
         # Fetch coordinates if not provided
@@ -208,7 +208,7 @@ class WeatherContent(BaseContent):
 # content['last_refresh'] = '2000-01-01T00:00:00'
 # content = ['articles'] = [{'title': 'Hello World!', 'description': 'This is a description.', 'url': 'https://example.com', 'urlToImage': 'image.png'}, ...]
 class NewsContent(BaseContent):
-    def __init__(self, id, type, title, duration, content, is_visible=True):
+    def __init__(self, id, type, title, duration, content, is_visible=True, **kwargs):
         super().__init__(id, type, title, duration, content, is_visible)
         self.current_index = 0
         self.fetch_news()
@@ -254,12 +254,12 @@ class NewsContent(BaseContent):
 
 # content['html'] = 'FlappyBird.html'
 class GameContent(BaseContent):
-    def __init__(self, type, title, duration, content):
+    def __init__(self, id, type, title, duration, content, is_visible=True, **kwargs):
         # Find the html in the folder if not provided
-        if content['html'] is None:
+        if content.get('html') is None:
             for file in content['files']:
                 if file.endswith('.html'):
                     content['html'] = file
                     break
 
-        super().__init__(type, title, duration, content)
+        super().__init__(id, type, title, duration, content, is_visible)
