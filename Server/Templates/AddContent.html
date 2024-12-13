@@ -138,6 +138,30 @@
                 <label for="durationProgram" class="form-label">Anzeigedauer (Sekunden)</label>
                 <input type="number" class="form-control" id="durationProgram" name="duration">
             </div>
+            <div class="mb-3">
+                <label class="form-label">Programm</label>
+                <table class="table" id="programDetailsTable">
+                    <thead>
+                        <tr>
+                            <th>Zeit</th>
+                            <th>Aktivität</th>
+                            <th>Ort</th>
+                            <th>Notizen</th>
+                            <th>Aktion</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="time" class="form-control" name="time[]"></td>
+                            <td><input type="text" class="form-control" name="activity[]"></td>
+                            <td><input type="text" class="form-control" name="location[]"></td>
+                            <td><input type="text" class="form-control" name="notes[]"></td>
+                            <td><button type="button" class="btn btn-danger removeRowButton">Entfernen</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button type="button" class="btn btn-secondary" id="addRowButton">Zeile hinzufügen</button>
+            </div>
         </form>
 
         <form id="birthdayContentForm">
@@ -148,6 +172,28 @@
             <div class="mb-3">
                 <label for="durationBirthday" class="form-label">Anzeigedauer (Sekunden)</label>
                 <input type="number" class="form-control" id="durationBirthday" name="duration">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Geburtstage</label>
+                <table class="table" id="birthdayDetailsTable">
+                    <thead>
+                        <tr>
+                            <th>Geburtstag</th>
+                            <th>Name</th>
+                            <th>Bild</th>
+                            <th>Aktion</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="date" class="form-control" name="birthday[]"></td>
+                            <td><input type="text" class="form-control" name="name[]"></td>
+                            <td><input type="file" class="form-control" name="image[]" accept="image/*"></td>
+                            <td><button type="button" class="btn btn-danger removeRowButton">Entfernen</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button type="button" class="btn btn-secondary" id="addBirthdayRowButton">Zeile hinzufügen</button>
             </div>
         </form>
 
@@ -196,7 +242,7 @@
             </div>
         </form>
     </div>
-    <button type="button" class="btn btn-primary" id="addButton" style="display: none;">Erstellen</button>
+    <button type="button" class="btn btn-primary mb-5" id="addButton" style="display: none;">Erstellen</button>
 </div>
 
 <!-- Toast -->

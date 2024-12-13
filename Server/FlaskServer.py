@@ -1,4 +1,5 @@
 import argparse
+import json
 from Settings import settings, set_setting
 from flask import Flask, render_template, request
 from ContentManager import ContentManager
@@ -48,6 +49,11 @@ def add_content():
                 files_set.add(file.filename)
                 content_manager.save_file(content_data['id'], file)
         content_data['content']['files'] = list(files_set) if files_set else None
+
+    # Convert nested JSON strings to dictionaries
+    for key, value in content_data['content'].items():
+        if isinstance(value, str):
+            content_data['content'][key] = json.loads(value)
 
     content_manager.create_and_add_content(content_data)
     return 'Content added', 200

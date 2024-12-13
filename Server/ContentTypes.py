@@ -89,6 +89,11 @@ class ExcelContent(BaseContent):
 # content['items'] = [{'text': 'Hello World!', 'date': '2000-01-01'}, ...]
 class ProgramContent(BaseContent):
     def __init__(self, id, type, title, duration, content, is_visible=True, **kwargs):
+
+        # TODO: If show_till_program_is_over is true and we are in the time range of the program, set duration to the time of the last item minus the time of now
+        # if content.get('show_till_program_is_over']) and ... == 'true':
+        #     pass
+
         super().__init__(id, type, title, duration, content, is_visible)
 
 
@@ -124,8 +129,8 @@ class BirthdayContent(BaseContent):
         self.content['last_refresh'] = now.isoformat()
 
         # Get indices of people who have their birthday today
-        for i, person in enumerate(self.content['people']):
-            birthday = datetime.fromisoformat(person['birthday'])
+        for i, birthday_str in enumerate(self.content['birthdayTable']['birthday']):
+            birthday = datetime.fromisoformat(birthday_str)
             if birthday.month == now.month and birthday.day == now.day:
                 self.birthday_indices.append(i)
 

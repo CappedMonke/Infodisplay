@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 /* -------------------------------------------------------------------------- */
-/*                                  Websocket                                 */
+/*                                  Websocket Gesture Recognition                                */
 /* -------------------------------------------------------------------------- */
 let socket;
 let reconnectInterval = 10000; // Time to wait before retrying (in milliseconds)

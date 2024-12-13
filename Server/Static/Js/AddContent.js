@@ -16,6 +16,18 @@ document.addEventListener('DOMContentLoaded', function() {
             form.reset();
         });
 
+        // Remove all program rows
+        const programTableBody = document.getElementById('programDetailsTable').querySelector('tbody');
+        while (programTableBody.firstChild) {
+            programTableBody.removeChild(programTableBody.firstChild);
+        }
+
+        // Remove all birthday rows
+        const birthdayTableBody = document.getElementById('birthdayDetailsTable').querySelector('tbody');
+        while (birthdayTableBody.firstChild) {
+            birthdayTableBody.removeChild(birthdayTableBody.firstChild);
+        }
+
         if (formToShow !== null)
             formToShow.style.display = 'none';
         else
@@ -23,6 +35,16 @@ document.addEventListener('DOMContentLoaded', function() {
         const contentType = document.getElementById('contentTypeSelect').value;
         formToShow = document.getElementById(`${contentType}ContentForm`);
         formToShow.style.display = 'block';
+
+        // Add default row for program content form
+        if (contentType === 'program') {
+            addProgramRow();
+        }
+
+        // Add default row for birthday content form
+        if (contentType === 'birthday') {
+            addBirthdayRow();
+        }
     });
 
     // Save the content
@@ -47,6 +69,50 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
+        // Handle program content form data
+        if (contentType === 'program') {
+            const programData = {
+                time: [],
+                activity: [],
+                location: [],
+                notes: []
+            };
+            formElement.querySelectorAll('tbody tr').forEach(row => {
+                programData.time.push(row.querySelector('input[name="time"]').value);
+                programData.activity.push(row.querySelector('input[name="activity"]').value);
+                programData.location.push(row.querySelector('input[name="location"]').value);
+                programData.notes.push(row.querySelector('input[name="notes"]').value);
+            });
+            formData.delete('time');
+            formData.delete('activity');
+            formData.delete('location');
+            formData.delete('notes');
+            formData.append('programTable', JSON.stringify(programData));
+        }
+
+        // Handle birthday content form data
+        if (contentType === 'birthday') {
+            const birthdayData = {
+                birthday: [],
+                name: [],
+                image: []
+            };
+            formElement.querySelectorAll('tbody tr').forEach(row => {
+                birthdayData.birthday.push(row.querySelector('input[name="birthday"]').value);
+                birthdayData.name.push(row.querySelector('input[name="name"]').value);
+                const imageInput = row.querySelector('input[name="image"]');
+                if (imageInput.files.length > 0) {
+                    birthdayData.image.push(imageInput.files[0].name);
+                } else {
+                    birthdayData.image.push('');
+                }
+            });
+            formData.delete('birthday');
+            formData.delete('name');
+            formData.delete('image');
+            formData.append('birthdayTable', JSON.stringify(birthdayData));
+        }
+
         fetch('/add_content', {
             method: 'POST',
             body: formData // Send FormData directly
@@ -65,5 +131,48 @@ document.addEventListener('DOMContentLoaded', function() {
         const toastBootstrap = bootstrap.Toast.getOrCreateInstance(updatedToast);
         toastBootstrap.show();
     });
+
+    // Add row to program details table when button is clicked
+    const addRowButton = document.getElementById('addRowButton');
+    addRowButton.addEventListener('click', function() {
+        addProgramRow()
+    });
+
+    function addProgramRow(){
+        const tableBody = document.getElementById('programDetailsTable').querySelector('tbody');
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+            <td><input type="time" class="form-control" name="time"></td>
+            <td><input type="text" class="form-control" name="activity"></td>
+            <td><input type="text" class="form-control" name="location"></td>
+            <td><input type="text" class="form-control" name="notes"></td>
+            <td><button type="button" class="btn btn-danger removeRowButton">Entfernen</button></td>
+        `;
+        tableBody.appendChild(newRow);
+        newRow.querySelector('.removeRowButton').addEventListener('click', function() {
+            tableBody.removeChild(newRow);
+        });
+    }
+
+    // Add row to birthday details table when button is clicked
+    const addBirthdayRowButton = document.getElementById('addBirthdayRowButton');
+    addBirthdayRowButton.addEventListener('click', function() {
+        addBirthdayRow();
+    });
+
+    function addBirthdayRow() {
+        const tableBody = document.getElementById('birthdayDetailsTable').querySelector('tbody');
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+            <td><input type="date" class="form-control" name="birthday"></td>
+            <td><input type="text" class="form-control" name="name"></td>
+            <td><input type="file" class="form-control" name="image" accept="image/*"></td>
+            <td><button type="button" class="btn btn-danger removeRowButton">Entfernen</button></td>
+        `;
+        tableBody.appendChild(newRow);
+        newRow.querySelector('.removeRowButton').addEventListener('click', function() {
+            tableBody.removeChild(newRow);
+        });
+    }
 });
 
