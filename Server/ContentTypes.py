@@ -94,6 +94,17 @@ class ExcelContent(BaseContent):
 class ProgramContent(BaseContent):
     def __init__(self, id, type, title, duration, content, is_visible=True, **kwargs):
         super().__init__(id, type, title, duration, content, is_visible)
+        self.update_should_show()
+
+    def update(self):
+        self.update_should_show()
+
+    def update_should_show(self):
+        programTable = self.content.get('programTable', {})
+        if not programTable.get('activity'):
+            self.should_show = False
+        else:
+            self.should_show = True
 
 
 # content['people'] = [{'name': 'John Doe', 'birthday': '2000-01-01', 'image': 'image.png'}, ...]
@@ -103,12 +114,14 @@ class BirthdayContent(BaseContent):
         self.birthday_indices = []
         self.current_index = 0
         self.setup_birthdays()
+        self.update_should_show()
     
 
     def refresh(self):
         # If last_refresh is not today, setup birthdays
         if datetime.fromisoformat(self.content['last_refresh']).day != datetime.now().day:
             self.setup_birthdays()
+            self.update_should_show()
             return True
         
         # If people have their birthday today, rotate person displayed
@@ -120,6 +133,7 @@ class BirthdayContent(BaseContent):
 
     def update(self):
         self.setup_birthdays()
+        self.update_should_show()
 
 
     def setup_birthdays(self):
@@ -132,11 +146,12 @@ class BirthdayContent(BaseContent):
             if birthday.month == now.month and birthday.day == now.day:
                 self.birthday_indices.append(i)
 
-        # If no birthdays today, hide content
-        if self.birthday_indices:
-            self.should_show = True
-        else:
+    def update_should_show(self):
+        birthdayTable = self.content.get('birthdayTable', {})
+        if not birthdayTable.get('birthday'):
             self.should_show = False
+        else:
+            self.should_show = True
         
 
 # content['location'] = Berlin
