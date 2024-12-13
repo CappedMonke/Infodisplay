@@ -27,116 +27,116 @@
         <form id="textContentForm">
             <div class="mb-3">
                 <label for="titleText" class="form-label">Titel</label>
-                <input type="text" class="form-control" id="titleText" name="title">
+                <input type="text" class="form-control" id="titleText" name="title" required>
             </div>
             <div class="mb-3">
                 <label for="durationText" class="form-label">Anzeigedauer (Sekunden)</label>
-                <input type="number" class="form-control" id="durationText" name="duration">
+                <input type="number" class="form-control" id="durationText" name="duration" required>
             </div>
             <div class="mb-3">
                 <label for="contentText" class="form-label">Text</label>
-                <textarea class="form-control" id="contentText" name="text"></textarea>
+                <textarea class="form-control" id="contentText" name="text" required></textarea>
             </div>
         </form>
 
         <form id="imageContentForm">
             <div class="mb-3">
                 <label for="titleImage" class="form-label">Titel</label>
-                <input type="text" class="form-control" id="titleImage" name="title">
+                <input type="text" class="form-control" id="titleImage" name="title" required>
             </div>
             <div class="mb-3">
                 <label for="durationImage" class="form-label">Anzeigedauer (Sekunden)</label>
-                <input type="number" class="form-control" id="durationImage" name="duration">
+                <input type="number" class="form-control" id="durationImage" name="duration" required>
             </div>
             <div class="mb-3">
                 <label for="fileImage" class="form-label">Datei</label>
-                <input type="file" class="form-control" id="fileImage" accept="image/*">
+                <input type="file" class="form-control" id="fileImage" accept="image/*" required>
             </div>
         </form>
 
         <form id="imageTextContentForm">
             <div class="mb-3">
                 <label for="titleImageText" class="form-label">Titel</label>
-                <input type="text" class="form-control" id="titleImageText" name="title">
+                <input type="text" class="form-control" id="titleImageText" name="title" required>
             </div>
             <div class="mb-3">
                 <label for="durationImageText" class="form-label">Anzeigedauer (Sekunden)</label>
-                <input type="number" class="form-control" id="durationImageText" name="duration">
+                <input type="number" class="form-control" id="durationImageText" name="duration" required>
             </div>
             <div class="mb-3">
                 <label for="contentImageText" class="form-label">Text</label>
-                <textarea class="form-control" id="contentImageText" name="text"></textarea>
+                <textarea class="form-control" id="contentImageText" name="text" required></textarea>
             </div>
             <div class="mb-3">
                 <label for="fileImageText" class="form-label">Datei</label>
-                <input type="file" class="form-control" id="fileImageText" accept="image/*">
+                <input type="file" class="form-control" id="fileImageText" accept="image/*" required>
             </div>
         </form>
 
         <form id="videoContentForm">
             <div class="mb-3">
                 <label for="titleVideo" class="form-label">Titel</label>
-                <input type="text" class="form-control" id="titleVideo" name="title">
+                <input type="text" class="form-control" id="titleVideo" name="title" required>
             </div>
             <div class="mb-3">
                 <label for="fileVideo" class="form-label">Datei</label>
-                <input type="file" class="form-control" id="fileVideo" accept="video/*">
+                <input type="file" class="form-control" id="fileVideo" accept="video/*" required>
             </div>
         </form>
 
         <form id="slideshowContentForm">
             <div class="mb-3">
                 <label for="titleSlideshow" class="form-label">Titel</label>
-                <input type="text" class="form-control" id="titleSlideshow" name="title">
+                <input type="text" class="form-control" id="titleSlideshow" name="title" required>
             </div>
             <div class="mb-3">
                 <label for="durationSlideshow" class="form-label">Anzeigedauer pro Bild (Sekunden)</label>
-                <input type="number" class="form-control" id="durationSlideshow" name="duration_per_image">
+                <input type="number" class="form-control" id="durationSlideshow" name="duration_per_image" required>
             </div>
             <div class="mb-3">
                 <label for="fileSlideshow" class="form-label">Ordner</label>
-                <input type="file" class="form-control" id="fileSlideshow" accept="image/*" webkitdirectory directory multiple>
+                <input type="file" class="form-control" id="fileSlideshow" accept="image/*" webkitdirectory directory multiple required>
             </div>
         </form>
 
         <form id="pdfContentForm">
             <div class="mb-3">
                 <label for="titlePdf" class="form-label">Titel</label>
-                <input type="text" class="form-control" id="titlePdf" name="title">
+                <input type="text" class="form-control" id="titlePdf" name="title" required>
             </div>
             <div class="mb-3">
                 <label for="durationPdf" class="form-label">Anzeigedauer (Sekunden)</label>
-                <input type="number" class="form-control" id="durationPdf" name="duration">
+                <input type="number" class="form-control" id="durationPdf" name="duration" required>
             </div>
             <div class="mb-3">
                 <label for="filePdf" class="form-label">Datei</label>
-                <input type="file" class="form-control" id="filePdf" accept="application/pdf">
+                <input type="file" class="form-control" id="filePdf" accept="application/pdf" required>
             </div>
         </form>
 
         <form id="excelContentForm">
             <div class="mb-3">
                 <label for="titleExcel" class="form-label">Titel</label>
-                <input type="text" class="form-control" id="titleExcel" name="title">
+                <input type="text" class="form-control" id="titleExcel" name="title" required>
             </div>
             <div class="mb-3">
                 <label for="durationExcel" class="form-label">Anzeigedauer (Sekunden)</label>
-                <input type="number" class="form-control" id="durationExcel" name="duration">
+                <input type="number" class="form-control" id="durationExcel" name="duration" required>
             </div>
             <div class="mb-3">
                 <label for="fileExcel" class="form-label">Datei</label>
-                <input type="file" class="form-control" id="fileExcel" accept=".xls,.xlsx">
+                <input type="file" class="form-control" id="fileExcel" accept=".xls,.xlsx" required>
             </div>
         </form>
 
         <form id="programContentForm">
             <div class="mb-3">
                 <label for="titleProgram" class="form-label">Titel</label>
-                <input type="text" class="form-control" id="titleProgram" name="title">
+                <input type="text" class="form-control" id="titleProgram" name="title" required>
             </div>
             <div class="mb-3">
                 <label for="durationProgram" class="form-label">Anzeigedauer (Sekunden)</label>
-                <input type="number" class="form-control" id="durationProgram" name="duration">
+                <input type="number" class="form-control" id="durationProgram" name="duration" required>
             </div>
             <div class="mb-3">
                 <label class="form-label">Programm</label>
@@ -152,10 +152,10 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td><input type="time" class="form-control" name="time[]"></td>
-                            <td><input type="text" class="form-control" name="activity[]"></td>
-                            <td><input type="text" class="form-control" name="location[]"></td>
-                            <td><input type="text" class="form-control" name="notes[]"></td>
+                            <td><input type="time" class="form-control" name="time[]" required></td>
+                            <td><input type="text" class="form-control" name="activity[]" required></td>
+                            <td><input type="text" class="form-control" name="location[]" required></td>
+                            <td><input type="text" class="form-control" name="notes[]" required></td>
                             <td><button type="button" class="btn btn-danger removeRowButton">Entfernen</button></td>
                         </tr>
                     </tbody>
@@ -167,27 +167,27 @@
         <form id="birthdayContentForm">
             <div class="mb-3">
                 <label for="titleBirthday" class="form-label">Titel</label>
-                <input type="text" class="form-control" id="titleBirthday" name="title">
+                <input type="text" class="form-control" id="titleBirthday" name="title" required>
             </div>
             <div class="mb-3">
                 <label for="durationBirthday" class="form-label">Anzeigedauer (Sekunden)</label>
-                <input type="number" class="form-control" id="durationBirthday" name="duration">
+                <input type="number" class="form-control" id="durationBirthday" name="duration" required>
             </div>
             <div class="mb-3">
                 <label class="form-label">Geburtstage</label>
                 <table class="table" id="birthdayDetailsTable">
                     <thead>
                         <tr>
-                            <th>Geburtstag</th>
+                            <th>Datum</th>
                             <th>Name</th>
-                            <th>Bild</th>
+                            <th>Bild (optional)</th>
                             <th>Aktion</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td><input type="date" class="form-control" name="birthday[]"></td>
-                            <td><input type="text" class="form-control" name="name[]"></td>
+                            <td><input type="date" class="form-control" name="birthday[]" required></td>
+                            <td><input type="text" class="form-control" name="name[]" required></td>
                             <td><input type="file" class="form-control" name="image[]" accept="image/*"></td>
                             <td><button type="button" class="btn btn-danger removeRowButton">Entfernen</button></td>
                         </tr>
@@ -200,45 +200,45 @@
         <form id="weatherContentForm">
             <div class="mb-3">
                 <label for="titleWeather" class="form-label">Titel</label>
-                <input type="text" class="form-control" id="titleWeather" name="title">
+                <input type="text" class="form-control" id="titleWeather" name="title" required>
             </div>
             <div class="mb-3">
                 <label for="durationWeather" class="form-label">Anzeigedauer (Sekunden)</label>
-                <input type="number" class="form-control" id="durationWeather" name="duration">
+                <input type="number" class="form-control" id="durationWeather" name="duration" required>
             </div>
             <div class="mb-3">
                 <label for="contentWeather" class="form-label">Ort</label>
-                <input class="form-control" id="contentWeather" name="location">
+                <input class="form-control" id="contentWeather" name="location" required>
             </div>
         </form>
 
         <form id="newsContentForm">
             <div class="mb-3">
                 <label for="titleNews" class="form-label">Titel</label>
-                <input type="text" class="form-control" id="titleNews" name="title">
+                <input type="text" class="form-control" id="titleNews" name="title" required>
             </div>
             <div class="mb-3">
                 <label for="durationNews" class="form-label">Anzeigedauer (Sekunden)</label>
-                <input type="number" class="form-control" id="durationNews" name="duration">
+                <input type="number" class="form-control" id="durationNews" name="duration" required>
             </div>
             <div class="mb-3">
                 <label for="contentNews" class="form-label">Thema (z.B. "Deutschland Politik", "Gesunde Ernährung", etc.)</label>
-                <input class="form-control" id="contentNews" name="query">
+                <input class="form-control" id="contentNews" name="query" required>
             </div>
         </form>
 
         <form id="gameContentForm">
             <div class="mb-3">
                 <label for="titleGame" class="form-label">Titel</label>
-                <input type="text" class="form-control" id="titleGame" name="title">
+                <input type="text" class="form-control" id="titleGame" name="title" required>
             </div>
             <div class="mb-3">
                 <label for="durationGame" class="form-label">Anzeigedauer (Sekunden)</label>
-                <input type="number" class="form-control" id="durationGame" name="duration">
+                <input type="number" class="form-control" id="durationGame" name="duration" required>
             </div>
             <div class="mb-3">
                 <label for="folderGame" class="form-label">Ordner</label>
-                <input type="file" class="form-control" id="folderGame" webkitdirectory directory multiple>
+                <input type="file" class="form-control" id="folderGame" webkitdirectory directory multiple required>
             </div>
         </form>
     </div>

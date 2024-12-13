@@ -51,6 +51,13 @@ document.addEventListener('DOMContentLoaded', function() {
     addButton.addEventListener('click', function() {
         const contentType = document.getElementById('contentTypeSelect').value;
         const formElement = document.getElementById(`${contentType}ContentForm`);
+
+        // Check if form is valid
+        if (!formElement.checkValidity()) {
+            formElement.reportValidity();
+            return;
+        }
+
         const formData = new FormData(formElement);
         const capitalizedContentType = contentType.charAt(0).toUpperCase() + contentType.slice(1) + 'Content';
         formData.append('type', capitalizedContentType);
@@ -142,8 +149,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const tableBody = document.getElementById('programDetailsTable').querySelector('tbody');
         const newRow = document.createElement('tr');
         newRow.innerHTML = `
-            <td><input type="time" class="form-control" name="time"></td>
-            <td><input type="text" class="form-control" name="activity"></td>
+            <td><input type="time" class="form-control" name="time" required></td>
+            <td><input type="text" class="form-control" name="activity" required></td>
             <td><input type="text" class="form-control" name="location"></td>
             <td><input type="text" class="form-control" name="notes"></td>
             <td><button type="button" class="btn btn-danger removeRowButton">Entfernen</button></td>
@@ -164,8 +171,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const tableBody = document.getElementById('birthdayDetailsTable').querySelector('tbody');
         const newRow = document.createElement('tr');
         newRow.innerHTML = `
-            <td><input type="date" class="form-control" name="birthday"></td>
-            <td><input type="text" class="form-control" name="name"></td>
+            <td><input type="date" class="form-control" name="birthday" required></td>
+            <td><input type="text" class="form-control" name="name" required></td>
             <td><input type="file" class="form-control" name="image" accept="image/*"></td>
             <td><button type="button" class="btn btn-danger removeRowButton">Entfernen</button></td>
         `;
