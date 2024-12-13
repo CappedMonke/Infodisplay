@@ -156,7 +156,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: [],
                 image: []
             };
-            formToShow.querySelectorAll('tbody tr').forEach(row => {
+            const existingFiles = [];
+            formToShow.querySelectorAll('tbody tr').forEach((row, rowIndex) => {
                 const birthdayInput = row.querySelector('input[name="birthday"]');
                 const nameInput = row.querySelector('input[name="name"]');
                 const imageInput = row.querySelector('input[name="image"]');
@@ -169,7 +170,16 @@ document.addEventListener('DOMContentLoaded', function() {
                         if (imageInput.files.length > 0) {
                             birthdayData.image.push(imageInput.files[0].name);
                         } else {
-                            birthdayData.image.push('');
+                            const smallText = imageInput.nextElementSibling;
+                            if (smallText && smallText.classList.contains('form-text')) {
+                                const currentFileText = smallText.textContent.trim().replace('Aktuelle Datei: ', '');
+                                birthdayData.image.push(currentFileText);
+                                existingFiles.push(currentFileText);
+                            } else {
+                                const existingFile = content.content.birthdayTable.image[rowIndex];
+                                birthdayData.image.push(existingFile);
+                                existingFiles.push(existingFile);
+                            }
                         }
                     }
                 }
@@ -178,6 +188,11 @@ document.addEventListener('DOMContentLoaded', function() {
             formData.delete('name');
             formData.delete('image');
             formData.append('birthdayTable', JSON.stringify(birthdayData));
+
+            // Append existing files if no new files were uploaded for those entries
+            existingFiles.forEach(file => {
+                formData.append('files', file);
+            });
         }
 
         // Append existing files if no new files were uploaded
@@ -194,15 +209,18 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Update the current file text if files were changed
         if (filesChanged) {
-            formToShow.querySelectorAll('input[type="file"]').forEach(input => {
+            formToShow.querySelectorAll('input[type="file"]').forEach((input, index) => {
                 const smallText = input.nextElementSibling;
                 if (smallText && smallText.classList.contains('form-text')) {
                     const fileNames = Array.from(input.files).map(file => file.name);
                     if (fileNames.length === 1) {
                         smallText.innerHTML = `Aktuelle Datei: ${fileNames[0]}`;
-                    } else {
+                    } else if (fileNames.length > 1) {
                         const fileNamesHtml = fileNames.map(name => `<div>${name}</div>`).join('');
                         smallText.innerHTML = `Aktuelle Dateien: ${fileNamesHtml}`;
+                    } else {
+                        const existingFile = content.content.birthdayTable.image[index];
+                        smallText.innerHTML = `Aktuelle Datei: ${existingFile}`;
                     }
                 }
             });

@@ -3,12 +3,17 @@ import json
 from Settings import settings, set_setting
 from flask import Flask, render_template, request
 from ContentManager import ContentManager
+from flask_socketio import SocketIO
 
 
 # ---------------------------------------------------------------------------- #
 #                                Initializations                               #
 # ---------------------------------------------------------------------------- #
 app = Flask(__name__, static_folder='Static', template_folder='Templates')
+app.secret_key = 'super secret key'
+
+# TODO: Implement socket.io, whenever content gets updated (added, deleted, changed order, etc.), send the updated content to the client
+
 content_manager = ContentManager()
 
 
