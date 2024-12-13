@@ -33,19 +33,20 @@ def render_add_content():
 def add_content(): 
     # Cant use json because of file uploads
     content_data = {
-        'type': request.form['type'],
-        'id': request.form['id'],
-        'title': request.form['title'],
-        'duration': request.form['duration'],
+        'type': request.form.get('type', ''),
+        'id': request.form.get('id', ''),
+        'title': request.form.get('title', ''),
+        'duration': request.form.get('duration', ''),
         'content': {key: value for key, value in request.form.items() if key not in ['id', 'title', 'duration', 'type']},
     }
 
     # Handle file uploads
-    if 'file' in request.files:
+    if request.files:
         files_set = set()
-        for file in request.files.getlist('file'):
-            files_set.add(file.filename)
-            content_manager.save_file(content_data['id'], file)
+        for key in request.files:
+            for file in request.files.getlist(key):
+                files_set.add(file.filename)
+                content_manager.save_file(content_data['id'], file)
         content_data['content']['files'] = list(files_set) if files_set else None
 
     content_manager.create_and_add_content(content_data)
@@ -132,7 +133,7 @@ def render_settings():
 
 @app.route('/save_settings', methods=['POST'])
 def save_settings():
-    data = request.get_json()
+    data = request.form
     for key, value in data.items():
         set_setting(key, value)
     return 'Saved settings', 200

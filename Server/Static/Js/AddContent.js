@@ -37,8 +37,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Append file inputs to FormData
         formElement.querySelectorAll('input[type="file"]').forEach(input => {
-            if (input.files.length > 0) {
-                formData.append(input.name, input.files[0]);
+            for (let i = 0; i < input.files.length; i++) {
+                const file = input.files[i];
+                const fileName = file.name.split('/').pop(); // Remove folder name
+                if (contentType === 'slideshow' && file.type.startsWith('image/')) {
+                    formData.append(input.name, file, fileName); // Only images are allowed in slideshows
+                } else {
+                    formData.append(input.name, file, fileName);
+                }
             }
         });
 

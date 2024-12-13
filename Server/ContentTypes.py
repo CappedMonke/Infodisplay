@@ -9,16 +9,13 @@ UPLOADS_FOLDER = 'Server/Static/Uploads'
 
 
 class BaseContent():
-    def __init__(self, type, title, duration, content, is_visible, id):
+    def __init__(self, id, type, title, duration, content, is_visible):
+        self.id = id
         self.type = type
         self.title = title
         self.duration = duration
         self.content = content
         self.is_visible = is_visible
-        self.id = id
-
-        if id is None:
-            self.id = str(uuid.uuid4())
 
 
     def get_subclass(type):
@@ -36,63 +33,63 @@ class BaseContent():
 
 # content['text'] = 'Hello World!'
 class TextContent(BaseContent):
-    def __init__(self, type, title, duration, content, is_visible=True, id=None):
-        super().__init__(type, title, duration, content, is_visible, id)
+    def __init__(self, id, type, title, duration, content, is_visible=True):
+        super().__init__(id, type, title, duration, content, is_visible)
 
 
 # content['file'] = 'image.png'
 class ImageContent(BaseContent):
-    def __init__(self, type, title, duration, content, is_visible=True, id=None):
-        super().__init__(type, title, duration, content, is_visible, id)
+    def __init__(self, id, type, title, duration, content, is_visible=True):
+        super().__init__(id, type, title, duration, content, is_visible)
     
 
 # content['text'] = 'Hello World!'
 # content['file'] = 'image.png'
 class ImageTextContent(BaseContent):
-    def __init__(self, type, title, duration, content, is_visible=True, id=None):
-        super().__init__(type, title, duration, content, is_visible, id)
+    def __init__(self, id, type, title, duration, content, is_visible=True):
+        super().__init__(id, type, title, duration, content, is_visible)
 
 
 # content['file'] = 'video.mp4'
 class VideoContent(BaseContent):
-    def __init__(self, type, title, content, duration=0, is_visible=True, id=None):
+    def __init__(self, id, type, title, duration, content, is_visible=True):
         # If a new VideoContent is created, get duration of the video
-        clip = VideoFileClip(f'{UPLOADS_FOLDER}/{self.content['file']}')
+        clip = VideoFileClip(f'{UPLOADS_FOLDER}/{id}/{content['files'][0]}')
         clip.close()
         duration = clip.duration
-        super().__init__(type, title, duration, content, is_visible, id)
+        super().__init__(id, type, title, duration, content, is_visible)
 
 
 # content['duration_per_image'] = 0
 class SlideshowContent(BaseContent):
-    def __init__(self, type, title, content, duration=0, is_visible=True, id=None):
+    def __init__(self, id, type, title, duration, content, is_visible=True):
         duration = content['duration_per_image'] * len(content['files'])
-        super().__init__(type, title, duration, content, is_visible, id)
+        super().__init__(id, type, title, duration, content, is_visible)
 
 
 # content['file'] = 'document.pdf'
 class PdfContent(BaseContent):
-    def __init__(self, type, title, duration, content, is_visible=True, id=None):
-        super().__init__(type, title, duration, content, is_visible, id)
+    def __init__(self, id, type, title, duration, content, is_visible=True):
+        super().__init__(id, type, title, duration, content, is_visible)
     
 
 # content['file'] = 'document.xlsx'
 class ExcelContent(BaseContent):
-    def __init__(self, type, title, duration, content, is_visible=True, id=None):
-        super().__init__(type, title, duration, content, is_visible, id)
+    def __init__(self, id, type, title, duration, content, is_visible=True):
+        super().__init__(id, type, title, duration, content, is_visible)
     
 
 # content['items'] = [{'text': 'Hello World!', 'date': '2000-01-01'}, ...]
 class ProgramContent(BaseContent):
-    def __init__(self, type, title, duration, content, is_visible=True, id=None):
-        super().__init__(type, title, duration, content, is_visible, id)
+    def __init__(self, id, type, title, duration, content, is_visible=True):
+        super().__init__(id, type, title, duration, content, is_visible)
 
 
 # BUG: if visibility was set to false by the user, it will be automatically set to true when someone has their birthday.
 # content['people'] = [{'name': 'John Doe', 'birthday': '2000-01-01', 'image': 'image.png'}, ...]
 class BirthdayContent(BaseContent):
-    def __init__(self, type, title, duration, content, is_visible=True, id=None):
-        super().__init__(type, title, duration, content, is_visible, id)
+    def __init__(self, id, type, title, duration, content, is_visible=True):
+        super().__init__(id, type, title, duration, content, is_visible)
         self.birthday_indices = []
         self.current_index = 0
         self.setup_birthdays()
@@ -134,8 +131,8 @@ class BirthdayContent(BaseContent):
 # content['last_update'] = '2000-01-01T00:00:00'
 # content['weather'] = {'daily_weather_code': 0, 'temperature_2m_max': 0, ...}
 class WeatherContent(BaseContent):
-    def __init__(self, type, title, duration, content):
-        super().__init__(type, title, duration, content)
+    def __init__(self, id, type, title, duration, content, is_visible=True):
+        super().__init__(id, type, title, duration, content, is_visible)
 
         # Fetch coordinates if not provided
         if content.get('latitude') is None or content.get('longitude') is None:
@@ -195,8 +192,8 @@ class WeatherContent(BaseContent):
 # content['last_update'] = '2000-01-01T00:00:00'
 # content = ['articles'] = [{'title': 'Hello World!', 'description': 'This is a description.', 'url': 'https://example.com', 'urlToImage': 'image.png'}, ...]
 class NewsContent(BaseContent):
-    def __init__(self, type, title, duration, content):
-        super().__init__(type, title, duration, content)
+    def __init__(self, id, type, title, duration, content, is_visible=True):
+        super().__init__(id, type, title, duration, content, is_visible)
         self.current_index = 0
         self.fetch_news()
     

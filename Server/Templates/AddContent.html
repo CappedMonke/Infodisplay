@@ -50,7 +50,7 @@
             </div>
             <div class="mb-3">
                 <label for="fileImage" class="form-label">Datei</label>
-                <input type="file" class="form-control" id="fileImage" name="file" accept="image/*">
+                <input type="file" class="form-control" id="fileImage" accept="image/*">
             </div>
         </form>
 
@@ -65,7 +65,11 @@
             </div>
             <div class="mb-3">
                 <label for="contentImageText" class="form-label">Text</label>
-                <textarea class="form-control" id="contentImageText" name="content"></textarea>
+                <textarea class="form-control" id="contentImageText" name="text"></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="fileImageText" class="form-label">Datei</label>
+                <input type="file" class="form-control" id="fileImageText" accept="image/*">
             </div>
         </form>
 
@@ -76,7 +80,7 @@
             </div>
             <div class="mb-3">
                 <label for="fileVideo" class="form-label">Datei</label>
-                <input type="file" class="form-control" id="fileVideo" name="content" accept="video/*">
+                <input type="file" class="form-control" id="fileVideo" accept="video/*">
             </div>
         </form>
 
@@ -86,12 +90,12 @@
                 <input type="text" class="form-control" id="titleSlideshow" name="title">
             </div>
             <div class="mb-3">
-                <label for="durationSlideshow" class="form-label">Anzeigedauer (Sekunden)</label>
+                <label for="durationSlideshow" class="form-label">Anzeigedauer pro Bild (Sekunden)</label>
                 <input type="number" class="form-control" id="durationSlideshow" name="duration">
             </div>
             <div class="mb-3">
                 <label for="fileSlideshow" class="form-label">Ordner</label>
-                <input type="file" class="form-control" id="fileSlideshow" name="content" webkitdirectory directory multiple>
+                <input type="file" class="form-control" id="fileSlideshow" accept="image/*" webkitdirectory directory multiple>
             </div>
         </form>
 
