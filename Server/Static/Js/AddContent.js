@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
     addButton.addEventListener('click', function() {
         const contentType = document.getElementById('contentTypeSelect').value;
         const formElement = document.getElementById(`${contentType}ContentForm`);
-        
+
         // Standard form validation
         if (!formElement.checkValidity()) {
             formElement.reportValidity();
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const formData = new FormData(formElement);
         const capitalizedContentType = contentType.charAt(0).toUpperCase() + contentType.slice(1) + 'Content';
         formData.append('type', capitalizedContentType);
-        const id = crypto.randomUUID();
+        const id = generateUUID();
         formData.append('id', id);
 
         // Append file inputs to FormData
@@ -232,3 +232,19 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// Custom UUID generation function because crypto.randomUUID() is not supported in all browsers
+function generateUUID() {
+    let d = new Date().getTime();
+    let d2 = (performance && performance.now && (performance.now()*1000)) || 0;
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        let r = Math.random() * 16;
+        if(d > 0){
+            r = (d + r)%16 | 0;
+            d = Math.floor(d/16);
+        } else {
+            r = (d2 + r)%16 | 0;
+            d2 = Math.floor(d2/16);
+        }
+        return (c === 'x' ? r : (r&0x3|0x8)).toString(16);
+    });
+}
