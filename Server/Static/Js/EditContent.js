@@ -15,6 +15,41 @@ document.addEventListener('DOMContentLoaded', function() {
         formToShow.style.display = 'block';
     }
 
+    // Initialize Quill editors
+    const quillText = new Quill('#quillTextEditor', {
+        theme: 'snow',
+        modules: {
+            toolbar: [
+                [{ 'font': [] }, { 'size': [] }],
+                ['bold', 'italic', 'underline'],
+                [{ 'color': [] }, { 'background': [] }],
+                [{ 'align': [] }],
+                ['clean']
+            ]
+        }
+    });
+
+    const quillImageText = new Quill('#quillImageTextEditor', {
+        theme: 'snow',
+        modules: {
+            toolbar: [
+                [{ 'font': [] }, { 'size': [] }],
+                ['bold', 'italic', 'underline'],
+                [{ 'color': [] }, { 'background': [] }],
+                [{ 'align': [] }],
+                ['clean']
+            ]
+        }
+    });
+
+    // Fill Quill editors with existing content
+    if (content.type === 'TextContent') {
+        quillText.root.innerHTML = content.content.text;
+    }
+    if (content.type === 'ImageTextContent') {
+        quillImageText.root.innerHTML = content.content.text;
+    }
+
     // Auto-fill program content form
     if (content.type === 'ProgramContent') {
         const programData = content.content.programTable;
@@ -120,6 +155,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         });
+
+        // Append Quill editor content to formData
+        if (content.type === 'TextContent') {
+            formData.append('text', quillText.root.innerHTML);
+        }
+        if (content.type === 'ImageTextContent') {
+            formData.append('text', quillImageText.root.innerHTML);
+        }
 
         // Handle program content form data
         if (content.type === 'ProgramContent') {

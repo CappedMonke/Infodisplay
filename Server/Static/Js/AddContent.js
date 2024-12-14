@@ -92,10 +92,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Append Quill editor content to formData
         if (contentType === 'text') {
-            formData.append('textContent', quillText.root.innerHTML);
+            formData.append('text', quillText.root.innerHTML);
         }
         if (contentType === 'imageText') {
-            formData.append('imageTextContent', quillImageText.root.innerHTML);
+            formData.append('text', quillImageText.root.innerHTML);
         }
 
         // Handle program content form data

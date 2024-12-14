@@ -1,5 +1,10 @@
 {% extends "Base.html" %}
 
+{% block head %}
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.core.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
 <div class="forms-content-page">
 	<h1 class="page-heading">Inhalt bearbeiten</h1>
@@ -14,8 +19,8 @@
                 <input type="number" class="form-control" id="durationText" name="duration" value="{{ content.duration }}" required>
             </div>
             <div class="mb-3">
-                <label for="contentText" class="form-label">Text</label>
-                <textarea class="form-control" id="contentText" name="text" required>{{ content.content.text }}</textarea>
+                <label for="quillTextEditor" class="form-label">Text</label>
+                <div id="quillTextEditor" class="quill-editor">{{ content.content.text }}</div>
             </div>
         </form>
 
@@ -49,8 +54,8 @@
                 <input type="number" class="form-control" id="durationImageText" name="duration" value="{{ content.duration }}" required>
             </div>
             <div class="mb-3">
-                <label for="contentImageText" class="form-label">Text</label>
-                <textarea class="form-control" id="contentImageText" name="text" required>{{ content.content.text }}</textarea>
+                <label for="quillImageTextEditor" class="form-label">Text</label>
+                <div id="quillImageTextEditor" class="quill-editor">{{ content.content.text }}</div>
             </div>
             <div class="mb-3">
                 <label for="fileImageText" class="form-label">Datei</label>
@@ -271,5 +276,6 @@
 <script>
     const content = {{ content | tojson }};
 </script>
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
 <script src="{{ url_for('static', filename='Js/EditContent.js') }}"></script>
 {% endblock %}
