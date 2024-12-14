@@ -19,13 +19,16 @@ socketio = SocketIO(app, cors_allowed_origins='*')
 content_manager = ContentManager()
 
 
+def send_visible_content_to_clients():
+    socketio.emit('content_updated', content_manager.get_visible_content_list_as_dict())
+
+
 # ---------------------------------------------------------------------------- #
 #                              Info display routes                             #
 # ---------------------------------------------------------------------------- #
 @app.route('/')
 def render_show_content():
-    content_list = content_manager.get_content_list_as_dict()
-    content = [content for content in content_list if content['is_visible']] # Only visible content in sent to the ShowContent.html 
+    content = content_manager.get_visible_content_list_as_dict()
     private_ip = socket.gethostbyname(socket.gethostname())
     return render_template('ShowContent.html', content=content, socketIoUrl=f'http://{private_ip}:{server_port}')
 
@@ -69,7 +72,7 @@ def add_content():
                 content_data['content'][key] = value
 
     content_manager.create_and_add_content(content_data)
-    socketio.emit('content_updated', content_manager.get_content_list_as_dict())  # Emit updated content
+    send_visible_content_to_clients()
     return 'Content added', 200
 
 
@@ -124,7 +127,7 @@ def update_content():
                 content_data['content'][key] = value
 
     content_manager.update_content(content_data)
-    socketio.emit('content_updated', content_manager.get_content_list_as_dict())  # Emit updated content
+    send_visible_content_to_clients()
     return 'Content updated', 200
 
 
@@ -134,7 +137,7 @@ def set_visibility():
     id = data['id']
     is_visible = data['is_visible']
     content_manager.set_visibility_by_id(id, is_visible)
-    socketio.emit('content_updated', content_manager.get_content_list_as_dict()) 
+    send_visible_content_to_clients() 
     return 'Visibility set', 200
 
 
@@ -143,7 +146,7 @@ def delete_content():
     data = request.get_json()
     id = data['id']
     content_manager.delete_content_by_id(id)
-    socketio.emit('content_updated', content_manager.get_content_list_as_dict()) 
+    send_visible_content_to_clients() 
     return 'Content deleted', 200
 
 
@@ -152,7 +155,7 @@ def change_order():
     data = request.get_json()
     id_list = data['id_list']
     content_manager.change_order(id_list)
-    socketio.emit('content_updated', content_manager.get_content_list_as_dict()) 
+    send_visible_content_to_clients() 
     return 'Order changed', 200
 
 

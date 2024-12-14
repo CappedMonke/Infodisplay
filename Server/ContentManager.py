@@ -56,6 +56,14 @@ class ContentManager():
         return content_dict_list
 
 
+    def get_visible_content_list_as_dict(self):
+        content_dict_list = []
+        for content in self.content_list:
+            if content.is_visible:
+                content_dict_list.append(content.__dict__)
+        return content_dict_list
+
+
     def get_content_by_id(self, id):
         for content in self.content_list:
             if content.id == id:

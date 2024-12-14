@@ -87,10 +87,12 @@ function startContentTimer() {
     }
 
     if (!isFrozen) {
-        contentTimer = setTimeout(() => {
+        if (content.length > 0) {
+            contentTimer = setTimeout(() => {
             showNextContent();
             startContentTimer();
-        }, content[currentContentIndex].duration * 1000);
+            }, content[currentContentIndex].duration * 1000);
+        }
     }
 }
 
@@ -154,9 +156,15 @@ function connectSocketIo() {
     
     socket.on('content_updated', (newContent) => {
         console.log('Content updated:', newContent);
-        // content = newContent;
-        // currentContentIndex = 0; // Reset to the first content
-        // renderContent();
+        const wasContentEmpty = content.length === 0;
+        const isContentEmpty = newContent.length === 0;
+        content = newContent;
+
+        // If content was empty and but now is not empty, start rendering
+        if (wasContentEmpty && !isContentEmpty) {
+            currentContentIndex = 0;
+            renderContent();
+        }
     });
     
     socket.on('disconnect', () => {
@@ -171,7 +179,7 @@ connectSocketIo();
 /* -------------------------------------------------------------------------- */
 let socket;
 let reconnectInterval = 10000; // Time to wait before retrying (in milliseconds)
-let maxRetries = 6;
+let maxRetries = 3;
 let retryCount = 0;
 function connectWebSocket() {
     socket = new WebSocket('ws://localhost:5001');
