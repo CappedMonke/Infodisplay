@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
+    console.log("content to edit: ", content);
+
     // Hide all forms
     document.querySelectorAll('.forms-content-page form').forEach(form => {
         form.style.display = 'none';
@@ -44,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td><input type="text" class="form-control" name="name" value="${birthdayData.name[index]}" required></td>
                 <td>
                     <input type="file" class="form-control" name="image" accept="image/*">
-                    <small class="form-text text-muted">
+                    <small class="form-text text-muted truncate">
                         ${birthdayData.image[index] ? `Aktuelle Datei: ${birthdayData.image[index]}` : ''}
                     </small>
                 </td>
@@ -81,7 +83,10 @@ document.addEventListener('DOMContentLoaded', function() {
         newRow.innerHTML = `
             <td><input type="date" class="form-control" name="birthday" required></td>
             <td><input type="text" class="form-control" name="name" required></td>
-            <td><input type="file" class="form-control" name="image" accept="image/*"></td>
+            <td>
+                <input type="file" class="form-control" name="image" accept="image/*">
+                <small class="form-text text-muted truncate"></small>
+            </td>
             <td><button type="button" class="btn btn-danger removeRowButton">Entfernen</button></td>
         `;
         tableBody.appendChild(newRow);
@@ -218,6 +223,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     } else if (fileNames.length > 1) {
                         const fileNamesHtml = fileNames.map(name => `<div>${name}</div>`).join('');
                         smallText.innerHTML = `Aktuelle Dateien: ${fileNamesHtml}`;
+                        smallText.classList.add('truncate');
                     } else {
                         const existingFile = content.content.birthdayTable.image[index];
                         smallText.innerHTML = `Aktuelle Datei: ${existingFile}`;
@@ -232,6 +238,4 @@ document.addEventListener('DOMContentLoaded', function() {
         toastBootstrap.show();
 
     });
-
-    console.log("content to edit: ", content);
 });

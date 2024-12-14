@@ -31,7 +31,7 @@
             <div class="mb-3">
                 <label for="fileImage" class="form-label">Datei</label>
                 <input type="file" class="form-control" id="fileImage" accept="image/*">
-                <small class="form-text text-muted">
+                <small class="form-text text-muted truncate">
                     {% if content.content.files %}
                         Aktuelle Datei: {{ content.content.files[0] }}
                     {% endif %}
@@ -55,7 +55,7 @@
             <div class="mb-3">
                 <label for="fileImageText" class="form-label">Datei</label>
                 <input type="file" class="form-control" id="fileImageText" accept="image/*">
-                <small class="form-text text-muted">
+                <small class="form-text text-muted truncate">
                     {% if content.content.files %}
                         Aktuelle Datei: {{ content.content.files[0] }}
                     {% endif %}
@@ -71,7 +71,7 @@
             <div class="mb-3">
                 <label for="fileVideo" class="form-label">Datei</label>
                 <input type="file" class="form-control" id="fileVideo" accept="video/*">
-                <small class="form-text text-muted">
+                <small class="form-text text-muted truncate">
                     {% if content.content.files %}
                         Aktuelle Datei: {{ content.content.files[0] }}
                     {% endif %}
@@ -91,7 +91,7 @@
             <div class="mb-3">
                 <label for="fileSlideshow" class="form-label">Ordner</label>
                 <input type="file" class="form-control" id="fileSlideshow" accept="image/*" webkitdirectory directory multiple>
-                <small class="form-text text-muted">
+                <small class="form-text text-muted truncate">
                     {% if content.content.files %}
                         Aktuelle Dateien:
                         {% for file in content.content.files %}
@@ -114,7 +114,7 @@
             <div class="mb-3">
                 <label for="filePdf" class="form-label">Datei</label>
                 <input type="file" class="form-control" id="filePdf" accept="application/pdf">
-                <small class="form-text text-muted">
+                <small class="form-text text-muted truncate">
                     {% if content.content.files %}
                         Aktuelle Datei: {{ content.content.files[0] }}
                     {% endif %}
@@ -134,7 +134,7 @@
             <div class="mb-3">
                 <label for="fileExcel" class="form-label">Datei</label>
                 <input type="file" class="form-control" id="fileExcel" accept=".xls,.xlsx">
-                <small class="form-text text-muted">
+                <small class="form-text text-muted truncate">
                     {% if content.content.files %}
                         Aktuelle Datei: {{ content.content.files[0] }}
                     {% endif %}
@@ -243,7 +243,7 @@
             <div class="mb-3">
                 <label for="folderGame" class="form-label">Ordner</label>
                 <input type="file" class="form-control" id="folderGame" webkitdirectory directory multiple>
-                <small class="form-text text-muted">
+                <small class="form-text text-muted truncate">
                     {% if content.content.files %}
                         Aktuelle Dateien:
                         {% for file in content.content.files %}
