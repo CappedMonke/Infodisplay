@@ -73,6 +73,11 @@ function renderContent() {
     
     if (currentlyVisibleContentContainer) {
         currentlyVisibleContentContainer.style.display = 'block';
+
+        if (currentContent.type === 'TextContent') {
+            currentlyVisibleContentContainer.innerHTML = currentContent.content.text;
+        }
+        
         startContentTimer();
     } else {
         console.error("Undefined content type. Content: ", currentContent);

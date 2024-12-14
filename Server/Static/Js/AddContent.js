@@ -209,10 +209,9 @@ document.addEventListener('DOMContentLoaded', function() {
         theme: 'snow',
         modules: {
             toolbar: [
-                [{ 'font': [] }, { 'size': [] }],
+                [{ 'font': [] }],
                 ['bold', 'italic', 'underline'],
                 [{ 'color': [] }, { 'background': [] }],
-                [{ 'align': [] }],
                 ['clean']
             ]
         }
@@ -222,10 +221,9 @@ document.addEventListener('DOMContentLoaded', function() {
         theme: 'snow',
         modules: {
             toolbar: [
-                [{ 'font': [] }, { 'size': [] }],
+                [{ 'font': [] }],
                 ['bold', 'italic', 'underline'],
                 [{ 'color': [] }, { 'background': [] }],
-                [{ 'align': [] }],
                 ['clean']
             ]
         }
