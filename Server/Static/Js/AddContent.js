@@ -28,6 +28,10 @@ document.addEventListener('DOMContentLoaded', function() {
             birthdayTableBody.removeChild(birthdayTableBody.firstChild);
         }
 
+        // Reset Quill editors
+        quillText.setText('');
+        quillImageText.setText('');
+
         if (formToShow !== null)
             formToShow.style.display = 'none';
         else
@@ -85,6 +89,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     formData.append('file', file, fileName);
             }
         });
+
+        // Append Quill editor content to formData
+        if (contentType === 'text') {
+            formData.append('textContent', quillText.root.innerHTML);
+        }
+        if (contentType === 'imageText') {
+            formData.append('imageTextContent', quillImageText.root.innerHTML);
+        }
 
         // Handle program content form data
         if (contentType === 'program') {

@@ -99,6 +99,9 @@ function startContentTimer() {
 /*                              DOMContentLoaded                              */
 /* -------------------------------------------------------------------------- */
 document.addEventListener('DOMContentLoaded', function() {
+    console.log(content);
+    console.log(socketIoUrl)
+
     /* ------------------------------- Containers ------------------------------- */
     contentContainers = {
         'TextContent': document.getElementById('textContent'),
@@ -140,7 +143,31 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 /* -------------------------------------------------------------------------- */
-/*                                  Websocket Gesture Recognition                                */
+/*                                  SocketIO Server                           */
+/* -------------------------------------------------------------------------- */
+function connectSocketIo() {
+    const socket = io(socketIoUrl);
+
+    socket.on('connect', () => {
+        console.log('Connected to SocketIO server');
+    });
+    
+    socket.on('content_updated', (newContent) => {
+        console.log('Content updated:', newContent);
+        // content = newContent;
+        // currentContentIndex = 0; // Reset to the first content
+        // renderContent();
+    });
+    
+    socket.on('disconnect', () => {
+        console.log('Disconnected from SocketIO server');
+    });
+}
+connectSocketIo();
+
+
+/* -------------------------------------------------------------------------- */
+/*                                  Websocket Gesture Recognition             */
 /* -------------------------------------------------------------------------- */
 let socket;
 let reconnectInterval = 10000; // Time to wait before retrying (in milliseconds)
@@ -149,19 +176,19 @@ let retryCount = 0;
 function connectWebSocket() {
     socket = new WebSocket('ws://localhost:5001');
 
-
     // Connection opened
     socket.addEventListener('open', () => {
         retryCount = 0;
     });
 
-
     // Handle messages from the server
     socket.addEventListener('message', (event) => {
         if (event.data === 'switch_content_previous') {
             highlightButton('previousContentButton');
+            showPreviousContent();
         } else if (event.data === 'switch_content_next') {
             highlightButton('nextContentButton');
+            showNextContent();
         } else if (event.data === 'toggle_freeze'){
             toggle_freeze();
         } else if (event.data === 'ok' && currentContent && currentContent.type === 'GameContent') {
@@ -186,5 +213,6 @@ function connectWebSocket() {
         }
     });
 }
+
 // Start the WebSocket connection
 connectWebSocket();

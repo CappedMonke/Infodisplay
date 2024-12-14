@@ -1,9 +1,13 @@
 import argparse
 import json
+import socket
 from Settings import settings, set_setting
 from flask import Flask, render_template, request
 from ContentManager import ContentManager
 from flask_socketio import SocketIO
+
+
+server_port = None # Will be set in the main function, is needed for the socket.io server
 
 
 # ---------------------------------------------------------------------------- #
@@ -11,9 +15,7 @@ from flask_socketio import SocketIO
 # ---------------------------------------------------------------------------- #
 app = Flask(__name__, static_folder='Static', template_folder='Templates')
 app.secret_key = 'super secret key'
-
-# TODO: Implement socket.io, whenever content gets updated (added, deleted, changed order, etc.), send the updated content to the client
-
+socketio = SocketIO(app, cors_allowed_origins='*')
 content_manager = ContentManager()
 
 
@@ -24,7 +26,8 @@ content_manager = ContentManager()
 def render_show_content():
     content_list = content_manager.get_content_list_as_dict()
     content = [content for content in content_list if content['is_visible']] # Only visible content in sent to the ShowContent.html 
-    return render_template('ShowContent.html', content=content)
+    private_ip = socket.gethostbyname(socket.gethostname())
+    return render_template('ShowContent.html', content=content, socketIoUrl=f'http://{private_ip}:{server_port}')
 
 
 # ---------------------------------------------------------------------------- #
@@ -66,6 +69,7 @@ def add_content():
                 content_data['content'][key] = value
 
     content_manager.create_and_add_content(content_data)
+    socketio.emit('content_updated', content_manager.get_content_list_as_dict())  # Emit updated content
     return 'Content added', 200
 
 
@@ -120,6 +124,7 @@ def update_content():
                 content_data['content'][key] = value
 
     content_manager.update_content(content_data)
+    socketio.emit('content_updated', content_manager.get_content_list_as_dict())  # Emit updated content
     return 'Content updated', 200
 
 
@@ -137,6 +142,7 @@ def delete_content():
     data = request.get_json()
     id = data['id']
     content_manager.delete_content_by_id(id)
+    socketio.emit('content_updated', content_manager.get_content_list_as_dict()) 
     return 'Content deleted', 200
 
 
@@ -145,6 +151,7 @@ def change_order():
     data = request.get_json()
     id_list = data['id_list']
     content_manager.change_order(id_list)
+    socketio.emit('content_updated', content_manager.get_content_list_as_dict()) 
     return 'Order changed', 200
 
 
@@ -179,4 +186,5 @@ if __name__ == '__main__':
     server_port = args.server_port
     debug = args.debug
 
-    app.run(host=server_host, port=server_port, debug=debug)
+    # Run the app with SocketIO
+    socketio.run(app, host=server_host, port=server_port, debug=debug)
