@@ -134,6 +134,7 @@ def set_visibility():
     id = data['id']
     is_visible = data['is_visible']
     content_manager.set_visibility_by_id(id, is_visible)
+    socketio.emit('content_updated', content_manager.get_content_list_as_dict()) 
     return 'Visibility set', 200
 
 

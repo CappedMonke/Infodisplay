@@ -77,19 +77,25 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Initialize SortableJS
+    let initialOrder = Array.from(sortableList.children).map(child => child.dataset.id);
+
     Sortable.create(sortableList, {
         animation: 50,
         onEnd: function() {
             // Get the updated order of IDs
             const updatedOrder = Array.from(sortableList.children).map(child => child.dataset.id);
 
-            fetch('/change_order', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ id_list: updatedOrder }),
-            });
+            // Check if the order has changed
+            if (JSON.stringify(updatedOrder) !== JSON.stringify(initialOrder)) {
+                fetch('/change_order', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ id_list: updatedOrder }),
+                })
+            }
+            initialOrder = updatedOrder;
         }
     });
 
