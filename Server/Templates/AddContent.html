@@ -1,5 +1,10 @@
 {% extends "Base.html" %}
 
+{% block head %}
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.core.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
 <div class="forms-content-page">
 	<h1 class="page-heading">Inhalte erstellen</h1>
@@ -34,8 +39,8 @@
                 <input type="number" class="form-control" id="durationText" name="duration" required>
             </div>
             <div class="mb-3">
-                <label for="contentText" class="form-label">Text</label>
-                <textarea class="form-control" id="contentText" name="text" required></textarea>
+                <label for="quillTextEditor" class="form-label">Text</label>
+                <div id="quillTextEditor" class="quill-editor"></div>
             </div>
         </form>
 
@@ -64,8 +69,8 @@
                 <input type="number" class="form-control" id="durationImageText" name="duration" required>
             </div>
             <div class="mb-3">
-                <label for="contentImageText" class="form-label">Text</label>
-                <textarea class="form-control" id="contentImageText" name="text" required></textarea>
+                <label for="quillImageTextEditor" class="form-label">Text</label>
+                <div id="quillImageTextEditor" class="quill-editor"></div>
             </div>
             <div class="mb-3">
                 <label for="fileImageText" class="form-label">Datei</label>
@@ -256,5 +261,6 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
 <script src="{{ url_for('static', filename='Js/AddContent.js') }}"></script>
 {% endblock %}

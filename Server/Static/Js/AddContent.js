@@ -51,10 +51,20 @@ document.addEventListener('DOMContentLoaded', function() {
     addButton.addEventListener('click', function() {
         const contentType = document.getElementById('contentTypeSelect').value;
         const formElement = document.getElementById(`${contentType}ContentForm`);
-
-        // Check if form is valid
+        
+        // Standard form validation
         if (!formElement.checkValidity()) {
             formElement.reportValidity();
+            return;
+        }
+
+        // Quill editor validation
+        if (contentType === 'text' && quillText.getText().trim().length === 0) {
+            alert('Bitte befüllen Sie das Textfeld.');
+            return;
+        }
+        if (contentType === 'imageText' && quillImageText.getText().trim().length === 0) {
+            alert('Bitte befüllen Sie das Textfeld.');
             return;
         }
 
@@ -181,5 +191,32 @@ document.addEventListener('DOMContentLoaded', function() {
             tableBody.removeChild(newRow);
         });
     }
+
+    // Initialize Quill editors
+    const quillText = new Quill('#quillTextEditor', {
+        theme: 'snow',
+        modules: {
+            toolbar: [
+                [{ 'font': [] }, { 'size': [] }],
+                ['bold', 'italic', 'underline'],
+                [{ 'color': [] }, { 'background': [] }],
+                [{ 'align': [] }],
+                ['clean']
+            ]
+        }
+    });
+
+    const quillImageText = new Quill('#quillImageTextEditor', {
+        theme: 'snow',
+        modules: {
+            toolbar: [
+                [{ 'font': [] }, { 'size': [] }],
+                ['bold', 'italic', 'underline'],
+                [{ 'color': [] }, { 'background': [] }],
+                [{ 'align': [] }],
+                ['clean']
+            ]
+        }
+    });
 });
 
