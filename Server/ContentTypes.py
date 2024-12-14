@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from moviepy import VideoFileClip
 from Settings import get_setting
 import requests
@@ -118,15 +118,14 @@ class BirthdayContent(BaseContent):
     
 
     def refresh(self):
+        if self.is_visible == False:
+            return False
+
         # If last_refresh is not today, setup birthdays
         if datetime.fromisoformat(self.content['last_refresh']).day != datetime.now().day:
             self.setup_birthdays()
             self.update_should_show()
             return True
-        
-        # If people have their birthday today, rotate person displayed
-        if self.should_show:
-            self.current_index = (self.current_index + 1) % len(self.birthday_indices)
 
         return False
 
@@ -171,12 +170,14 @@ class WeatherContent(BaseContent):
 
 
     def refresh(self):
+        if self.is_visible == False:
+            return False
+
         # If last_refresh is older than the refresh interval, fetch weather
         now = datetime.now()
-        if now > datetime.fromisoformat(self.content['last_refresh']) + get_setting('weather_refresh_interval') * 60:
+        if now > datetime.fromisoformat(self.content['last_refresh']) + timedelta(minutes=(int(get_setting('weather_update_interval')))):
             self.fetch_weather()
             return True
-        
         return False
 
 
@@ -233,9 +234,12 @@ class NewsContent(BaseContent):
     
 
     def refresh(self):
+        if self.is_visible == False:
+            return False
+
         # If last_refresh is older than the refresh interval, fetch news
         now = datetime.now()
-        if now > datetime.fromisoformat(self.content['last_refresh']) + get_setting('news_refresh_interval') * 60:
+        if now > datetime.fromisoformat(self.content['last_refresh']) + timedelta(minutes=(int(get_setting('weather_update_interval')))):
             self.fetch_news()
             return True
         

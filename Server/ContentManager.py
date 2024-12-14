@@ -1,6 +1,9 @@
 import os
+import threading
+import time
 from flask import json
 from ContentTypes import BaseContent
+from Settings import get_setting
 
 
 CONTENT_FILE_PATH = 'Server/Savestate/Content.json'
@@ -8,8 +11,9 @@ UPLOAD_FOLDER = 'Server/Static/Uploads'
 
 
 class ContentManager():
-    def __init__(self):
+    def __init__(self, send_visible_content_to_clients):
         self.content_list = []
+        self.send_visible_content_to_clients = send_visible_content_to_clients
         self.load_content()
         self.save_content() # Some content gets updated on initialization, so save it again immediately
     
@@ -74,7 +78,7 @@ class ContentManager():
     def update_content(self, content_data):
         # Assuming content_data is a dictionary with the necessary keys
         id = content_data.get('id')
-        content = self.get_content_by_id(id)\
+        content = self.get_content_by_id(id)
         
         # Remove files that were removed while editing
         if 'files' in content_data['content']:
@@ -85,6 +89,18 @@ class ContentManager():
         content.__dict__.update(content_data)
         content.update() # Update content if necessary (like fetching weather for other location)
         self.save_content()
+
+
+    def refresh_content(self):
+        something_changed = False
+        for content in self.content_list:
+            if content.refresh():
+                self.save_content()
+                something_changed = True
+
+        # If content was actually updated, send it to the clients        
+        if something_changed:
+            self.send_visible_content_to_clients()
 
 
     def add_content(self, content):
@@ -155,3 +171,8 @@ class ContentManager():
     def delete_file(self, id, filename):
         file_path = f'{UPLOAD_FOLDER}/{id}/{filename}'
         os.remove(file_path)
+
+    def run(self):
+        while True:
+            time.sleep(int(get_setting('update_interval')))  # Sleep for the update interval in seconds
+            self.refresh_content()

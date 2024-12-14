@@ -1,6 +1,7 @@
 import argparse
 import json
 import socket
+import threading
 from Settings import settings, set_setting
 from flask import Flask, render_template, request
 from ContentManager import ContentManager
@@ -16,11 +17,12 @@ server_port = None # Will be set in the main function, is needed for the socket.
 app = Flask(__name__, static_folder='Static', template_folder='Templates')
 app.secret_key = 'super secret key'
 socketio = SocketIO(app, cors_allowed_origins='*')
-content_manager = ContentManager()
-
 
 def send_visible_content_to_clients():
     socketio.emit('content_updated', content_manager.get_visible_content_list_as_dict())
+
+content_manager = ContentManager(send_visible_content_to_clients)
+threading.Thread(target=content_manager.run, daemon=True).start()
 
 
 # ---------------------------------------------------------------------------- #

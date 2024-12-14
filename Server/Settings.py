@@ -6,6 +6,7 @@ SETTINGS_FILE_PATH = 'Server/Savestate/Settings.json'
 
 
 settings = {
+    'update_interval': 60 * 2, # 2 minutes
     'weather_update_interval': 60, # 1 hour
     'news_update_interval': 60 * 2, # 2 hours
     'news_api_key': '',
