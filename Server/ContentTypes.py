@@ -112,7 +112,6 @@ class BirthdayContent(BaseContent):
     def __init__(self, id, type, title, duration, content, is_visible=True, **kwargs):
         super().__init__(id, type, title, duration, content, is_visible)
         self.birthday_indices = []
-        self.current_index = 0
         self.setup_birthdays()
         self.update_should_show()
     
@@ -229,7 +228,6 @@ class WeatherContent(BaseContent):
 class NewsContent(BaseContent):
     def __init__(self, id, type, title, duration, content, is_visible=True, **kwargs):
         super().__init__(id, type, title, duration, content, is_visible)
-        self.current_index = 0
         self.fetch_news()
     
 
@@ -243,10 +241,6 @@ class NewsContent(BaseContent):
             self.fetch_news()
             return True
         
-        # If news could be fetched, rotate news displayed
-        if self.should_show:
-            self.current_index = (self.current_index + 1) % len(self.content['articles'])
-
         return False
 
 

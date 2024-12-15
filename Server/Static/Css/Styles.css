@@ -92,3 +92,14 @@
         display: none;
     }
 }
+
+.news-card-style {
+    width: 100%;
+    max-width: 900px;
+}
+
+.qr-code {
+    min-width: 128px;
+    min-height: 128px;
+    margin-left: 16px;
+}

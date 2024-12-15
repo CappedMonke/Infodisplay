@@ -45,7 +45,20 @@
 
 <div id="weatherContent" class="d-none"></div>
 
-<div id="newsContent" class="d-none"></div>
+<div id="newsContent" class="d-none centered-content">
+    <div class="card news-card-style">
+        <img id="newsImage" src="" class="card-img-top" alt="News Image">
+        <div class="card-body">
+            <div class="d-flex ">
+                <div>
+                    <h5 id="newsTitle" class="card-title"></h5>
+                    <p id="newsDescription" class="card-text"></p>
+                </div>
+                <div id="newsQRCode" class="qr-code"></div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div id="gameContent" class="d-none centered-content">
     <iframe id="gameElement" src=""></iframe>
@@ -64,5 +77,6 @@
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.worker.min.js';
 </script>
 <script lang="javascript" src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="{{ url_for('static', filename='Js/ShowContent.js') }}"></script>
 {% endblock %}

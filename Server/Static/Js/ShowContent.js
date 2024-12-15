@@ -159,8 +159,31 @@ function renderContent() {
                 weatherElement.innerHTML = currentContent.content.text;
                 break;
             case 'NewsContent':
-                const newsElement = document.getElementById('newsElement');
-                newsElement.innerHTML = currentContent.content.text;
+                const newsImage = document.getElementById('newsImage');
+                const newsTitle = document.getElementById('newsTitle');
+                const newsDescription = document.getElementById('newsDescription');                
+                const newsQRCode = document.getElementById('newsQRCode');
+
+                // Ensure current_index is initialized and incremented correctly
+                if (typeof currentContent.current_index === 'undefined') {
+                    currentContent.current_index = 0;
+                } else {
+                    currentContent.current_index = (currentContent.current_index + 1) % currentContent.content.articles.length;
+                }
+
+                const article = currentContent.content.articles[currentContent.current_index];
+                newsImage.src = article.urlToImage;
+                newsTitle.textContent = article.title;
+                newsDescription.textContent = article.description;
+
+                // Generate QR code for the article URL
+                newsQRCode.innerHTML = '';
+                new QRCode(newsQRCode, {
+                    text: article.url,
+                    width: 128,
+                    height: 128
+                });
+
                 break;
             case 'GameContent':
                 const gameElement = document.getElementById('gameElement');
@@ -188,7 +211,7 @@ function startContentTimer() {
     }
 
     if (!isFrozen) {
-        if (content.length > 1) { // Only start the timer if there is more than one content element
+        if (content.length > 0) { // Only start the timer if there is more than one content element
             contentTimer = setTimeout(() => {
                 showNextContent();
             }, content[currentContentIndex].duration * 1000);
@@ -334,6 +357,7 @@ function renderProgram() {
 /*                              DOMContentLoaded                              */
 /* -------------------------------------------------------------------------- */
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('RAW CONTENT:');
     console.log(content);
     console.log('socketIoUrl: ' + socketIoUrl)
 
