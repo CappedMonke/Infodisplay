@@ -148,8 +148,7 @@ function renderContent() {
                 renderExcel(excelUrl);
                 break;
             case 'ProgramContent':
-                const programUrl = `get_file/${currentContent.id}/${currentContent.content.files[0]}`;
-                renderProgram(programUrl);
+                renderProgram();
                 break;
             case 'BirthdayContent':
                 const birthdayElement = document.getElementById('birthdayElement');
@@ -245,7 +244,6 @@ function renderExcel(url) {
             heading.classList.add('table-heading');
             heading.style.marginBottom = '32px'; // Add margin to the heading
 
-
             // Clear previous content and append the heading and table
             excelElement.innerHTML = '';
             excelElement.appendChild(heading);
@@ -254,13 +252,80 @@ function renderExcel(url) {
             tableContainer.innerHTML = html;
             excelElement.appendChild(tableContainer);
 
-            // Add Bootstrap table classes
+            // Add Bootstrap table classes and increase font size
             const table = document.getElementById('excelTable');
             if (table) {
                 table.classList.add('table', 'table-striped', 'table-bordered');
+                table.querySelectorAll('th').forEach(th => th.style.fontSize = '1.2em'); // Increase font size for header
+                table.querySelectorAll('td').forEach(td => td.style.fontSize = '1.1em'); // Increase font size for body
+
+                // Make the first row bold
+                const firstRow = table.querySelector('tbody tr');
+                if (firstRow) {
+                    firstRow.querySelectorAll('td').forEach(td => td.style.fontWeight = 'bold');
+                }
             }
         })
         .catch(error => console.error('Error rendering Excel:', error));
+}
+
+function renderProgram() {
+    const programElement = document.getElementById('programContent');
+    const programTable = currentContent.content.programTable;
+
+    // Create a heading element
+    const heading = document.createElement('h1');
+    heading.textContent = currentContent.title;
+    heading.classList.add('table-heading');
+    heading.style.marginBottom = '32px'; // Add margin to the heading
+
+    // Create a table element
+    const table = document.createElement('table');
+    table.id = 'programTable';
+    table.classList.add('table', 'table-striped', 'table-bordered');
+
+    // Define the order of columns and their German translations
+    const columns = [
+        { key: 'time', label: 'Zeit' },
+        { key: 'activity', label: 'Aktivität' },
+        { key: 'location', label: 'Ort' },
+        { key: 'notes', label: 'Anmerkungen' }
+    ];
+
+    // Create table header
+    const thead = document.createElement('thead');
+    const headerRow = document.createElement('tr');
+    columns.forEach(column => {
+        const th = document.createElement('th');
+        th.textContent = column.label;
+        th.style.fontSize = '1.2em'; // Increase font size for header
+        headerRow.appendChild(th);
+    });
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+
+    // Create table body
+    const tbody = document.createElement('tbody');
+    const rowCount = programTable[columns[0].key].length;
+    for (let i = 0; i < rowCount; i++) {
+        const row = document.createElement('tr');
+        columns.forEach(column => {
+            const td = document.createElement('td');
+            td.textContent = programTable[column.key][i];
+            td.style.fontSize = '1.1em'; // Increase font size for body
+            row.appendChild(td);
+        });
+        tbody.appendChild(row);
+    }
+    table.appendChild(tbody);
+
+    // Clear previous content and append the heading and table
+    programElement.innerHTML = '';
+    programElement.appendChild(heading);
+    const tableContainer = document.createElement('div');
+    tableContainer.classList.add('page-table-content');
+    tableContainer.appendChild(table);
+    programElement.appendChild(tableContainer);
 }
 
 /* -------------------------------------------------------------------------- */
