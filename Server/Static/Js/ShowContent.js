@@ -12,6 +12,15 @@ function highlightButton(buttonId) {
     }, 800); // Highlight for 500ms
 }
 
+function onVideoEnd() {
+    if (isFrozen) {
+        videoElement.play();
+    } else {
+        videoElement.removeEventListener('ended', onVideoEnd);
+        showNextContent();
+        startContentTimer();
+    }
+}
 
 // Toggle freeze
 let isFrozen = false;
@@ -21,14 +30,27 @@ function toggle_freeze() {
     if (isFrozen) {
         freezeButton.classList.remove('btn-dark');
         freezeButton.classList.add('btn-primary');
-        if (contentTimer) {
-            clearTimeout(contentTimer);
+        if (currentContent) {
+            if (contentTimer) {
+                clearTimeout(contentTimer);
+
+                // Handle autoplay for videos when frozen
+                if (currentContent.type === 'VideoContent') {
+                    const videoElement = document.getElementById('videoElement');
+                    // Only bind the event listener once
+                    if (!videoElement.hasAttribute('data-ended-bound')) {
+                        videoElement.addEventListener('ended', onVideoEnd);
+                        videoElement.setAttribute('data-ended-bound', 'true');
+                    }
+                }
+            }
+            return;
         }
-    } else {
-        freezeButton.classList.remove('btn-primary');
-        freezeButton.classList.add('btn-dark');
+    } else if (currentContent.type !== 'VideoContent') {
         startContentTimer();
     }
+    freezeButton.classList.remove('btn-primary');
+    freezeButton.classList.add('btn-dark');
 }
 
 
@@ -91,10 +113,48 @@ function renderContent() {
                 videoElement.src = videoUrl;
                 videoElement.play(); // Video will only play if window is focused
                 videoElement.controls = false; // Hide controls
+                if (isFrozen) {
+                    videoElement.addEventListener('ended', onVideoEnd);
+                }
                 break;
             case 'PdfContent':
                 const pdfUrl = `get_file/${currentContent.id}/${currentContent.content.files[0]}`;
                 renderPdf(pdfUrl);
+                break;
+            case 'SlideshowContent':
+                const slideshowElement = document.getElementById('slideshowElement');
+                let currentSlideIndex = 0;
+                const updateSlide = () => {
+                    const slideUrl = `get_file/${currentContent.id}/${currentContent.content.files[currentSlideIndex]}`;
+                    slideshowElement.src = slideUrl;
+                    currentSlideIndex = (currentSlideIndex + 1) % currentContent.content.files.length;
+                };
+                updateSlide();
+                setInterval(updateSlide, currentContent.content.duration_per_image * 1000);
+                break;
+            case 'ExcelContent':
+                const excelUrl = `get_file/${currentContent.id}/${currentContent.content.files[0]}`;
+                renderExcel(excelUrl);
+                break;
+            case 'ProgramContent':
+                const programUrl = `get_file/${currentContent.id}/${currentContent.content.files[0]}`;
+                renderProgram(programUrl);
+                break;
+            case 'BirthdayContent':
+                const birthdayElement = document.getElementById('birthdayElement');
+                birthdayElement.innerHTML = currentContent.content.text;
+                break;
+            case 'WeatherContent':
+                const weatherElement = document.getElementById('weatherElement');
+                weatherElement.innerHTML = currentContent.content.text;
+                break;
+            case 'NewsContent':
+                const newsElement = document.getElementById('newsElement');
+                newsElement.innerHTML = currentContent.content.text;
+                break;
+            case 'GameContent':
+                const gameElement = document.getElementById('gameElement');
+                gameElement.innerHTML = currentContent.content.text;
                 break;
             // Add more cases as needed for other content types
             default:
@@ -117,16 +177,22 @@ function startContentTimer() {
     if (!isFrozen) {
         if (content.length > 0) {
             contentTimer = setTimeout(() => {
-            showNextContent();
-            startContentTimer();
+                showNextContent();
+                startContentTimer();
             }, content[currentContentIndex].duration * 1000);
         }
     }
 }
 
+let pdfRenderTask = null;
+
 function renderPdf(url) {
     const pdfCanvas = document.getElementById('pdfCanvas');
     const pdfContext = pdfCanvas.getContext('2d');
+
+    if (pdfRenderTask) {
+        pdfRenderTask.cancel();
+    }
 
     pdfjsLib.getDocument(url).promise.then(pdf => {
         pdf.getPage(1).then(page => {
@@ -138,7 +204,14 @@ function renderPdf(url) {
                 canvasContext: pdfContext,
                 viewport: viewport
             };
-            page.render(renderContext);
+            pdfRenderTask = page.render(renderContext);
+            pdfRenderTask.promise.then(() => {
+                pdfRenderTask = null;
+            }).catch(error => {
+                if (error.name !== 'RenderingCancelledException') {
+                    console.error('Error rendering PDF:', error);
+                }
+            });
         });
     });
 }
