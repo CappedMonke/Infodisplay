@@ -37,7 +37,7 @@
     <canvas id="pdfCanvas"></canvas>
 </div>
 
-<div id="excelContent" class="d-none"></div>
+<div id="excelContent" class="d-none centered-content"></div>
 
 <div id="programContent" class="d-none"></div>
 
@@ -63,5 +63,6 @@
 <script>
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.worker.min.js';
 </script>
+<script lang="javascript" src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 <script src="{{ url_for('static', filename='Js/ShowContent.js') }}"></script>
 {% endblock %}

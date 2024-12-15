@@ -49,6 +49,11 @@
     max-width:900px;
 }
 
+.page-table-content {
+    width: 90%;
+    max-width:1100px;
+}
+
 .truncate {
     display: inline-block;
     max-width: 100%;
@@ -66,6 +71,7 @@
 
 .centered-content {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: calc(100vh - 70px);

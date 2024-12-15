@@ -229,6 +229,40 @@ function renderPdf(url) {
     });
 }
 
+function renderExcel(url) {
+    const excelElement = document.getElementById('excelContent');
+    fetch(url)
+        .then(response => response.arrayBuffer())
+        .then(data => {
+            const workbook = XLSX.read(data, { type: 'array' });
+            const sheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[sheetName];
+            const html = XLSX.utils.sheet_to_html(worksheet, { id: "excelTable", editable: true });
+
+            // Create a heading element
+            const heading = document.createElement('h1');
+            heading.textContent = currentContent.title;
+            heading.classList.add('table-heading');
+            heading.style.marginBottom = '32px'; // Add margin to the heading
+
+
+            // Clear previous content and append the heading and table
+            excelElement.innerHTML = '';
+            excelElement.appendChild(heading);
+            const tableContainer = document.createElement('div');
+            tableContainer.classList.add('page-table-content');
+            tableContainer.innerHTML = html;
+            excelElement.appendChild(tableContainer);
+
+            // Add Bootstrap table classes
+            const table = document.getElementById('excelTable');
+            if (table) {
+                table.classList.add('table', 'table-striped', 'table-bordered');
+            }
+        })
+        .catch(error => console.error('Error rendering Excel:', error));
+}
+
 /* -------------------------------------------------------------------------- */
 /*                              DOMContentLoaded                              */
 /* -------------------------------------------------------------------------- */
