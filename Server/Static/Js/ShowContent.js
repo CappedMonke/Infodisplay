@@ -352,11 +352,8 @@ function connectWebSocket() {
         } else if (event.data === 'toggle_freeze'){
             toggle_freeze();
         } else if (event.data === 'ok' && currentContent && currentContent.type === 'GameContent') {
-            isFrozen = true;
-            freezeButton.classList.remove('btn-dark');
-            freezeButton.classList.add('btn-primary');
-            if (contentTimer) {
-                clearTimeout(contentTimer);
+            if (!isFrozen) {
+                toggle_freeze();
             }
         }
     });
