@@ -188,7 +188,7 @@ function startContentTimer() {
     }
 
     if (!isFrozen) {
-        if (content.length > 0) {
+        if (content.length > 1) { // Only start the timer if there is more than one content element
             contentTimer = setTimeout(() => {
                 showNextContent();
             }, content[currentContentIndex].duration * 1000);
@@ -249,6 +249,7 @@ function renderExcel(url) {
             excelElement.appendChild(heading);
             const tableContainer = document.createElement('div');
             tableContainer.classList.add('page-table-content');
+            tableContainer.style.marginBottom = '32px'; // Add margin to the table
             tableContainer.innerHTML = html;
             excelElement.appendChild(tableContainer);
 
@@ -283,6 +284,7 @@ function renderProgram() {
     const table = document.createElement('table');
     table.id = 'programTable';
     table.classList.add('table', 'table-striped', 'table-bordered');
+    table.style.marginBottom = '32px'; // Add margin to the table
 
     // Define the order of columns and their German translations
     const columns = [

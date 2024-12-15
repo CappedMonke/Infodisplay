@@ -72,7 +72,6 @@ func _process(delta):
 			while client.get_available_packet_count():
 				# Check if server has sent ok-gesture
 				var message = client.get_packet().get_string_from_utf8()
-				print("Recieved message: " + message)
 				if message == "ok":
 					if game_over:
 						new_game()
