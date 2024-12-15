@@ -5,6 +5,10 @@
     <h1 class="page-heading">Einstellungen</h1>
     <form class="page-content" id="settingsForm">
         <div class="mb-3">
+            <input type="checkbox" class="form-check-input" id="showNavbar" name="show_navbar" {% if settings.show_navbar == 'on' %}checked{% endif %}>
+            <label for="showNavbar" class="form-check-label">Navbar mitanzeigen</label>
+        </div>
+        <div class="mb-3">
             <label for="contentUpdateInterval" class="form-label">Zeitabstand Update-Kontrolle (Sekunden)</label>
             <input type="number" class="form-control" id="contentUpdateInterval" name="update_interval" value="{{ settings.update_interval }}">
         </div>

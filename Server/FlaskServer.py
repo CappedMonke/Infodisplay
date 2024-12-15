@@ -2,7 +2,7 @@ import argparse
 import json
 import socket
 import threading
-from Settings import settings, set_setting
+from Settings import settings, set_setting, get_setting
 from flask import Flask, render_template, request, send_from_directory
 from ContentManager import ContentManager
 from flask_socketio import SocketIO
@@ -32,7 +32,11 @@ threading.Thread(target=content_manager.run, daemon=True).start()
 def render_show_content():
     content = content_manager.get_visible_content_list_as_dict()
     private_ip = socket.gethostbyname(socket.gethostname())
-    return render_template('ShowContent.html', content=content, socketIoUrl=f'http://{private_ip}:{server_port}')
+    return render_template(
+        'ShowContent.html', 
+        content=content, 
+        socketIoUrl=f'http://{private_ip}:{server_port}', 
+        showNavbar=get_setting('show_navbar'))
 
 
 @app.route('/get_file/<path:filename>')

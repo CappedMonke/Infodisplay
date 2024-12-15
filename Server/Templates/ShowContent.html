@@ -18,18 +18,30 @@
 
 {% block content %}
 <div id="textContent" class="d-none"></div>
-<div id="imageContent" class="d-none centered-image">
+
+<div id="imageContent" class="d-none centered-content">
     <img id="imageElement" src="" alt="Image Content">
 </div>
+
 <div id="imageTextContent" class="d-none"></div>
-<div id="videoContent" class="d-none"></div>
+
+<div id="videoContent" class="d-none centered-content">
+    <video id="videoElement" controls></video>
+</div>
+
 <div id="slideshowContent" class="d-none"></div>
 <div id="pdfContent" class="d-none"></div>
+
 <div id="excelContent" class="d-none"></div>
+
 <div id="programContent" class="d-none"></div>
+
 <div id="birthdayContent" class="d-none"></div>
+
 <div id="weatherContent" class="d-none"></div>
+
 <div id="newsContent" class="d-none"></div>
+
 <div id="gameContent" class="d-none"></div>
 {% endblock %}
 
@@ -37,6 +49,7 @@
 <script>
     let content = {{ content | tojson }};
     const socketIoUrl = '{{ socketIoUrl }}';
+    const showNavbar = '{{ showNavbar }}';
 </script>
 <script src="https://cdn.socket.io/4.8.1/socket.io.min.js" integrity="sha384-mkQ3/7FUtcGyoppY6bz/PORYoGqOl7/aSUMn2ymDOJcapfS6PHqxhRTMh1RR0Q6+" crossorigin="anonymous"></script>
 <script src="{{ url_for('static', filename='Js/ShowContent.js') }}"></script>

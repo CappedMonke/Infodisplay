@@ -82,6 +82,12 @@ function renderContent() {
             const imageElement = document.getElementById('imageElement');
             const imageUrl = `get_file/${currentContent.id}/${currentContent.content.files[0]}`;
             imageElement.src = imageUrl;
+        } else if (currentContent.type === 'VideoContent') {
+            const videoElement = document.getElementById('videoElement');
+            const videoUrl = `get_file/${currentContent.id}/${currentContent.content.files[0]}`;
+            videoElement.src = videoUrl;
+            videoElement.play(); // Video will only play if window is focused
+            videoElement.controls = false; // Hide controls
         }
         
         startContentTimer();
@@ -131,6 +137,14 @@ document.addEventListener('DOMContentLoaded', function() {
         'GameContent': document.getElementById('gameContent')
     };
 
+    // Hide the navbar if showNavbar is set to off
+    if (showNavbar === 'off') {
+        document.querySelector('.base-navbar').style.display = 'none';
+        document.querySelector('.below-navbar').style.marginTop = '0';
+        document.querySelectorAll('.centered-content').forEach(element => {
+            element.style.height = '100vh';
+        });
+    }
 
     // Show first element of content list
     renderContent()
