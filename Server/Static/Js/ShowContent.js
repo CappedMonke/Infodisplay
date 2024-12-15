@@ -76,18 +76,29 @@ function renderContent() {
         currentlyVisibleContentContainer.style.display = 'flex';
         currentlyVisibleContentContainer.classList.remove('d-none');
 
-        if (currentContent.type === 'TextContent') {
-            currentlyVisibleContentContainer.innerHTML = currentContent.content.text;
-        } else if (currentContent.type === 'ImageContent') {
-            const imageElement = document.getElementById('imageElement');
-            const imageUrl = `get_file/${currentContent.id}/${currentContent.content.files[0]}`;
-            imageElement.src = imageUrl;
-        } else if (currentContent.type === 'VideoContent') {
-            const videoElement = document.getElementById('videoElement');
-            const videoUrl = `get_file/${currentContent.id}/${currentContent.content.files[0]}`;
-            videoElement.src = videoUrl;
-            videoElement.play(); // Video will only play if window is focused
-            videoElement.controls = false; // Hide controls
+        switch (currentContent.type) {
+            case 'TextContent':
+                currentlyVisibleContentContainer.innerHTML = currentContent.content.text;
+                break;
+            case 'ImageContent':
+                const imageElement = document.getElementById('imageElement');
+                const imageUrl = `get_file/${currentContent.id}/${currentContent.content.files[0]}`;
+                imageElement.src = imageUrl;
+                break;
+            case 'VideoContent':
+                const videoElement = document.getElementById('videoElement');
+                const videoUrl = `get_file/${currentContent.id}/${currentContent.content.files[0]}`;
+                videoElement.src = videoUrl;
+                videoElement.play(); // Video will only play if window is focused
+                videoElement.controls = false; // Hide controls
+                break;
+            case 'PdfContent':
+                const pdfUrl = `get_file/${currentContent.id}/${currentContent.content.files[0]}`;
+                renderPdf(pdfUrl);
+                break;
+            // Add more cases as needed for other content types
+            default:
+                console.error("Undefined content type. Content: ", currentContent);
         }
         
         startContentTimer();
@@ -113,6 +124,24 @@ function startContentTimer() {
     }
 }
 
+function renderPdf(url) {
+    const pdfCanvas = document.getElementById('pdfCanvas');
+    const pdfContext = pdfCanvas.getContext('2d');
+
+    pdfjsLib.getDocument(url).promise.then(pdf => {
+        pdf.getPage(1).then(page => {
+            const viewport = page.getViewport({ scale: 1.5 });
+            pdfCanvas.height = viewport.height;
+            pdfCanvas.width = viewport.width;
+
+            const renderContext = {
+                canvasContext: pdfContext,
+                viewport: viewport
+            };
+            page.render(renderContext);
+        });
+    });
+}
 
 /* -------------------------------------------------------------------------- */
 /*                              DOMContentLoaded                              */
