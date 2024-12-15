@@ -165,7 +165,10 @@ function renderContent() {
                 break;
             case 'GameContent':
                 const gameElement = document.getElementById('gameElement');
-                gameElement.innerHTML = currentContent.content.text;
+                const gameUrl = `get_file/${currentContent.id}/${currentContent.content.html}${cacheBuster}`;
+                if (gameElement.src !== gameUrl) {
+                    gameElement.src = gameUrl;
+                }
                 break;
             // Add more cases as needed for other content types
             default:

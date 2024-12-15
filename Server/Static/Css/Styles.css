@@ -73,6 +73,7 @@
 
 .centered-content img,
 .centered-content canvas,
+.centered-content iframe,
 .centered-content video {
     width: 100%;
     height: 100%;

@@ -285,3 +285,11 @@ class GameContent(BaseContent):
                     break
 
         super().__init__(id, type, title, duration, content, is_visible)
+
+    def update(self):
+        # Find the html in the folder if not provided
+        if self.content.get('html') is None:
+            for file in self.content['files']:
+                if file.endswith('.html'):
+                    self.content['html'] = file
+                    break
