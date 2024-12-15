@@ -17,18 +17,20 @@
 {% endblock %}
 
 {% block content %}
-<div id="textContent" style="display: none;"></div>
-<div id="imageContent" style="display: none;"></div>
-<div id="imageTextContent" style="display: none;"></div>
-<div id="videoContent" style="display: none;"></div>
-<div id="slideshowContent" style="display: none;"></div>
-<div id="pdfContent" style="display: none;"></div>
-<div id="excelContent" style="display: none;"></div>
-<div id="programContent" style="display: none;"></div>
-<div id="birthdayContent" style="display: none;"></div>
-<div id="weatherContent" style="display: none;"></div>
-<div id="newsContent" style="display: none;"></div>
-<div id="gameContent" style="display: none;"></div>
+<div id="textContent" class="d-none"></div>
+<div id="imageContent" class="d-none centered-image">
+    <img id="imageElement" src="" alt="Image Content">
+</div>
+<div id="imageTextContent" class="d-none"></div>
+<div id="videoContent" class="d-none"></div>
+<div id="slideshowContent" class="d-none"></div>
+<div id="pdfContent" class="d-none"></div>
+<div id="excelContent" class="d-none"></div>
+<div id="programContent" class="d-none"></div>
+<div id="birthdayContent" class="d-none"></div>
+<div id="weatherContent" class="d-none"></div>
+<div id="newsContent" class="d-none"></div>
+<div id="gameContent" class="d-none"></div>
 {% endblock %}
 
 {% block scripts %}

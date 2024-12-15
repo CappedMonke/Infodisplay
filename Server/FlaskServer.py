@@ -3,7 +3,7 @@ import json
 import socket
 import threading
 from Settings import settings, set_setting
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_from_directory
 from ContentManager import ContentManager
 from flask_socketio import SocketIO
 
@@ -33,6 +33,11 @@ def render_show_content():
     content = content_manager.get_visible_content_list_as_dict()
     private_ip = socket.gethostbyname(socket.gethostname())
     return render_template('ShowContent.html', content=content, socketIoUrl=f'http://{private_ip}:{server_port}')
+
+
+@app.route('/get_file/<path:filename>')
+def serve_file(filename):
+    return send_from_directory('Static/Uploads', filename)
 
 
 # ---------------------------------------------------------------------------- #

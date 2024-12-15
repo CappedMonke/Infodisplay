@@ -12,7 +12,7 @@
             ]
         },
         {
-            "name": "Python Debugger: Release Run GestureRecognizer",
+            "name": "Python Debugger: Release GestureRecognizer",
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/Modules/GestureRecognition/GestureRecognizer.py",
@@ -29,7 +29,7 @@
             ]
         },
         {
-            "name": "Python Debugger: Release Run FlaskServer",
+            "name": "Python Debugger: Release FlaskServer",
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/Server/FlaskServer.py",
@@ -47,8 +47,8 @@
         {
             "name": "Release GestureRecognizer and FlaskServer",
             "configurations": [
-                "Python Debugger: Debug GestureRecognizer",
-                "Python Debugger: Debug FlaskServer"
+                "Python Debugger: Release FlaskServer",
+                "Python Debugger: Release FlaskServer"
             ]
         }
     ]

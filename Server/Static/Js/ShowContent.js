@@ -61,21 +61,27 @@ function renderContent() {
     }
 
     currentContent = content[currentContentIndex];
-    console.log(currentContent)
+    console.log("Current content:", currentContent);
 
     // Hide currently visible content
     if (currentlyVisibleContentContainer) {
         currentlyVisibleContentContainer.style.display = 'none';
+        currentlyVisibleContentContainer.classList.add('d-none');
     }
 
     // Get the appropriate container for the given content type
     currentlyVisibleContentContainer = contentContainers[currentContent.type];
     
     if (currentlyVisibleContentContainer) {
-        currentlyVisibleContentContainer.style.display = 'block';
+        currentlyVisibleContentContainer.style.display = 'flex';
+        currentlyVisibleContentContainer.classList.remove('d-none');
 
         if (currentContent.type === 'TextContent') {
             currentlyVisibleContentContainer.innerHTML = currentContent.content.text;
+        } else if (currentContent.type === 'ImageContent') {
+            const imageElement = document.getElementById('imageElement');
+            const imageUrl = `get_file/${currentContent.id}/${currentContent.content.files[0]}`;
+            imageElement.src = imageUrl;
         }
         
         startContentTimer();
@@ -107,7 +113,7 @@ function startContentTimer() {
 /* -------------------------------------------------------------------------- */
 document.addEventListener('DOMContentLoaded', function() {
     console.log(content);
-    console.log(socketIoUrl)
+    console.log('socketIoUrl: ' + socketIoUrl)
 
     /* ------------------------------- Containers ------------------------------- */
     contentContainers = {
