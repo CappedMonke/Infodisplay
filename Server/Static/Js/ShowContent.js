@@ -18,7 +18,6 @@ function onVideoEnd() {
     } else {
         videoElement.removeEventListener('ended', onVideoEnd);
         showNextContent();
-        startContentTimer();
     }
 }
 
@@ -98,20 +97,27 @@ function renderContent() {
         currentlyVisibleContentContainer.style.display = 'flex';
         currentlyVisibleContentContainer.classList.remove('d-none');
 
+        // Cache-busting query parameter
+        const cacheBuster = `?v=${new Date().getTime()}`;
+
         switch (currentContent.type) {
             case 'TextContent':
                 currentlyVisibleContentContainer.innerHTML = currentContent.content.text;
                 break;
             case 'ImageContent':
                 const imageElement = document.getElementById('imageElement');
-                const imageUrl = `get_file/${currentContent.id}/${currentContent.content.files[0]}`;
-                imageElement.src = imageUrl;
+                const imageUrl = `get_file/${currentContent.id}/${currentContent.content.files[0]}${cacheBuster}`;
+                if (imageElement.src !== imageUrl) {
+                    imageElement.src = imageUrl;
+                }
                 break;
             case 'VideoContent':
                 const videoElement = document.getElementById('videoElement');
-                const videoUrl = `get_file/${currentContent.id}/${currentContent.content.files[0]}`;
-                videoElement.src = videoUrl;
-                videoElement.play(); // Video will only play if window is focused
+                const videoUrl = `get_file/${currentContent.id}/${currentContent.content.files[0]}${cacheBuster}`;
+                if (videoElement.src !== videoUrl) {
+                    videoElement.src = videoUrl;
+                    videoElement.play(); // Video will only play if window is focused
+                }
                 videoElement.controls = false; // Hide controls
                 if (isFrozen) {
                     videoElement.addEventListener('ended', onVideoEnd);
@@ -125,12 +131,17 @@ function renderContent() {
                 const slideshowElement = document.getElementById('slideshowElement');
                 let currentSlideIndex = 0;
                 const updateSlide = () => {
-                    const slideUrl = `get_file/${currentContent.id}/${currentContent.content.files[currentSlideIndex]}`;
-                    slideshowElement.src = slideUrl;
+                    const slideUrl = `get_file/${currentContent.id}/${currentContent.content.files[currentSlideIndex]}${cacheBuster}`;
+                    if (slideshowElement.src !== slideUrl) {
+                        slideshowElement.src = slideUrl;
+                    }
                     currentSlideIndex = (currentSlideIndex + 1) % currentContent.content.files.length;
                 };
                 updateSlide();
-                setInterval(updateSlide, currentContent.content.duration_per_image * 1000);
+                if (!slideshowElement.hasAttribute('data-interval-set')) {
+                    setInterval(updateSlide, currentContent.content.duration_per_image * 1000);
+                    slideshowElement.setAttribute('data-interval-set', 'true');
+                }
                 break;
             case 'ExcelContent':
                 const excelUrl = `get_file/${currentContent.id}/${currentContent.content.files[0]}`;
@@ -178,7 +189,6 @@ function startContentTimer() {
         if (content.length > 0) {
             contentTimer = setTimeout(() => {
                 showNextContent();
-                startContentTimer();
             }, content[currentContentIndex].duration * 1000);
         }
     }
@@ -251,6 +261,21 @@ document.addEventListener('DOMContentLoaded', function() {
     // Show first element of content list
     renderContent()
 
+    const imageElement = document.getElementById('imageElement');
+    const videoElement = document.getElementById('videoElement');
+    const slideshowElement = document.getElementById('slideshowElement');
+
+    if (imageElement) {
+        imageElement.src += '?v=' + new Date().getTime();
+    }
+
+    if (videoElement) {
+        videoElement.src += '?v=' + new Date().getTime();
+    }
+
+    if (slideshowElement) {
+        slideshowElement.src += '?v=' + new Date().getTime();
+    }
 
     /* ----------------------------- Navbar buttons ----------------------------- */
     // Show previous content on button click
