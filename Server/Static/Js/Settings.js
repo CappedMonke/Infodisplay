@@ -23,5 +23,10 @@ document.addEventListener('DOMContentLoaded', function() {
             method: 'POST',
             body: formData
         });
+
+        // Show success toast
+        const updatedToast = document.getElementById('updatedToast');
+        const toastBootstrap = bootstrap.Toast.getOrCreateInstance(updatedToast);
+        toastBootstrap.show();
     });
 });

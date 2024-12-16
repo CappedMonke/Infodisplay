@@ -47,7 +47,7 @@
         {
             "name": "Release GestureRecognizer and FlaskServer",
             "configurations": [
-                "Python Debugger: Release FlaskServer",
+                "Python Debugger: Release GestureRecognizer",
                 "Python Debugger: Release FlaskServer"
             ]
         }

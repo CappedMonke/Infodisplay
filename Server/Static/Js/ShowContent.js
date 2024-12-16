@@ -196,6 +196,10 @@ function renderContent() {
                 const slideshowElement = document.getElementById('slideshowElement');
                 let currentSlideIndex = 0;
                 const updateSlide = () => {
+                    if (currentContent.type !== 'SlideshowContent') {
+                        return;
+                    }
+
                     const slideUrl = `get_file/${currentContent.id}/${currentContent.content.files[currentSlideIndex]}${cacheBuster}`;
                     if (slideshowElement.src !== slideUrl) {
                         slideshowElement.src = slideUrl;
@@ -256,7 +260,6 @@ function renderContent() {
                 }
 
                 const article = currentContent.content.articles[currentContent.current_index];
-                newsImage.src = article.urlToImage;
                 newsTitle.textContent = article.title;
                 newsDescription.textContent = article.description;
 
@@ -267,6 +270,17 @@ function renderContent() {
                     width: 128,
                     height: 128
                 });
+
+                // Check if the image is available
+                const img = new Image();
+                img.onload = function() {
+                    newsImage.src = article.urlToImage;
+                    newsImage.style.display = 'block';
+                };
+                img.onerror = function() {
+                    newsImage.style.display = 'none';
+                };
+                img.src = article.urlToImage;
 
                 break;
             case 'GameContent':
@@ -614,6 +628,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Show next content on button click
     document.getElementById('nextContentButton').addEventListener('click', function() {
+        if (currentContent && currentContent.type === 'VideoContent') {
+            const videoElement = document.getElementById('videoElement');
+            videoElement.pause();
+            videoElement.currentTime = 0;
+        }
         showNextContent()
     });
 
