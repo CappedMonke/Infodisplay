@@ -77,6 +77,14 @@
     height: calc(100vh - 70px);
 }
 
+.centered-birthday-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 70px);
+}
+
 .centered-content img,
 .centered-content canvas,
 .centered-content iframe,
@@ -102,4 +110,8 @@
     min-width: 128px;
     min-height: 128px;
     margin-left: 16px;
+}
+
+#birthdayImage {
+    max-height: 60%;
 }

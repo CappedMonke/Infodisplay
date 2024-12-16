@@ -151,8 +151,28 @@ function renderContent() {
                 renderProgram();
                 break;
             case 'BirthdayContent':
-                const birthdayElement = document.getElementById('birthdayElement');
-                birthdayElement.innerHTML = currentContent.content.text;
+                const birthdayImage = document.getElementById('birthdayImage');
+                const birthdayText = document.getElementById('birthdayText');
+
+                // Ensure current_index is initialized and incremented correctly
+                if (typeof currentContent.current_index === 'undefined') {
+                    currentContent.current_index = 0;
+                } else {
+                    currentContent.current_index = (currentContent.current_index + 1) % currentContent.birthday_indices.length;
+                }
+
+                const birthdayIndex = currentContent.birthday_indices[currentContent.current_index];
+                const birthdayPerson = currentContent.content.birthdayTable.name[birthdayIndex];
+                const birthdayImageUrl = currentContent.content.birthdayTable.image[birthdayIndex];
+
+                birthdayText.textContent = `${birthdayPerson} hat heute Geburtstag!`;
+
+                if (birthdayImageUrl) {
+                    birthdayImage.src = `get_file/${currentContent.id}/${birthdayImageUrl}`;
+                    birthdayImage.classList.remove('d-none');
+                } else {
+                    birthdayImage.classList.add('d-none');
+                }
                 break;
             case 'WeatherContent':
                 const weatherElement = document.getElementById('weatherElement');
