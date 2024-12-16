@@ -54,6 +54,10 @@
     max-width:1100px;
 }
 
+.weather-content {
+    width: 100%;
+}
+
 .truncate {
     display: inline-block;
     max-width: 100%;

@@ -53,6 +53,69 @@ function toggle_freeze() {
 }
 
 
+const getBootstrapIconClass = (weatherCode) => {
+    switch (true) {
+        // Clear sky
+        case weatherCode === 0:
+            return 'bi bi-sun';
+
+        // Mainly clear, partly cloudy, overcast
+        case weatherCode >= 1 && weatherCode <= 3:
+            return 'bi bi-cloud-sun';
+
+        // Fog and depositing rime fog
+        case weatherCode >= 45 && weatherCode <= 48:
+            return 'bi bi-cloud-fog';
+
+        // Drizzle
+        case weatherCode >= 51 && weatherCode <= 55: // Light to dense drizzle
+            return 'bi bi-cloud-drizzle';
+
+        // Freezing drizzle
+        case weatherCode >= 56 && weatherCode <= 57: // Light to dense freezing drizzle
+            return 'bi bi-cloud-drizzle-fill';
+
+        // Rain
+        case weatherCode >= 61 && weatherCode <= 63: // Slight to moderate rain
+            return 'bi bi-cloud-rain';
+        case weatherCode === 65: // Heavy rain
+            return 'bi bi-cloud-rain-heavy';
+
+        // Freezing rain
+        case weatherCode >= 66 && weatherCode <= 67: // Light to heavy freezing rain
+            return 'bi bi-cloud-rain-heavy';
+
+        // Snowfall
+        case weatherCode >= 71 && weatherCode <= 75: // Slight to heavy snow
+            return 'bi bi-cloud-snow';
+
+        // Snow grains
+        case weatherCode === 77:
+            return 'bi bi-cloud-snow-fill';
+
+        // Rain showers
+        case weatherCode >= 80 && weatherCode <= 81: // Slight to moderate rain showers
+            return 'bi bi-cloud-rain';
+        case weatherCode === 82: // Violent rain showers
+            return 'bi bi-cloud-rain-heavy';
+
+        // Snow showers
+        case weatherCode >= 85 && weatherCode <= 86: // Slight to heavy snow showers
+            return 'bi bi-cloud-snow';
+
+        // Thunderstorms
+        case weatherCode === 95: // Slight or moderate thunderstorm
+            return 'bi bi-cloud-lightning';
+        case weatherCode === 96 || weatherCode === 99: // Thunderstorm with hail
+            return 'bi bi-cloud-lightning-rain';
+
+        // Default fallback
+        default:
+            return 'bi bi-question-circle'; // Unknown or unmapped weather code
+    }
+};
+
+
 /* -------------------------------------------------------------------------- */
 /*                               Render content                               */
 /* -------------------------------------------------------------------------- */
@@ -177,8 +240,7 @@ function renderContent() {
                 }
                 break;
             case 'WeatherContent':
-                const weatherElement = document.getElementById('weatherElement');
-                weatherElement.innerHTML = currentContent.content.text;
+                renderWeather(currentContent);
                 break;
             case 'NewsContent':
                 const newsImage = document.getElementById('newsImage');
@@ -244,7 +306,7 @@ function startContentTimer() {
     }
 
     if (!isFrozen) {
-        if (content.length > 0) { // Only start the timer if there is more than one content element
+        if (content.length > 0) {
             contentTimer = setTimeout(() => {
                 showNextContent();
             }, content[currentContentIndex].duration * 1000);
@@ -385,6 +447,111 @@ function renderProgram() {
     tableContainer.appendChild(table);
     programElement.appendChild(tableContainer);
 }
+
+const renderWeather = (content) => {
+    const container = document.createElement('div');
+    const weatherElement = document.getElementById('weatherElement');
+    weatherElement.innerHTML = ''; // Clear previous content
+    weatherElement.appendChild(container);
+    container.className = 'd-flex flex-column justify-content-center align-items-center'; // Center the table
+    container.style.width = '100%'; // Full width
+    container.style.marginBottom = '80px'; // Add some space below the table
+
+    const daysOfWeekShort = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa']; // Days in German
+
+    // Todays section
+    const todayContainer = document.createElement('div');
+    todayContainer.className = 'd-flex justify-content-center align-items-center'; // Flexbox for today's weather
+    todayContainer.style.width = '100%'; // Full width
+    container.appendChild(todayContainer);
+
+    // Today's big card
+    const todayCard = document.createElement('div');
+    todayCard.className = 'card text-center p-4 mb-3 shadow'; // Add shadow and padding
+    todayCard.style.width = '60%'; // Adjust width for better proportions
+    todayContainer.appendChild(todayCard);
+
+    // Today's weather data
+    const todayData = {
+        time: content.content.weather.daily.time[0],
+        weather_code: content.content.weather.daily.weather_code[0],
+        temperature_2m_max: content.content.weather.daily.temperature_2m_max[0],
+        temperature_2m_min: content.content.weather.daily.temperature_2m_min[0]
+    };
+
+    // Date or Day Name
+    const todayDate = document.createElement('h2');
+    todayDate.innerText = `Wetter in ${content.content.location}`;
+    todayDate.className = 'fw-bold mb-2';
+    todayDate.style.fontSize = '3rem'; // Larger text
+    todayCard.appendChild(todayDate);
+
+    // Weather Icon
+    const todayIcon = document.createElement('i');
+    todayIcon.className = getBootstrapIconClass(todayData.weather_code);
+    todayIcon.style.fontSize = '7rem'; // Larger icon size
+    todayCard.appendChild(todayIcon);
+
+    // Current Temperature
+    const currentTemp = document.createElement('div');
+    currentTemp.innerHTML = `
+        <span style="font-size: 2rem;">Aktuell: ${content.content.weather.current.temperature_2m}°C</span>`;
+    currentTemp.className = 'mt-3'; // Add some margin-top
+    todayCard.appendChild(currentTemp);
+
+    // Temperatures
+    const todayTemp = document.createElement('div');
+    todayTemp.innerHTML = `
+        <span style="font-size: 2rem;">Max: ${todayData.temperature_2m_max}°C</span><br>
+        <span style="font-size: 2rem;">Min: ${todayData.temperature_2m_min}°C</span>`;
+    todayTemp.className = 'mt-3'; // Add some margin-top
+    todayCard.appendChild(todayTemp);
+
+    // Create forecasts section
+    const forecastsContainer = document.createElement('div');
+    forecastsContainer.className = 'card d-flex flex-row p-4 shadow'; // Flexbox for row layout
+    forecastsContainer.style.width = '60%'; // Constrain container width
+    forecastsContainer.style.justifyContent = 'space-between'; // Distribute cards evenly
+    container.appendChild(forecastsContainer);
+
+    for (let i = 1; i < content.content.weather.daily.time.length; i++) {
+        // Extract data for the current day
+        const dailyData = {
+            time: content.content.weather.daily.time[i],
+            weather_code: content.content.weather.daily.weather_code[i],
+            temperature_2m_max: content.content.weather.daily.temperature_2m_max[i],
+            temperature_2m_min: content.content.weather.daily.temperature_2m_min[i]
+        };
+        
+        // Forecast card
+        const divForecast = document.createElement('div');
+        divForecast.className = 'd-flex flex-column align-items-center text-center';
+        divForecast.style.flex = '1'; // Each card takes equal width
+        divForecast.style.margin = '0 5px'; // Small margin between cards
+        forecastsContainer.appendChild(divForecast);
+
+        // Day name
+        const day = new Date(dailyData.time).getDay();
+        const dayName = document.createElement('div');
+        dayName.innerText = daysOfWeekShort[day];
+        dayName.className = 'fw-bold mb-1'; // Reduce margin below
+        dayName.style.fontSize = '2rem'; // Adjust text size
+        divForecast.appendChild(dayName);
+
+        // Weather icon
+        const weatherIcon = document.createElement('i');
+        weatherIcon.className = getBootstrapIconClass(dailyData.weather_code);
+        weatherIcon.style.fontSize = '5rem'; // Adjust icon size
+        divForecast.appendChild(weatherIcon);
+
+        // Min/Max temperatures
+        const temp = document.createElement('div');
+        temp.innerHTML = `${dailyData.temperature_2m_max}°C<br>${dailyData.temperature_2m_min}°C`;
+        temp.className = 'mt-1'; // Reduce margin
+        temp.style.fontSize = '1.8rem'; // Adjust font size
+        divForecast.appendChild(temp);
+    }
+};
 
 /* -------------------------------------------------------------------------- */
 /*                              DOMContentLoaded                              */
@@ -534,3 +701,5 @@ function connectWebSocket() {
 
 // Start the WebSocket connection
 connectWebSocket();
+
+
