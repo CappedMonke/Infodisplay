@@ -88,16 +88,12 @@ class GestureRecognizer:
 if __name__ == "__main__":
     # Parse command line arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument("--socket_host", type=str, default="localhost", help="Host of the server.")
-    parser.add_argument("--socket_port", type=int, default=5001, help="Port of the server.")
     parser.add_argument("--skip-frames", type=int, default=0, help="Number of frames to skip. This will result in better performance but higher latency.")
     parser.add_argument("--debug", type=bool, default=False, help="Enable debug mode.")
     args = parser.parse_args()
 
-    socket_host = args.socket_host
-    socket_port = args.socket_port
     skip_frames = args.skip_frames
     debug = args.debug
 
-    recognizer = GestureRecognizer(socket_host, socket_port, skip_frames, debug)
+    recognizer = GestureRecognizer('localhost', 5001, skip_frames, debug)
     recognizer.run()

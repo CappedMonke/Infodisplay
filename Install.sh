@@ -6,111 +6,198 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[0;33m'
 BLUE='\033[0;34m'
-NC='\033[0m' # No Color (reset)
+WHITE='\033[0m'
 
 
-# Function to detect the package manager of OS
-detect_package_manager() {
-    if command -v apt >/dev/null ; then
-        echo "apt"
-    elif command -v pacman >/dev/null ; then
-        echo "pacman"
-    else
-        echo "unsupported package manager"
-    fi
-}
+# Requirements
+REQUIREMENTS_GESTURE_RECOGNITION="Modules/GestureRecognition/Requirements.txt"
+REQUIREMENTS_SERVER_REQUIREMENTS="Server/Requirements.txt"
 
 
-# Function to check and install Vivaldi browser if not installed
-install_firefox() {
-    if ! command -v firefox >/dev/null ; then
-        echo "Firefox browser is not installed. Installing it now..."
-        case $(detect_package_manager) in
-            apt)
-                sudo apt update
-                sudo apt install -y firefox
-                ;;
-            pacman)
-                sudo pacman -S firefox
-                ;;
-            *)
-                echo "Unsupported package manager. Please install Firefox manually."
-                exit 1
-                ;;
-        esac
-        echo "Firefox browser installed successfully."
-    else
-        echo "Firefox browser is already installed."
-    fi
-}
+# Services
+SERVICE_AUTOSTART_BROWSER="Services/AutostartBrowser.service"
+SERVICE_AUTOSTART_GESTURE_RECOGNITION="Services/AutostartGestureRecognition.service"
+SERVICE_AUTOSTART_SERVER="Services/AutostartServer.service"
 
 
-# Function to create a virtual environment and install requirements
+# Get the directory of the current script
+INSTALL_DIR=$(dirname "$(readlink -f "$0")")
+
+# ---------------------------------------------------------------------------- #
+#                                    Helpers                                   #
+# ---------------------------------------------------------------------------- #
 install_requirements() {
-    local req_file=$1
-    local dir_path=".venv"
+    local requirements_file=$1
 
-    if [ ! -d "$dir_path" ]; then
-        echo "Creating virtual environment..."
-        python3 -m venv "$dir_path"
-    else
-        echo "Virtual environment already exists."
+    echo -e "${BLUE}Installing requirements from ${requirements_file}${WHITE}"
+    
+    # Create virtual environment if it does not exist
+    if [ ! -d ".venv" ]; then
+        python3 -m venv .venv
     fi
-
-    echo "Installing requirements from $req_file..."
-    source "$dir_path/bin/activate"
-    pip install --upgrade pip
-    pip install -r "$req_file"
+    
+    # Activate virtual environment
+    source .venv/bin/activate
+    
+    # Install requirements
+    pip install -r "$requirements_file"
+    
+    # Deactivate virtual environment
     deactivate
 }
 
+# Function to replace placeholders in service files
+update_service_file() {
+    local service_file=$1
+    shift
+    local placeholders=("$@")
 
-# Function to install a service
+    echo -e "${BLUE}Updating ${service_file} with placeholders${WHITE}"
+    
+    for placeholder in "${placeholders[@]}"; do
+        local key=$(echo $placeholder | cut -d= -f1)
+        local value=$(echo $placeholder | cut -d= -f2)
+        sudo sed -i "s|${key}|${value}|g" "$service_file"
+    done
+}
+
 install_service() {
-    local service_name=$1
-    local custom_message=$2
-    local source_file="Services/$service_name"
-    local dest_dir="$HOME/.config/systemd/user/" 
+    local service_file=$1
+    shift
+    local placeholders=("$@")
 
-    if [ -e "$source_file" ]; then
-        echo -e "${BLUE}$custom_message (y/n)${NC}"
-        read -r answer
-        if [[ "$answer" == "y" ]]; then
-            case "$service_name" in
-                "AutostartBrowser.service")
-                    install_firefox
-                    ;;
-                "AutostartGestureRecognition.service")
-                    install_requirements "GestureRecognition/Requirements.txt"
-                    ;;
-                "AutostartServer.service")
-                    install_requirements "Server/Requirements.txt"
-                    ;;
-            esac
+    echo -e "${BLUE}Installing service from ${service_file}${WHITE}"
+    
+    # Update the service file with the actual placeholders
+    update_service_file "$service_file" "${placeholders[@]}"
+    
+    # Copy service file to systemd
+    sudo cp "$service_file" /etc/systemd/system/
+    
+    # Reload systemd
+    sudo systemctl daemon-reload
+    
+    # Enable service
+    sudo systemctl enable $(basename "$service_file")
+}
 
-            # Ensure the destination directory exists
-            echo "Ensuring $dest_dir directory exists..."
-            sudo mkdir -p "$dest_dir"
+# Detect package manager
+if command -v apt-get &> /dev/null; then
+    PACKAGE_MANAGER="apt-get"
+elif command -v pacman &> /dev/null; then
+    PACKAGE_MANAGER="pacman"
+else
+    echo -e "${RED}Unsupported package manager. Please install Firefox manually.${WHITE}"
+    exit 1
+fi
 
-            echo "Copying $service_name to $dest_dir..."
-            sudo cp "$source_file" "$dest_dir"
-
-            echo "Enabling $service_name..."
-            systemctl --user enable "$service_name"
+install_firefox() {
+    # Check if firefox is installed
+    if ! command -v firefox &> /dev/null; then
+        echo -e "${BLUE}Firefox not found. Installing Firefox...${WHITE}"
+        if [ "$PACKAGE_MANAGER" == "apt-get" ]; then
+            sudo apt-get update
+            sudo apt-get install -y firefox
+        elif [ "$PACKAGE_MANAGER" == "pacman" ]; then
+            sudo pacman -Syu --noconfirm firefox
         fi
     else
-        echo "File $service_name not found in $SOURCE_DIR. Skipping."
+        echo -e "${GREEN}Firefox is already installed.${WHITE}"
     fi
-    echo
+}
+
+# Function to set a static IP address
+set_static_ip() {
+    local ip_address=$1
+    local gateway=$2
+    local interface=$3
+
+    echo -e "${BLUE}Setting static IP address: ${ip_address}${WHITE}"
+    
+    # Backup the current dhcpcd.conf file
+    sudo cp /etc/dhcpcd.conf /etc/dhcpcd.conf.bak
+    
+    # Add static IP configuration to dhcpcd.conf
+    echo "
+interface ${interface}
+static ip_address=${ip_address}
+static routers=${gateway}
+static domain_name_servers=${gateway}
+" | sudo tee -a /etc/dhcpcd.conf > /dev/null
+    
+    # Restart the dhcpcd service to apply changes
+    sudo systemctl restart dhcpcd
+}
+
+# Function to get the current IP address
+get_current_ip() {
+    local interface=$1
+    ip -4 addr show $interface | grep -oP '(?<=inet\s)\d+(\.\d+){3}'
+}
+
+# ---------------------------------------------------------------------------- #
+#                         Installation implementations                         #
+# ---------------------------------------------------------------------------- #
+install_gesture_recognition() {
+    install_requirements $REQUIREMENTS_GESTURE_RECOGNITION
+    install_service $SERVICE_AUTOSTART_GESTURE_RECOGNITION
+}
+
+install_server() {
+    # Get the current IP address
+    echo -e "${YELLOW}Enter the network interface to get the current IP address (e.g., eth0 or wlan0):${WHITE}"
+    read network_interface
+    current_ip=$(get_current_ip $network_interface)
+    echo -e "${GREEN}Current IP address of ${network_interface}: ${current_ip}${WHITE}"
+    
+    # Prompt user for static IP configuration
+    echo -e "${YELLOW}Enter the static IP address you want to set (e.g., 192.168.1.100/24):${WHITE}"
+    read static_ip
+    echo -e "${YELLOW}Enter the gateway IP address (e.g., 192.168.1.1):${WHITE}"
+    read gateway_ip
+    
+    set_static_ip $static_ip $gateway_ip $network_interface
+    install_requirements $REQUIREMENTS_SERVER_REQUIREMENTS
+    install_service $SERVICE_AUTOSTART_SERVER
+}
+
+install_autostart_browser() {
+    # Prompt user for the server's IP address
+    echo -e "${YELLOW}Enter the server's IP address the browser should connect to:${WHITE}"
+    read server_ip
+    
+    install_firefox
+    install_service $SERVICE_AUTOSTART_BROWSER "%SERVER_IP%=http://${server_ip}:5000"
 }
 
 
-install_service "AutostartBrowser.service" "Do you want to automatically start the browser and open the website at system boot? Installs Firefox browser if not already installed."
-install_service "AutostartGestureRecognition.service" "Do you want to automatically start the camera to recognize gestures at system boot? This will not work if no camera is connected."
-install_service "AutostartServer.service" "Do you want to automatically start the server at system boot? Usually you would do this for only one device in the network."
+# ---------------------------------------------------------------------------- #
+#                        Prompting user for installation                       #
+# ---------------------------------------------------------------------------- #
+echo
+echo -e "${YELLOW}Do you want to install the Server? (yes/no)${WHITE}"
+read install_server
+if [ "$install_server" == "yes" ]; then
+    install_server
+fi
 
-echo -e "${GREEN}Installation completed! To undo the installation, run Uninstall.sh. Do you want to reboot the system now for the changes to take effect? (y/n)${NC}"
-read -r answer
-if [[ "$answer" == "y" ]]; then
+echo
+echo -e "${YELLOW}Do you want to install gesture recognition? This only works if a camera is connected to the device! (yes/no)${WHITE}"
+read install_gesture
+if [ "$install_gesture" == "yes" ]; then
+    install_gesture_recognition
+fi
+
+echo
+echo -e "${YELLOW}Do you want to enable autostarting the browser and showing the infodisplay? This installs firefox if not installed yet! (yes/no)${WHITE}"
+read install_services
+if [ "$install_services" == "yes" ]; then
+    install_autostart_browser
+fi
+
+echo
+echo -e "${RED}Reboot the system now to complete the installation? (yes/no)${WHITE}"
+read reboot_system
+if [ "$reboot_system" == "yes" ]; then
     sudo reboot
 fi

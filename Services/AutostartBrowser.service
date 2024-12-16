@@ -1,10 +1,12 @@
 [Unit]
-Description=Launch Firefox in Kiosk Mode
-After=graphical.target
+Description=Autostart Browser Service
+After=network.target
 
 [Service]
-ExecStart=/usr/bin/firefox --kiosk https://InfoDisplay:5000
+ExecStart=/usr/bin/firefox --kiosk %SERVER_IP%
 Restart=always
+User=%u
+Environment=DISPLAY=:0
 
 [Install]
-WantedBy=graphical.target
+WantedBy=default.target

@@ -192,14 +192,10 @@ def save_settings():
 if __name__ == '__main__':
     # Parse command line arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument('--server-host', type=str, default='0.0.0.0', help='Host of the server.')
-    parser.add_argument('--server-port', type=int, default=5000, help='Port of the server.')
     parser.add_argument('--debug', type=bool, default=False, help='Enable debug mode.')
     args = parser.parse_args()
 
-    server_host = args.server_host
-    server_port = args.server_port
     debug = args.debug
 
     # Run the app with SocketIO
-    socketio.run(app, host=server_host, port=server_port, debug=debug)
+    socketio.run(app, host='0.0.0.0', port=5000, debug=debug)
