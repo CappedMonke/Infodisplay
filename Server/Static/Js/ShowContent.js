@@ -21,6 +21,14 @@ function onVideoEnd() {
     }
 }
 
+function pauseVideoIfCurrentlyDisplayed() {
+    if (currentContent && currentContent.type === 'VideoContent') {
+        const videoElement = document.getElementById('videoElement');
+        videoElement.pause();
+        videoElement.currentTime = 0;
+    }
+}
+
 // Toggle freeze
 let isFrozen = false;
 let freezeButton = null
@@ -622,17 +630,14 @@ document.addEventListener('DOMContentLoaded', function() {
     /* ----------------------------- Navbar buttons ----------------------------- */
     // Show previous content on button click
     document.getElementById('previousContentButton').addEventListener('click', function() {
+        pauseVideoIfCurrentlyDisplayed();
         showPreviousContent()
     });
     
 
     // Show next content on button click
     document.getElementById('nextContentButton').addEventListener('click', function() {
-        if (currentContent && currentContent.type === 'VideoContent') {
-            const videoElement = document.getElementById('videoElement');
-            videoElement.pause();
-            videoElement.currentTime = 0;
-        }
+        pauseVideoIfCurrentlyDisplayed();
         showNextContent()
     });
 
@@ -692,9 +697,11 @@ function connectWebSocket() {
     socket.addEventListener('message', (event) => {
         if (event.data === 'switch_content_previous') {
             highlightButton('previousContentButton');
+            pauseVideoIfCurrentlyDisplayed();
             showPreviousContent();
         } else if (event.data === 'switch_content_next') {
             highlightButton('nextContentButton');
+            pauseVideoIfCurrentlyDisplayed();
             showNextContent();
         } else if (event.data === 'toggle_freeze'){
             toggle_freeze();
