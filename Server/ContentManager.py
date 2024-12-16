@@ -11,9 +11,9 @@ UPLOAD_FOLDER = 'Server/Static/Uploads'
 
 
 class ContentManager():
-    def __init__(self, send_visible_content_to_clients):
+    def __init__(self, send_should_show_content_to_clients):
         self.content_list = []
-        self.send_visible_content_to_clients = send_visible_content_to_clients
+        self.send_should_show_content_to_clients = send_should_show_content_to_clients
         self.load_content()
         self.save_content() # Some content gets updated on initialization, so save it again immediately
     
@@ -59,11 +59,11 @@ class ContentManager():
             content_dict_list.append(content.__dict__)
         return content_dict_list
 
-
-    def get_visible_content_list_as_dict(self):
+    
+    def get_should_show_content_list_as_dict(self):
         content_dict_list = []
         for content in self.content_list:
-            if content.is_visible:
+            if content.should_show:
                 content_dict_list.append(content.__dict__)
         return content_dict_list
 
@@ -100,7 +100,7 @@ class ContentManager():
 
         # If content was actually updated, send it to the clients        
         if something_changed:
-            self.send_visible_content_to_clients()
+            self.send_should_show_content_to_clients()
 
 
     def add_content(self, content):

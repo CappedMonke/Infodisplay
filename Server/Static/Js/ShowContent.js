@@ -103,6 +103,8 @@ function renderContent() {
         switch (currentContent.type) {
             case 'TextContent':
                 currentlyVisibleContentContainer.innerHTML = currentContent.content.text;
+                currentlyVisibleContentContainer.style.lineHeight = '1.5';
+                currentlyVisibleContentContainer.style.fontSize = '3em';
                 break;
             case 'ImageContent':
                 const imageElement = document.getElementById('imageElement');
@@ -212,7 +214,18 @@ function renderContent() {
                     gameElement.src = gameUrl;
                 }
                 break;
-            // Add more cases as needed for other content types
+            case 'ImageTextContent':
+                const text = document.getElementById('imageTextTextElement');
+                text.innerHTML = currentContent.content.text;
+                text.style.lineHeight = '1.5';
+                text.style.fontSize = '3em';
+
+                const image = document.getElementById('imageTextImageElement');
+                const imageTextUrl = `get_file/${currentContent.id}/${currentContent.content.files[0]}${cacheBuster}`;
+                if (image.src !== imageTextUrl) {
+                    image.src = imageTextUrl;
+                }
+                break;
             default:
                 console.error("Undefined content type. Content: ", currentContent);
         }

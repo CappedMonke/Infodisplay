@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', function() {
         theme: 'snow',
         modules: {
             toolbar: [
-                [{ 'font': [] }, { 'size': [] }], // Added font size
                 ['bold', 'italic', 'underline'],
                 [{ 'color': [] }, { 'background': [] }],
                 ['clean']
@@ -32,7 +31,6 @@ document.addEventListener('DOMContentLoaded', function() {
         theme: 'snow',
         modules: {
             toolbar: [
-                [{ 'font': [] }, { 'size': [] }], // Added font size
                 ['bold', 'italic', 'underline'],
                 [{ 'color': [] }, { 'background': [] }],
                 ['clean']

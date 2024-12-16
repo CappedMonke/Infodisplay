@@ -17,13 +17,16 @@
 {% endblock %}
 
 {% block content %}
-<div id="textContent" class="d-none"></div>
+<div id="textContent" class="d-none centered-text-content"></div>
 
 <div id="imageContent" class="d-none centered-content">
     <img id="imageElement" src="" alt="Image Content">
 </div>
 
-<div id="imageTextContent" class="d-none"></div>
+<div id="imageTextContent" class="d-none centered-image-text-content">
+    <div id="imageTextTextElement"></div>
+    <img id="imageTextImageElement" src="" alt="Image Text Content">
+</div>
 
 <div id="videoContent" class="d-none centered-content">
     <video id="videoElement" controls></video>
