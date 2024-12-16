@@ -1,5 +1,4 @@
 import os
-import threading
 import time
 from flask import json
 from ContentTypes import BaseContent
