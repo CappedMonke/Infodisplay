@@ -3,7 +3,7 @@ Description=Autostart Gesture Recognition Service
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/python3 %INSTALL_DIR%/Modules/GestureRecognition/GestureRecognition.py
+ExecStart=/bin/bash -c 'source %INSTALL_DIR%/.venv/bin/activate && exec python3 %INSTALL_DIR%/Modules/GestureRecognition/GestureRecognition.py'
 Restart=always
 User=%u
 
