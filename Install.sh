@@ -138,11 +138,6 @@ get_current_ip() {
 # ---------------------------------------------------------------------------- #
 #                         Installation implementations                         #
 # ---------------------------------------------------------------------------- #
-install_gesture_recognition() {
-    install_requirements $REQUIREMENTS_GESTURE_RECOGNITION
-    install_service $SERVICE_AUTOSTART_GESTURE_RECOGNITION
-}
-
 install_server() {
     # Get the current IP address
     echo -e "${YELLOW}Enter the network interface to get the current IP address (e.g., eth0 or wlan0):${WHITE}"
@@ -158,7 +153,12 @@ install_server() {
     
     set_static_ip $static_ip $gateway_ip $network_interface
     install_requirements $REQUIREMENTS_SERVER_REQUIREMENTS
-    install_service $SERVICE_AUTOSTART_SERVER
+    install_service $SERVICE_AUTOSTART_SERVER "%INSTALL_DIR%=$INSTALL_DIR"
+}
+
+install_gesture_recognition() {
+    install_requirements $REQUIREMENTS_GESTURE_RECOGNITION
+    install_service $SERVICE_AUTOSTART_GESTURE_RECOGNITION "%INSTALL_DIR%=$INSTALL_DIR"
 }
 
 install_autostart_browser() {
