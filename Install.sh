@@ -138,16 +138,16 @@ get_current_ip() {
 
 # Function to configure static IP address
 configure_static_ip() {
-    # Get the current IP address
-    echo -e "${YELLOW}Enter the network interface to get the current IP address (e.g., eth0 or wlan0):${WHITE}"
-    read network_interface
-    current_ip=$(get_current_ip $network_interface)
-    echo -e "${GREEN}Current IP address of ${network_interface}: ${current_ip}${WHITE}"
-    
     # Ask if the user wants to set up a static IP address
     echo -e "${YELLOW}Do you want to set up a static IP address? (yes/no)${WHITE}"
     read setup_static_ip
     if [[ "$setup_static_ip" == "yes" || "$setup_static_ip" == "y" ]]; then
+        # Get the current IP address
+        echo -e "${YELLOW}Enter the network interface to get the current IP address (e.g., eth0 or wlan0):${WHITE}"
+        read network_interface
+        current_ip=$(get_current_ip $network_interface)
+        echo -e "${GREEN}Current IP address of ${network_interface}: ${current_ip}${WHITE}"
+
         # Prompt user for static IP configuration
         echo -e "${YELLOW}Enter the static IP address you want to set (e.g., 192.168.1.100/24):${WHITE}"
         read static_ip
