@@ -177,27 +177,27 @@ install_autostart_browser() {
 echo
 echo -e "${YELLOW}Do you want to install the Server? (yes/no)${WHITE}"
 read install_server
-if [ "$install_server" == "yes" ]; then
+if [[ "$install_server" == "yes" || "$install_server" == "y" ]]; then
     install_server
 fi
 
 echo
 echo -e "${YELLOW}Do you want to install gesture recognition? This only works if a camera is connected to the device! (yes/no)${WHITE}"
 read install_gesture
-if [ "$install_gesture" == "yes" ]; then
+if [[ "$install_gesture" == "yes" || "$install_gesture" == "y" ]]; then
     install_gesture_recognition
 fi
 
 echo
 echo -e "${YELLOW}Do you want to enable autostarting the browser and showing the infodisplay? This installs firefox if not installed yet! (yes/no)${WHITE}"
 read install_services
-if [ "$install_services" == "yes" ]; then
+if [[ "$install_services" == "yes" || "$install_services" == "y" ]]; then
     install_autostart_browser
 fi
 
 echo
 echo -e "${RED}Reboot the system now to complete the installation? (yes/no)${WHITE}"
 read reboot_system
-if [ "$reboot_system" == "yes" ]; then
+if [[ "$reboot_system" == "yes" || "$reboot_system" == "y" ]]; then
     sudo reboot
 fi
