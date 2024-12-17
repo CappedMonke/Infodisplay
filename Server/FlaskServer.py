@@ -8,9 +8,6 @@ from ContentManager import ContentManager
 from flask_socketio import SocketIO
 
 
-server_port = None # Will be set in the main function, is needed for the socket.io server
-
-
 # ---------------------------------------------------------------------------- #
 #                                Initializations                               #
 # ---------------------------------------------------------------------------- #
@@ -31,11 +28,12 @@ threading.Thread(target=content_manager.run, daemon=True).start()
 @app.route('/')
 def render_show_content():
     content = content_manager.get_should_show_content_list_as_dict()
+    print(content)
     private_ip = socket.gethostbyname(socket.gethostname())
     return render_template(
         'ShowContent.html', 
         content=content, 
-        socketIoUrl=f'http://{private_ip}:{server_port}', 
+        socketIoUrl=f'http://{private_ip}:5000', 
         showNavbar=get_setting('show_navbar'))
 
 
@@ -198,4 +196,4 @@ if __name__ == '__main__':
     debug = args.debug
 
     # Run the app with SocketIO
-    socketio.run(app, host='0.0.0.0', port=5000, debug=debug)
+    socketio.run(app, host='0.0.0.0', port=5000, debug=debug, allow_unsafe_werkzeug=True)

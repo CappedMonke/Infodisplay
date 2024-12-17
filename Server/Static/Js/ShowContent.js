@@ -31,7 +31,7 @@ function pauseVideoIfCurrentlyDisplayed() {
 
 // Toggle freeze
 let isFrozen = false;
-let freezeButton = null
+let freezeButton = null;
 function toggle_freeze() {
     isFrozen = !isFrozen;
     if (isFrozen) {
@@ -51,9 +51,9 @@ function toggle_freeze() {
                     }
                 }
             }
-            return;
         }
-    } else if (currentContent.type !== 'VideoContent') {
+        return;
+    } else if (currentContent && currentContent.type !== 'VideoContent') {
         startContentTimer();
     }
     freezeButton.classList.remove('btn-primary');
@@ -581,7 +581,6 @@ const renderWeather = (content) => {
 document.addEventListener('DOMContentLoaded', function() {
     console.log('RAW CONTENT:');
     console.log(content);
-    console.log('socketIoUrl: ' + socketIoUrl)
 
     /* ------------------------------- Containers ------------------------------- */
     contentContainers = {

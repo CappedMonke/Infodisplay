@@ -80,6 +80,9 @@ install_service() {
     
     # Enable service
     sudo systemctl enable $(basename "$service_file")
+
+    # Start service
+    sudo systemctl start $(basename "$service_file")
 }
 
 # Detect package manager
@@ -205,11 +208,4 @@ echo -e "${YELLOW}Do you want to enable autostarting the browser and showing the
 read install_services
 if [[ "$install_services" == "yes" || "$install_services" == "y" ]]; then
     install_autostart_browser
-fi
-
-echo
-echo -e "${RED}Reboot the system now to complete the installation? (yes/no)${WHITE}"
-read reboot_system
-if [[ "$reboot_system" == "yes" || "$reboot_system" == "y" ]]; then
-    sudo reboot
 fi

@@ -3,9 +3,9 @@ Description=Autostart Gesture Recognition Service
 After=network.target
 
 [Service]
-ExecStart=/bin/bash -c 'source %INSTALL_DIR%/.venv/bin/activate && exec python3 %INSTALL_DIR%/Modules/GestureRecognition/GestureRecognition.py'
+WorkingDirectory=/home/silas/Dev/InfoDisplay
+ExecStart=/home/silas/Dev/InfoDisplay/.venv/bin/python3 /home/silas/Dev/InfoDisplay/Modules/GestureRecognition/GestureRecognizer.py
 Restart=always
-User=%u
 
 [Install]
 WantedBy=default.target

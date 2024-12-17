@@ -16,6 +16,10 @@ settings = {
 
 
 def load_settings():
+    # Ensure the directory exists
+    os.makedirs(os.path.dirname(SETTINGS_FILE_PATH), exist_ok=True)
+
+    # Create the file if it doesn't exist
     if not os.path.exists(SETTINGS_FILE_PATH):
         save_settings()
         return
