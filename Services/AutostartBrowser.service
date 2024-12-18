@@ -3,6 +3,7 @@ Description=Autostart Browser Service
 After=network.target
 
 [Service]
+ExecStartPre=/bin/sleep 10
 ExecStart=/usr/bin/firefox --kiosk %SERVER_IP%
 Restart=always
 

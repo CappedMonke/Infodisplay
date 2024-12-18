@@ -69,11 +69,11 @@ install_service() {
 
     echo -e "${BLUE}Installing service from ${service_file}${WHITE}"
     
-    # Update the service file with the actual placeholders
-    update_service_file "$service_file" "${placeholders[@]}"
-    
     # Copy service file to systemd
     sudo cp "$service_file" /etc/systemd/system/
+    
+    # Update the service file with the actual placeholders
+    update_service_file "/etc/systemd/system/$(basename "$service_file")" "${placeholders[@]}"
     
     # Reload systemd
     sudo systemctl daemon-reload
