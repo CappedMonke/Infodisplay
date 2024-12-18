@@ -161,6 +161,18 @@ configure_static_ip() {
     fi
 }
 
+# Function to set the DISPLAY variable permanently
+set_display_variable() {
+    local display_value=$1
+    echo -e "${BLUE}Setting DISPLAY variable to ${display_value} permanently${WHITE}"
+    
+    # Add the DISPLAY variable to the .bashrc file
+    echo "export DISPLAY=${display_value}" >> ~/.bashrc
+    
+    # Source the .bashrc file to apply changes
+    source ~/.bashrc
+}
+
 
 # ---------------------------------------------------------------------------- #
 #                         Installation implementations                         #
@@ -180,6 +192,9 @@ install_autostart_browser() {
     # Prompt user for the server's IP address
     echo -e "${YELLOW}Enter the server's IP address the browser should connect to:${WHITE}"
     read server_ip
+    
+    # Set the DISPLAY variable permanently
+    set_display_variable ":0"
     
     install_firefox
     install_service $SERVICE_AUTOSTART_BROWSER "%SERVER_IP%=http://${server_ip}:5000"

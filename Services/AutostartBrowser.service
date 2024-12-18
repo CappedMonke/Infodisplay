@@ -5,8 +5,6 @@ After=network.target
 [Service]
 ExecStart=/usr/bin/firefox --kiosk %SERVER_IP%
 Restart=always
-User=%u
-Environment=DISPLAY=:0
 
 [Install]
 WantedBy=default.target

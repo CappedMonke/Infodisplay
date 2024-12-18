@@ -56,14 +56,14 @@ class ImageTextContent(BaseContent):
 class VideoContent(BaseContent):
     def __init__(self, id, type, title, duration, content, is_visible=True, **kwargs):
         # If a new VideoContent is created, get duration of the video
-        clip = VideoFileClip(f'{UPLOADS_FOLDER}/{id}/{content['files'][0]}')
+        clip = VideoFileClip(f'{UPLOADS_FOLDER}/{id}/{content["files"][0]}')
         duration = clip.duration
         clip.close()
         super().__init__(id, type, title, duration, content, is_visible)
 
     def update(self):
         # Get duration of the video
-        clip = VideoFileClip(f'{UPLOADS_FOLDER}/{self.id}/{self.content['files'][0]}')
+        clip = VideoFileClip(f'{UPLOADS_FOLDER}/{self.id}/{self.content["files"][0]}')
         self.duration = clip.duration
         clip.close()
 
@@ -208,7 +208,7 @@ class WeatherContent(BaseContent):
         self.content['last_refresh'] = datetime.now().isoformat()
 
         # Fetch weather from open-meteo.com
-        weather_url = f'https://api.open-meteo.com/v1/forecast?latitude={self.content['latitude']}&longitude={self.content['longitude']}&current=temperature_2m&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Europe%2FBerlin'
+        weather_url = f'https://api.open-meteo.com/v1/forecast?latitude={self.content["latitude"]}&longitude={self.content["longitude"]}&current=temperature_2m&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Europe%2FBerlin'
         response = requests.get(weather_url)
 
         # Set and show content if successfully fetched, else hide content
