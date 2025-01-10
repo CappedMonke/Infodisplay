@@ -4,8 +4,10 @@ After=network.target
 
 [Service]
 ExecStartPre=/bin/sleep 10
+ExecStartPre=/bin/bash -c 'export USER=$(whoami)'
 ExecStart=/usr/bin/firefox --kiosk %SERVER_IP%
 Restart=always
 
 [Install]
 WantedBy=default.target
+
