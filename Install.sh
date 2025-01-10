@@ -73,7 +73,7 @@ install_service() {
     sudo cp "$service_file" /etc/systemd/system/
     
     # Update the service file with the actual placeholders
-    update_service_file "/etc/systemd/system/$(basename "$service_file")" "${placeholders[@]}"
+    update_service_file "/etc/systemd/system/$(basename "$service_file")" "${placeholders[@]}" "%USER_NAME%=$(whoami)"
     
     # Reload systemd
     sudo systemctl daemon-reload
@@ -116,27 +116,32 @@ set_static_ip() {
     local gateway=$2
     local interface=$3
 
-    echo -e "${BLUE}Setting static IP address: ${ip_address}${WHITE}"
-    
-    # Backup the current dhcpcd.conf file
-    sudo cp /etc/dhcpcd.conf /etc/dhcpcd.conf.bak
-    
-    # Add static IP configuration to dhcpcd.conf
-    echo "
-interface ${interface}
-static ip_address=${ip_address}
-static routers=${gateway}
-static domain_name_servers=${gateway}
-" | sudo tee -a /etc/dhcpcd.conf > /dev/null
-    
-    # Restart the dhcpcd service to apply changes
-    sudo systemctl restart dhcpcd
+    # Find the connection profile for the interface
+    local connection_name=$(nmcli -t -f NAME,DEVICE con show | grep "$interface" | cut -d: -f1)
+
+    if [ -z "$connection_name" ]; then
+        echo -e "${RED}No connection profile found for interface ${interface}.${WHITE}"
+        echo -e "${BLUE}Creating a new connection profile for ${interface}.${WHITE}"
+        connection_name="static-${interface}"
+        sudo nmcli con add type wifi ifname "$interface" con-name "$connection_name" ssid "YourSSID"
+    fi
+
+    echo -e "${BLUE}Setting static IP address: ${ip_address} on interface: ${interface}${WHITE}"
+
+    # Apply the new static IP configuration
+    sudo nmcli con mod "$connection_name" ipv4.addresses "$ip_address"
+    sudo nmcli con mod "$connection_name" ipv4.gateway "$gateway"
+    sudo nmcli con mod "$connection_name" ipv4.method manual
+    sudo nmcli con up "$connection_name"
+
+    echo -e "${GREEN}Static IP configuration applied successfully.${WHITE}"
 }
+
 
 # Function to get the current IP address
 get_current_ip() {
     local interface=$1
-    ip -4 addr show $interface | grep -oP '(?<=inet\s)\d+(\.\d+){3}'
+    nmcli -g IP4.ADDRESS dev show "$interface" | head -n 1
 }
 
 # Function to configure static IP address
