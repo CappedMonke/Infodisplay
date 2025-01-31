@@ -1,3 +1,40 @@
+> [!NOTE]  
+> Currently only German locale is implemented.
+
+# Description
+
+This project is meant to be displayed at places like kiosks or retirement homes.
+Implemented content types are:
+- Rich Text
+- Image
+- Rich Text + Image
+- Video
+- Slideshow
+- PDF
+- Excel
+- Schedule
+- Birthdays
+- Weather
+- News
+- Game
+
+Implemented motion tracking features are:
+- play games
+- skip / rewind content
+- freeze content
+
+#### Flappy Bird being played with gestures
+![alt text](Images/FlappyBird.png)
+
+#### Weather content
+![alt text](Images/Weather.png)
+
+#### Content creation
+![alt text](Images/CreateContent.png)
+
+#### Content management
+![alt text](Images/ManageContent.png)
+
 # Project setup
 
 > [!NOTE]  
